@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% load core_extras %}
+
+{% block content %}
+<h1>{% model_icon 'dashboard' %} Dashboard</h1>
+
+<h3>{% model_icon 'application' %} <a href="/application/1">Application 01</a> <small>123 tasks executed</small></h3>
+{% include "partial/execution_list_inline.html" with notitle=True %}
+<h3>{% model_icon 'application' %} <a href="/application/1">Application 01</a> <small>123 tasks executed</small></h3>
+{% include "partial/execution_list.html" with notitle=True %}
+
+{% endblock %}

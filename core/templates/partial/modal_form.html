@@ -1,0 +1,33 @@
+
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+            {% block title %}
+              {% if object %}
+                Edit
+              {% else %}
+                Add
+              {% endif %}
+            {% endblock %}
+            </h4>
+          </div>
+          <div class="modal-body">
+            {% block body %}
+            {% endblock %}
+          </div>
+          <div class="modal-footer">
+            <div class="pull-right">
+              <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+              <button type="button" class="btn btn-primary save"><i class="fa fa-check"></i> Save</button>
+            </div>
+            {% if object %}
+            <p>
+              <button type="button" class="btn btn-default delete" data-dismiss="modal">
+                <i class="fa fa-times"></i> Delete</button>
+            </p>
+            {% endif %}
+          </div>
+        </div>
+      </div>

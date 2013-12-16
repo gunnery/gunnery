@@ -1,0 +1,47 @@
+.side-nav>li.dropdown>ul.dropdown-menu>li>a {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+.execution-list-inline .label{
+	display: block;
+	margin: -17px 0 0 0;
+}
+
+.execution-list-inline .well:hover {
+	background: #f0f0f0;
+	cursor: pointer;
+}
+.execution-list-inline .well:hover a {
+	text-decoration: underline;
+	color: #2a6496;
+}
+
+.execution-list div {
+	margin-bottom: 20px;
+}
+
+.tag-select {
+	padding-top: 5px;
+	font-size: 1.2em;
+	cursor: pointer;
+}
+
+.tag-select .selected {
+	background: #5cb85c;
+}
+
+.modal-footer {
+	text-align: left;
+}
+
+.parameter-list, .command-list, .command-list ul  {
+	font-family: monospace;
+	list-style: none;
+}
+
+html {overflow-y: scroll;}
+.modal {
+    /* ... */
+    overflow-y: scroll;
+}

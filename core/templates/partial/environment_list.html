@@ -1,0 +1,44 @@
+{% load core_extras %}
+<h3>{% model_icon 'environment' %} Environments
+  <button type="button" class="btn btn-primary btn-xs"
+    data-toggle="modal" 
+    data-remote="/modal_form/environment/" 
+    data-target="#large-modal">
+    <i class="fa fa-plus"></i></button>
+</h3>
+<div class="table-responsive">
+  <table class="table table-hover tablesorter">
+    <thead>
+      <tr>
+        <th class="header">Name <i class="fa fa-sort"></i></th>
+        <th class="header"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><a href="/environment/1">production</a></td>
+        <td><button type="submit" class="btn btn-primary btn-xs"
+          data-toggle="modal" 
+          data-remote="/modal_form/environment/1/" 
+          data-target="#large-modal">
+          <i class="fa fa-edit"></i></button></td>
+      </tr>
+      <tr>
+        <td><a href="/environment/1">pre-production</a></td>
+        <td><button type="submit" class="btn btn-primary btn-xs"
+          data-toggle="modal" 
+          data-remote="/modal_form/environment/2/" 
+          data-target="#large-modal">
+          <i class="fa fa-edit"></i></button></td>
+      </tr>
+      <tr>
+        <td><a href="/environment/1">test</a></td>
+        <td><button type="submit" class="btn btn-primary btn-xs"
+          data-toggle="modal" 
+          data-remote="/modal_form/environment/3/" 
+          data-target="#large-modal">
+          <i class="fa fa-edit"></i></button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

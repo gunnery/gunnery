@@ -1,0 +1,20 @@
+{% extends 'partial/modal_form.html' %}
+{% block title %}
+  {{ block.super }} Environment
+{% endblock %}
+{% block body %}
+<form class="form-horizontal" role="form">
+  <div class="form-group">
+    <label for="environment-form-name" class="col-sm-3 control-label">Name</label>
+    <div class="col-sm-6">
+      <input type="text" class="form-control" id="environment-form-name">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="environment-form-description" class="col-sm-3 control-label">Description</label>
+    <div class="col-sm-6">
+      <textarea class="form-control" rows="2" id="environment-form-description"></textarea>
+    </div>
+  </div>
+</form>
+{% endblock %}

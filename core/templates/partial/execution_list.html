@@ -1,0 +1,32 @@
+{% if not notitle %}
+<h3>Execution history</h3>
+{% else %}
+<br/>
+{% endif %}
+<div class="row execution-list">
+	<div class="col-md-12">
+		<a href="/execution/">Application 01 / production / clear-cache</a>
+		<span class="label label-warning">Running</span>
+		<p>
+		<span class="text-muted">Started by</span>
+		User01 <span class="text-muted">on</span>
+		2013-13-13 13:13 
+		<span class="text-muted">(time taken: </span>1h 1m 1s<span class="text-muted">) with parameters:</span>
+		</p>
+		<ul>
+			<li><b>parametr</b>: wartość</li>
+			<li><b>parametr</b>: wartość</li>
+		</ul>
+	</div>
+	<div class="col-md-12">
+		<a href="/execution/">Application 01 / production / clear-cache</a>
+		<span class="label label-warning">Running</span>
+		<br/>
+		Started by User01 2013-13-13 13:13 (time taken: 1h 1m 1s) with parameters:
+		<br/>
+		<ul>
+			<li><b>parametr</b>: wartość</li>
+			<li><b>parametr</b>: wartość</li>
+		</ul>
+	</div>
+</div>

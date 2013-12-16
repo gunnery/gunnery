@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load core_extras %}
+
+{% block content %}
+<h1>{% model_icon 'execution' %} Execution of <em>Task 01</em> on <em>production</em>
+	<a href="/task/1/execute/" role="button" class="btn btn-primary pull-right"><i class="fa fa-bolt"></i> Execute</a>
+	{% execution_status 'running' %}
+</h1>
+
+<ol class="breadcrumb">
+	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+	<li><a href="/application/1">{% model_icon 'application' %} Application 01</a></li>
+	<li><a href="/environment/1">{% model_icon 'environment' %} production</a></li>
+	<li><a href="/task/1">{% model_icon 'task' %} Task 01</a></li>
+	<li class="active">{% model_icon 'execution' %} Execution</li>
+</ol>
+
+<h4>Parameters</h4>
+<ul class="parameter-list">
+	<li>environment = production</li>
+	<li>branch = master</li>
+</ul>
+
+<p>&nbsp;</p>
+
+<h4>Commands</h4>
+<ul class="command-list">
+	<li class="text-muted">started 2013-12-12 12:12:12</li>
+	<li>
+		environment <span class="label label-default">local</span>
+		<ul class="log">
+			<li>did something</li>
+			<li>did something</li>
+			<li>did something</li>
+			<li class="text-success">finished in 1 s</li>
+		</ul>
+	</li>
+
+	<li>
+		branch <span class="label label-success">app</span>
+		<ul class="log">
+			<li>did something</li>
+			<li>did something</li>
+			<li>did something</li>
+			<li class="text-danger">failed with code <b>123</b>, time taken 1 s</li>
+		</ul>
+	</li>
+	<li class="text-muted">finished 2013-12-12 12:12:13, 2 s</li>
+</ul>
+
+{% endblock %}
