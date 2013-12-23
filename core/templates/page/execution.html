@@ -3,8 +3,8 @@
 
 {% block content %}
 <h1>{% model_icon 'execution' %} Execution of <em>Task 01</em> on <em>production</em>
+	<small>{% execution_status 'running' %}</small>
 	<a href="/task/1/execute/" role="button" class="btn btn-primary pull-right"><i class="fa fa-bolt"></i> Execute</a>
-	{% execution_status 'running' %}
 </h1>
 
 <ol class="breadcrumb">

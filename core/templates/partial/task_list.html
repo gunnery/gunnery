@@ -1,6 +1,6 @@
 {% load core_extras %}
 <h3>{% model_icon 'task' %} Tasks
-  <button type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></button></h3>
+  <a href="/application/1/task/" type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a></h3>
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
     <thead>
@@ -14,25 +14,25 @@
         <td><a href="/task/1">deploy</a></td>
         <td>
           <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button></td>
+          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
       </tr>
       <tr>
         <td><a href="/task/1">clear-cache</a></td>
         <td>
           <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button></td>
+          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
       </tr>
       <tr>
         <td><a href="/task/1">rollback</a></td>
         <td>
           <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button></td>
+          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
       </tr>
       <tr>
         <td><a href="/task/1">backup</a></td>
         <td>
           <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <button type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></button></td>
+          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
       </tr>
     </tbody>
   </table>

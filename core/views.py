@@ -12,7 +12,6 @@ def application_page(request):
 
 def environment_page(request):
 	return render(request, 'page/environment.html')
-
 def environment_list():
 	return
 
@@ -23,10 +22,13 @@ def servers_list():
 
 
 
-def task_page(request):
+def task_page(request, task_id = None):
 	return render(request, 'page/task.html')
 def task_execute_page(request, task_id, environment_id=None):
 	return render(request, 'page/task_execute.html')
+
+def task_form_page(request, application_id = None, task_id = None):
+	return render(request, 'page/task_form.html')
 
 def task_list():
 	return
