@@ -1,35 +1,14 @@
-{% extends 'partial/modal_form.html' %}
-{% block title %}
-  {{ block.super }} Server
-{% endblock %}
-{% block body %}
-<form class="form-horizontal" role="form" method="post">
-  <div class="form-group">
-    <label for="server-form-host" class="col-sm-3 control-label">Host</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-host" name="host">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="server-form-name" class="col-sm-3 control-label">Name</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-name" name="name">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="server-form-user" class="col-sm-3 control-label">User</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-user" name="user">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="col-sm-3 control-label">Roles</label>
-    <div class="col-sm-6 tag-select" data-name="roles" data-tags="app db cache" data-tags-selected="db" data-tags-multiple="1">
-    </div>
-  </div>
+{% load crispy_forms_tags %}
+<form class="form-horizontal" role="form" method="POST" action="{{ request.path }}">
+  {% csrf_token %}
+  {% crispy form form.helper %}
 </form>
 <script>
-$('.tag-select').tagSelect();
+  $(".chosen-select").chosen({width: '100%'});
 </script>
 
-{% endblock %}
+{% if not is_new %}
+<form role="delete" method="POST" action="{% url 'modal_delete' 'server' instance.id %}">
+  {% csrf_token %}
+</form>
+{% endif %}

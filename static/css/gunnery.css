@@ -75,3 +75,37 @@ h1 .label {
 .chosen-container input {
 	height: 25px !important;
 }
+
+.chosen-container-multi .chosen-choices li.search-field input[type=text] {
+	color: #888;
+}
+
+.chosen-container {
+	font-size: 14px;
+}
+
+.chosen-container-multi .chosen-choices {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-image: none;
+}
+
+.chosen-container-multi .chosen-choices li.search-field {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.chosen-container-multi .chosen-choices li.search-choice {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+.side-nav {
+	width: 170px;
+}
+#wrapper {
+	padding-left: 170px;
+}
+#page-wrapper {
+	padding-top: 5px;
+}

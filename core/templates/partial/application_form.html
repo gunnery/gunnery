@@ -1,20 +1,11 @@
-{% extends 'partial/modal_form.html' %}
-{% block title %}
-  {{ block.super }} Application
-{% endblock %}
-{% block body %}
-<form class="form-horizontal" role="form">
-  <div class="form-group">
-    <label for="application-form-name" class="col-sm-3 control-label">Name</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="application-form-name">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="application-form-description" class="col-sm-3 control-label">Description</label>
-    <div class="col-sm-6">
-      <textarea class="form-control" rows="2" id="application-form-description"></textarea>
-    </div>
-  </div>
+{% load crispy_forms_tags %}
+<form class="form-horizontal" role="form" method="POST" action='{{ request.path }}'>
+{% csrf_token %}
+{% crispy form form.helper %}
 </form>
-{% endblock %}
+
+{% if not is_new %}
+<form role="delete" method="POST" action="{% url 'modal_delete' 'application' instance.id %}">
+  {% csrf_token %}
+</form>
+{% endif %}

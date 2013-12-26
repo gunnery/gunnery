@@ -1,0 +1,16 @@
+
+  <ul class="nav navbar-nav side-nav">
+    <!-- <li class="active"><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li> -->
+    {% for application in application_list_sidebar %}
+    <li class="dropdown open">
+      <a href="{{ application.get_absolute_url }}" class="dropdown-toggle">
+        <i class="fa fa-desktop"></i> {{application.name}} <b class="caret"></b>
+      </a>
+      <ul class="dropdown-menu">
+      {% for environment in application.environments.all %}
+        <li><a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></li>
+      {% endfor %}
+      </ul>
+    </li>
+    {% endfor %}
+  </ul>

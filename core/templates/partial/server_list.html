@@ -1,10 +1,11 @@
 {% load core_extras %}
 <h3>{% model_icon 'server' %} Servers
   <button type="button" class="btn btn-primary btn-xs"
-          data-toggle="modal" 
-          data-remote="/modal_form/server/" 
-          data-target="#large-modal">
-          <i class="fa fa-plus"></i></button></h3>
+    data-toggle="modal" 
+    data-remote="{% url 'modal_form' form_name='server' id='' parent_name='environment' parent_id=environment.id %}" 
+    data-target="#large-modal">
+    <i class="fa fa-plus"></i></button>
+</h3>
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
     <thead>
@@ -16,36 +17,22 @@
       </tr>
     </thead>
     <tbody>
+      {% for server in environment.servers.all %}
       <tr>
-        <td>app-prod01</td>
-        <td>127.0.0.1</td>
-        <td><span class="label label-success">app</span></td>
+        <td>{{server.name}}</td>
+        <td>{{server.host}}</td>
+        <td>
+          {% for role in server.roles.all %}
+            <span class="label label-success">{{role.name}}</span>
+          {% endfor %}
+        </td>
         <td><button type="submit" class="btn btn-primary btn-xs"
           data-toggle="modal" 
-          data-remote="/modal_form/server/1/" 
+          data-remote="{% url 'modal_form' form_name='server' id=server.id %}" 
           data-target="#large-modal">
           <i class="fa fa-edit"></i></button></td>
       </tr>
-      <tr>
-        <td>db-prod01</td>
-        <td>127.0.0.1</td>
-        <td><span class="label label-success">db</span></td>
-        <td><button type="submit" class="btn btn-primary btn-xs"
-          data-toggle="modal" 
-          data-remote="/modal_form/server/2/" 
-          data-target="#large-modal">
-          <i class="fa fa-edit"></i></button></td>
-      </tr>
-      <tr>
-        <td>cache-prod01</td>
-        <td>127.0.0.1</td>
-        <td><span class="label label-success">cache</span></td>
-        <td><button type="submit" class="btn btn-primary btn-xs"
-          data-toggle="modal" 
-          data-remote="/modal_form/server/3/" 
-          data-target="#large-modal">
-          <i class="fa fa-edit"></i></button></td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>

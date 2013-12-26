@@ -1,8 +1,8 @@
 {% load core_extras %}
-<h3>{% model_icon 'environment' %} Environments
+<h3>{% model_icon 'serverrole' %} Server roles
   <button type="button" class="btn btn-primary btn-xs"
     data-toggle="modal" 
-    data-remote="{% url 'modal_form' form_name='environment' id='' parent_name='application' parent_id=application.id %}" 
+    data-remote="{% url 'modal_form' form_name='serverrole' %}" 
     data-target="#large-modal">
     <i class="fa fa-plus"></i></button>
 </h3>
@@ -15,12 +15,12 @@
       </tr>
     </thead>
     <tbody>
-      {% for environment in application.environments.all %}
+      {% for serverrole in serverrole.all %}
       <tr>
-        <td><a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></td>
+        <td>{{serverrole.name}}</td>
         <td><button type="submit" class="btn btn-primary btn-xs"
           data-toggle="modal" 
-          data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}" 
+          data-remote="{% url 'modal_form' form_name='serverrole' id=serverrole.id %}" 
           data-target="#large-modal">
           <i class="fa fa-edit"></i></button></td>
       </tr>

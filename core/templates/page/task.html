@@ -2,33 +2,39 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'task' %} Task <em>Task 01</em> 
+<h1>{% model_icon 'task' %} Task <em>{{task.name}}</em> 
 	<div class=" pull-right">
-		<a href="/task/1/execute/" role="button" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</a>
-		<a href="/task/1/edit/" type="submit" class="btn btn-primary"><i class="fa fa-edit"></i></a> 
+		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</a>
+		<a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-primary"><i class="fa fa-edit"></i></a> 
 	</div>
 </h1>
 
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="/application/1">{% model_icon 'application' %} Application 01</a></li>
-	<li class="active">{% model_icon 'task' %} Task 01</li>
+	<li><a href="{{ task.application.get_absolute_url }}">{% model_icon 'application' %} {{task.application.name}}</a></li>
+	<li class="active">{% model_icon 'task' %} {{task.name}}</li>
 </ol>
 
-{% include "partial/execution_list_inline.html" %}
+{% include "partial/execution_list_inline.html" with list=task.executions_inline %}
 
 <h4>Parameters</h4>
 <ul class="parameter-list">
-	<li>environment</li>
-	<li>branch</li>
+	{% for parameter in task.parameters.all %}
+	<li>{{parameter.name}}</li>
+	{% endfor %}
 </ul>
 
 <p>&nbsp;</p>
 
 <h4>Commands</h4>
 <ul class="command-list">
-	<li>environment <span class="label label-default">local</span></li>
-	<li>branch <span class="label label-success">app</span></li>
+	{% for command in task.commands.all %}
+	<li>{{command.command}}
+		{% for role in command.roles.all %}
+		<span class="label label-default">{{role.name}}</span>
+		{% endfor %}
+	</li>
+	{% endfor %}
 </ul>
 
 {% endblock %}

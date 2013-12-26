@@ -1,32 +1,29 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load crispy_forms_tags %}
 
 {% block content %}
-<h1>{% model_icon 'task' %} Task <em>Task 01</em> 
+<h1>
+{% model_icon 'task' %} 
+{% if is_new %}Add task{% else %}Task <em>{{task.name}}</em>{% endif %}
+{% if not is_new %}
+	<div class=" pull-right">
+		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</a>
+	</div>
+{% endif %}
 </h1>
 
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="/application/1">{% model_icon 'application' %} Application 01</a></li>
-	<li class="active">{% model_icon 'task' %} Task 01</li>
+	<li><a href="{{ application.get_absolute_url }}">{% model_icon 'application' %} {{application.name}}</a></li>
+	<li class="active">{% model_icon 'task' %} 
+		{% if is_new %}Add task{% else %}<a href="{{ task.get_absolute_url }}">{{task.name}}</a>{% endif %}
+	</li>
 </ol>
 
-<form class="form-horizontal" role="form" method="post">
-	{% csrf_token %}
-
-
-  <div class="form-group">
-    <label for="server-form-host" class="col-sm-offset-1 col-sm-3 control-label">Name</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-host" name="host">
-    </div>
-  </div>
-  <div class="form-group">
-    <label for="application-form-description" class="col-sm-offset-1 col-sm-3 control-label">Description</label>
-    <div class="col-sm-6">
-      <textarea class="form-control" rows="2" id="application-form-description"></textarea>
-    </div>
-  </div>
+<form class="form-horizontal" role="form" method="post" action="{{ request.path }}">
+{% csrf_token %}
+{% crispy form form.helper %}
 
 <p>&nbsp;</p>
 
@@ -35,30 +32,20 @@
 		<label>Parameters</label>
 	</div>
 </div>
-<div class="subform-multiple">
+
+<div class="subform-multiple" data-model="TaskParameter">
+{{ form_parameters.non_field_errors }}
+{{ form_parameters.management_form }}
+{% for form in form_parameters %}
+	{% if not form.DELETE.value %}
 	<div class="form-group">
-		<div class="col-sm-offset-1 col-sm-3">
-		  <input type="hidden" name="property[id][]" value="1">
-		  <input type="text" class="form-control" name="property[name][]" placeholder="Name">
-		</div>
-		<div class="col-sm-6">
-		  <input type="text" class="form-control" name="property[description][]" placeholder="Description">
-		</div>
-		<div class="col-sm-2 actions">
-		  <a class="button-down"><i class="fa fa-arrow-down"></i></a> <a class="button-up"><i class="fa fa-arrow-up"></i></a> <a class="button-remove"><i class="fa fa-times"></i></a>
-		</div>
+		{% include 'partial/form/formset_form_managment.html' %}
+		{% include 'partial/form/text.html' with field=form.name class='col-sm-offset-1 col-xs-12 col-sm-3 col-md-3' %}
+		{% include 'partial/form/text.html' with field=form.description class='col-xs-12 col-sm-6 col-md-6' %}
+		{% include 'partial/form/formset_actions.html' %}
 	</div>
-	<div class="form-group hide form-template">
-		<div class="col-sm-offset-1 col-sm-3">
-		  <input type="text" class="form-control" name="property[name][]" placeholder="Name">
-		</div>
-		<div class="col-sm-6">
-		  <input type="text" class="form-control" name="property[description][]" placeholder="Description">
-		</div>
-		<div class="col-sm-2 actions">
-		  <a class="button-down"><i class="fa fa-arrow-down"></i></a> <a class="button-up"><i class="fa fa-arrow-up"></i></a> <a class="button-remove"><i class="fa fa-times"></i></a>
-		</div>
-	</div>
+	{% endif %}
+{% endfor %}
 	<div class="form-group actions">
 		<div class="col-sm-offset-10 col-sm-2">
 		  <a class="button-add"><i class="fa fa-plus"></i></a>
@@ -68,12 +55,12 @@
 
 <p>&nbsp;</p>
 
-
 <div class="row">
 	<div class="col-sm-offset-1">
 		<label>Commands </label> <a href="#" data-toggle="element" data-target="#command-help"><i class="fa fa-question"></i></a>
 	</div>
 </div>
+  {{ form_commands.non_field_errors }}
 <div class="row hide" id="command-help">
 	<div class="col-sm-offset-1">
 		<ul>
@@ -82,59 +69,42 @@
 			<li><b>${task.name}</b> task name</li>
 			<li><b>${time.stamp}</b> current timestamp</li>
 			<li><b>${time.date}</b> current date</li>
-			<li><b>${time.start}</b> timestamp from task start</li>
+			<li><b>${time.start}</b> timestamp of execution start</li>
 		</ul>
 	</div>
 </div>
-<div class="subform-multiple">
+<div class="subform-multiple" data-model="TaskCommand">
+{{ form_commands.non_field_errors }}
+{{ form_commands.management_form }}
+{% for form in form_commands %}
+{{ form.non_field_errors }}
+	{% if not form.DELETE.value %}
 	<div class="form-group">
-		<div class="col-sm-offset-1 col-sm-7">
-		  <input type="hidden" name="command[id][]" value="1">
-		  <input type="text" class="form-control" name="command[command]" placeholder="Command">
+		{% include 'partial/form/formset_form_managment.html' %}
+		{% include 'partial/form/text.html' with field=form.command class='col-sm-offset-1 col-sm-7' %}
+
+		<div class="col-sm-2 {% if form.roles.errors %}has-error{% endif %}">
+			{{ form.roles }}
+			{% if form.roles.errors %}<p class="text-danger">{{ form.roles.errors|first }}</p>{% endif %}
 		</div>
-		<div class="col-sm-2">
-			<select data-placeholder="Select roles..." class="chosen-select" multiple tabindex="-1" style="width: auto">
-				<option value=""></option>
-				<option value="app">app</option>
-				<option value="db">db</option>
-				<option value="cache">cache</option>
-				<option value="proxy">proxy</option>
-			</select>
-		</div>
-		<div class="col-sm-2 actions">
-		  <a class="button-down"><i class="fa fa-arrow-down"></i></a> <a class="button-up"><i class="fa fa-arrow-up"></i></a> <a class="button-remove"><i class="fa fa-times"></i></a>
-		</div>
+		{% include 'partial/form/formset_actions.html' %}
 	</div>
-	<div class="form-group hide form-template">
-		<div class="col-sm-offset-1 col-sm-7">
-		  <input type="text" class="form-control" name="command[command]" placeholder="Command">
-		</div>
-		<div class="col-sm-2">
-			<select data-placeholder="Select roles..." class="chosen-select col-sm-2" multiple tabindex="-1">
-				<option value=""></option>
-				<option value="app">app</option>
-				<option value="db">db</option>
-				<option value="cache">cache</option>
-				<option value="proxy">proxy</option>
-			</select>
-		</div>
-		<div class="col-sm-2 actions">
-		  <a class="button-down"><i class="fa fa-arrow-down"></i></a> <a class="button-up"><i class="fa fa-arrow-up"></i></a> <a class="button-remove"><i class="fa fa-times"></i></a>
-		</div>
-	</div>
+	{% endif %}
+{% endfor %}
 	<div class="form-group actions">
 		<div class="col-sm-offset-10 col-sm-2">
 		  <a class="button-add"><i class="fa fa-plus"></i></a>
 		</div>
 	</div>
 </div>
-  <div class="form-group">
-    <div class="col-sm-offset-1 col-sm-3"></div>
-    <div class="col-sm-6">
-	  <button type="submit" class="btn btn-primary">Save</button>
-	  <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
-    </div>
-  </div>
+
+
+	<div class="form-group">
+		<div class="col-sm-offset-1 col-sm-3"></div>
+		<div class="col-sm-6">
+			<button type="submit" class="btn btn-primary">Save</button>
+		</div>
+	</div>
 </form>
 
 {% endblock %}

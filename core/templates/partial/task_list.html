@@ -1,39 +1,23 @@
 {% load core_extras %}
 <h3>{% model_icon 'task' %} Tasks
-  <a href="/application/1/task/" type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a></h3>
+  <a href="{% url 'task_add_form_page' application_id=application.id %}" type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a></h3>
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
     <thead>
       <tr>
         <th class="header">Name <i class="fa fa-sort"></i></th>
-        <th class="header"> <i class="fa"></i></th>
+        <th class="header col-sm-3"> <i class="fa"></i></th>
       </tr>
     </thead>
     <tbody>
+      {% for task in application.tasks.all %}
       <tr>
-        <td><a href="/task/1">deploy</a></td>
+        <td><a href="{{ task.get_absolute_url }}">{{task.name}}</a></td>
         <td>
-          <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
+          <a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
+          <a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
       </tr>
-      <tr>
-        <td><a href="/task/1">clear-cache</a></td>
-        <td>
-          <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
-      </tr>
-      <tr>
-        <td><a href="/task/1">rollback</a></td>
-        <td>
-          <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
-      </tr>
-      <tr>
-        <td><a href="/task/1">backup</a></td>
-        <td>
-          <a href="/task/1/execute/1" role="button" class="btn btn-primary btn-xs"><i class="fa fa-bolt"></i> Execute</a>
-          <a href="/task/1/edit/" type="submit" class="btn btn-primary btn-xs"><i class="fa fa-edit"></i></a></td>
-      </tr>
+      {% endfor %}
     </tbody>
   </table>
 </div>

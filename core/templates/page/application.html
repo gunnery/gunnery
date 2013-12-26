@@ -2,25 +2,26 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'application' %} Application <em>Application 01</em>
+<h1>{% model_icon 'application' %} Application <em>{{application.name}}</em>
 	<button type="submit" class="btn btn-primary pull-right" 
 		data-toggle="modal" 
-		data-remote="/modal_form/application/1/" 
+		data-remote="{% url 'modal_form' form_name='application' id=application.id %}" 
 		data-target="#large-modal">
-	<i class="fa fa-edit"></i></button></h1>
+		<i class="fa fa-edit"></i></button></h1>
 
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li class="active">{% model_icon 'application' %} Application 01</li>
+	<li class="active">{% model_icon 'application' %} {{application.name}}</li>
 </ol>
 
-{% include "partial/execution_list_inline.html" %}
+{% include "partial/execution_list_inline.html" with list=application.executions_inline %}
 
 <div class="row">
-	<div class="col-lg-6">
+	<div class="col-md-6">
     	{% include "partial/environment_list.html" %}
 	</div>
-	<div class="col-lg-6">
+	<div class="visible-xs visible-sm">&nbsp;</div>
+	<div class="col-md-6">
 		{% include "partial/task_list.html" %}
 	</div>
 </div>

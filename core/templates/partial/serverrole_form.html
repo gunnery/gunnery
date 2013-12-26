@@ -5,7 +5,7 @@
 </form>
 
 {% if not is_new %}
-<form role="delete" method="POST" action="{% url 'modal_delete' 'environment' instance.id %}">
+<form role="delete" method="POST" action="{% url 'modal_delete' 'serverrole' instance.id %}">
   {% csrf_token %}
 </form>
 {% endif %}

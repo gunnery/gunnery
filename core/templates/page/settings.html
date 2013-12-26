@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load core_extras %}
+
+{% block content %}
+<h1>{% model_icon 'settings' %} Settings</h1>
+
+<ol class="breadcrumb">
+	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+	<li class="active">{% model_icon 'settings' %} Settings</li>
+</ol>
+
+{% include 'partial/serverrole_list.html' %}
+
+<p>&nbsp;</p>
+
+{% include 'partial/application_list.html' %}
+
+{% endblock %}

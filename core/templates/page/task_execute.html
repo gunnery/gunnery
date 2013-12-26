@@ -2,49 +2,55 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'execution' %} Execute <em>Task 01</em></h1>
+<h1>{% model_icon 'execution' %} Execute <em>{{task.name}}</em>
+  <div class=" pull-right">
+    <a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-primary"><i class="fa fa-edit"></i></a> 
+  </div>
+</h1>
 
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="/application/1">{% model_icon 'application' %} Application 01</a></li>
-	<li><a href="/environment/1">{% model_icon 'environment' %} production</a></li>
-	<li><a href="/task/1">{% model_icon 'task' %} Task 01</a></li>
+	<li><a href="{% url 'application_page' application_id=task.application.id %}">{% model_icon 'application' %} {{task.application.name}}</a></li>
+  {%if environment %}
+	<li><a href="{{ environment.get_absolute_url }}">{% model_icon 'environment' %} {{environment.name}}</a></li>
+  {% endif %}
+	<li><a href="{{ task.get_absolute_url }}">{% model_icon 'task' %} {{task.name}}</a></li>
 	<li class="active">{% model_icon 'execution' %} Execution</li>
 </ol>
 
-<form class="form-horizontal" role="form" method="post">
+<form class="form-horizontal" role="form" method="post" action="{{request.path}}">
+{% csrf_token %}
   <div class="form-group">
     <label for="server-form-host" class="col-sm-3 control-label">Environment</label>
-    <div class="col-sm-6">
-      <select class="form-control" id="server-form-host" name="host">
-      	<option>production</option>
-      	<option>pre-production</option>
-      	<option>test</option>
+    <div class="col-sm-7">
+      <select class="form-control" id="server-form-host" name="parameter-environment"
+      {%if environment or task.application.environments.count == 1%}readonly="readonly"{%endif%}>
+        <option></option>
+        {% for option in task.application.environments.all %}
+          <option value="{{option.id}}" {%if option.id == environment.id or task.application.environments.count == 1 %}selected{% endif %}>{{option.name}}</option>
+        {% endfor %}
       </select>
     </div>
   </div>
+
   <hr/>
+
   <div class="form-group">
     <label class="col-sm-3 control-label">Custom parameters:</label>
   </div>
+  {% for parameter in task.parameters.all %}
   <div class="form-group">
-    <label for="server-form-name" class="col-sm-3 control-label">parameter1</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-name" name="name">
-      <span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
+    <label for="server-form-name" class="col-sm-3 control-label">{{parameter.name}}</label>
+    <div class="col-sm-7">
+      <input type="text" class="form-control" id="server-form-name" name="parameter-{{parameter.name}}">
+      <span class="help-block">{{parameter.description}}</span>
     </div>
   </div>
-  <div class="form-group">
-    <label for="server-form-user" class="col-sm-3 control-label">parameter2</label>
-    <div class="col-sm-6">
-      <input type="text" class="form-control" id="server-form-user" name="user">
-      <span class="help-block">A block of help text that breaks onto a new line and may extend beyond one line.</span>
-    </div>
-  </div>
+  {% endfor %}
   <div class="form-group">
     <div class="col-sm-3"></div>
-    <div class="col-sm-6">
-	  <button type="button" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</button>
+    <div class="col-sm-7">
+	  <button type="submit" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</button>
     </div>
   </div>
 </form>
