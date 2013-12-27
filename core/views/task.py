@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from ..forms import *
 from .main import *
-from ..tasks import process_execution
+from backend.tasks import execution_chain
 
 def task_page(request, task_id = None):
 	data = get_common_page_data()
@@ -51,7 +51,7 @@ def task_execute_page(request, task_id, environment_id=None):
 					execution_command=execution_command,
 					server=server)
 				execution_command_log.save()
-		process_execution.delay(execution_id=execution.id)
+		execution_chain.delay(execution_id=execution.id)
 		return redirect(execution)
 
 	return render(request, 'page/task_execute.html', data)

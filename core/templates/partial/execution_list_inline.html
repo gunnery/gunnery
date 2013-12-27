@@ -10,7 +10,11 @@
 		<div class="well well-sm">
 			<span class="pull-right">{% execution_status list.0.status %}</span>
 			<a href="{{list.0.get_absolute_url}}">{{list.0.task.application.name}} / {{list.0.environment.name}} / {{list.0.task.name}}</a><br/>
-			Started {{list.0.time_start}}
+			{% if not list.0.time_start %}
+				Started {{list.0.time_created}}
+			{% else %}
+				Started {{list.0.time_start}}
+			{% endif %}
 		</div>
 	</div>
 	{% if list.1 %}
@@ -18,7 +22,11 @@
 		<div class="well well-sm">
 			<span class="pull-right">{% execution_status list.1.status %}</span>
 			<a href="{{list.1.get_absolute_url}}">{{list.1.task.application.name}} / {{list.1.environment.name}} / {{list.1.task.name}}</a><br/>
-			Started {{list.1.time_start}}
+			{% if not list.1.time_start %}
+				Started {{list.1.time_created}}
+			{% else %}
+				Started {{list.1.time_start}}
+			{% endif %}
 		</div>
 	</div>
 	{% endif %}
@@ -27,7 +35,11 @@
 		<div class="well well-sm">
 			<span class="pull-right">{% execution_status list.2.status %}</span>
 			<a href="{{list.2.get_absolute_url}}">{{list.2.task.application.name}} / {{list.2.environment.name}} / {{list.2.task.name}}</a><br/>
-			Started {{list.2.time_start}}
+			{% if not list.2.time_start %}
+				Started {{list.2.time_created}}
+			{% else %}
+				Started {{list.2.time_start}}
+			{% endif %}
 		</div>
 	</div>
 	{% endif %}

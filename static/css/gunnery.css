@@ -36,7 +36,7 @@
 }
 
 .parameter-list, .command-list, .command-list ul  {
-	font-family: monospace;
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 	list-style: none;
 }
 
@@ -108,4 +108,12 @@ h1 .label {
 }
 #page-wrapper {
 	padding-top: 5px;
+}
+
+pre {
+	padding: 0;
+	margin: 0;
+	color: #333333;
+	background-color: #fff;
+	border: 0 solid #cccccc;
 }

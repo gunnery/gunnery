@@ -2,7 +2,7 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'execution' %} Execution of <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
+<h1>{% model_icon 'execution' %} <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
 	<small>{% execution_status execution.status %}</small>
 	<a href="{% url 'task_execute_page' task_id=execution.task.id environment_id=execution.environment.id %}" role="button" class="btn btn-primary pull-right"><i class="fa fa-bolt"></i> Execute</a>
 </h1>
@@ -27,26 +27,32 @@
 
 <h4>Commands</h4>
 <ul class="command-list">
-	<li class="text-muted">started {{execution.time_start}}</li>
+	{% if execution.time_start != None %}
+	<li class="text-muted">started    {{execution.time_start}}</li>
+	{%endif%}
 	{% for command in execution.commands.all %}
-	<li>
+	<li class="{% if command.logs.first.time_start == None %}text-muted{%endif%}">
 		{{command.command}}
 		{% for role in command.roles.all %}
 		<span class="label label-default">{{role.name}}</span>
 		{% endfor %}
 		{% for log in command.logs.all %}
-		<ul class="log">
-			<li>{{log.server.name}} ({{log.server.host}})</li>
-			<li>{{log.output}}</li>
-			{% if execution.time %}
-			<li class="text-success">finished in {{log.time}} s</li>
-			{% endif %}
-		</ul>
+			<ul class="log ">
+				<li><b>{{log.server.name}}</b> ({{log.server.host}})</li>
+				<pre>{{log.output}}</pre>
+				{% if log.time != None %}
+					{% if log.status == 0 %}
+						<li class="text-success">finished in {{log.time}} s</li>
+					{% else %}
+						<li class="text-danger">failed with code {{log.status}} after {{log.time}} s</li>
+					{% endif %}
+				{% endif %}
+			</ul>
 		{% endfor %}
 	</li>
 	{% endfor %}
 	{% if execution.time_end %}
-	<li class="text-muted">finished 2013-12-12 12:12:13, 2 s</li>
+	<li class="text-muted">finished {{execution.time_end}}, {{execution.time}} s</li>
 	{% endif %}
 </ul>
 

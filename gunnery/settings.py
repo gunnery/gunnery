@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'core',
     'crispy_forms',
     'djcelery',
+    'backend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,5 +90,6 @@ STATICFILES_DIRS = (
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-
+CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"

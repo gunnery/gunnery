@@ -15,8 +15,9 @@ icons_mapping = {
 }
 
 status_mapping = {
-	Execution.SUCCESS: ["success", "check", "Success"],
+	Execution.PENDING: ["default", "clock-o", "Pending"],
 	Execution.RUNNING: ["warning", "spinner fa-spin", "Running"],
+	Execution.SUCCESS: ["success", "check", "Success"],
 	Execution.FAILED: ["danger", "exclamation-triangle", "Failed"],
 }
 
