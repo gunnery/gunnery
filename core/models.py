@@ -2,6 +2,8 @@ from django.db import models
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from backend.tasks import *
+ 
 
 class Application(models.Model):
 	name = models.CharField(blank=False, max_length=128)
@@ -18,8 +20,16 @@ class Environment(models.Model):
 	is_production = models.BooleanField(default=False)
 	def get_absolute_url(self):
 	    return reverse('environment_page', args=[str(self.id)])
+
 	def executions_inline(self):
 		return Execution.objects.filter(environment_id=self.id).order_by('-time_created')[:3]
+
+	def save(self, *args, **kwargs):
+		is_new = not self.id
+		super(Environment, self).save(*args, **kwargs)
+		if is_new:
+			generate_private_key.delay(environment_id=self.id)
+
 
 class ServerRole(models.Model):
 	name = models.CharField(blank=False, max_length=32)
@@ -80,6 +90,31 @@ class Execution(models.Model):
 	def get_absolute_url(self):
 		return reverse('execution_page', args=[str(self.id)])
 
+	def save(self, *args, **kwargs):
+		is_new = not self.id
+		super(Execution, self).save(*args, **kwargs)
+		if not is_new:
+			return
+		for command in self.task.commands.all():
+			self._create_execution_commands(command)
+		execution_chain.delay(execution_id=self.id)
+
+	def _create_execution_commands(self, command):
+		parsed_command = command.command
+		execution_command = ExecutionCommand(execution=self, command=parsed_command)
+		execution_command.save()
+		for role in command.roles.all():
+			execution_command.roles.add(role)
+		execution_command.save()
+		self._create_execution_commands_servers(command, execution_command)
+
+	def _create_execution_commands_servers(self, command, execution_command):
+		for server in self.environment.servers.filter(roles__in=command.roles.all()):
+			execution_command_server = ExecutionCommandServer(
+				execution_command=execution_command,
+				server=server)
+			execution_command_server.save()
+
 class ExecutionParameter(models.Model):
 	execution = models.ForeignKey(Execution, related_name="parameters")
 	name = models.CharField(blank=False, max_length=128)
@@ -90,11 +125,19 @@ class ExecutionCommand(models.Model):
 	command = models.TextField()
 	roles = models.ManyToManyField(ServerRole)
 
-class ExecutionCommandLog(models.Model):
-	execution_command = models.ForeignKey(ExecutionCommand, related_name="logs")
+class ExecutionCommandServer(models.Model):
+	execution_command = models.ForeignKey(ExecutionCommand, related_name="servers")
 	time_start = models.DateTimeField(blank=True, null=True)
 	time_end = models.DateTimeField(blank=True, null=True)
 	time = models.IntegerField(blank=True, null=True)
 	status = models.IntegerField(blank=True, null=True)
 	server = models.ForeignKey(Server)
+	# @todo store host, and ip here instead of relation to Server model
+	output = models.TextField(blank=True)
+	def get_live_log_output(self):
+		live_logs = self.live_logs.values_list('output', flat=True)
+		return ''.join(live_logs)
+
+class ExecutionLiveLog(models.Model):
+	execution_command_server = models.ForeignKey(ExecutionCommandServer, related_name="live_logs")
 	output = models.TextField(blank=True)

@@ -15,9 +15,7 @@
 	<li class="active">{% model_icon 'execution' %} Execution</li>
 </ol>
 
-<h4>Parameters</h4>
 <ul class="parameter-list">
-	<li>environment = {{execution.environment.name}}</li>
 	{% for parameter in execution.parameters.all %}
 	<li>{{parameter.name}} = {{parameter.value}}</li>
 	{% endfor %}
@@ -31,20 +29,20 @@
 	<li class="text-muted">started    {{execution.time_start}}</li>
 	{%endif%}
 	{% for command in execution.commands.all %}
-	<li class="{% if command.logs.first.time_start == None %}text-muted{%endif%}">
+	<li class="{% if command.servers.first.time_start == None %}text-muted{%endif%}">
 		{{command.command}}
 		{% for role in command.roles.all %}
 		<span class="label label-default">{{role.name}}</span>
 		{% endfor %}
-		{% for log in command.logs.all %}
-			<ul class="log ">
-				<li><b>{{log.server.name}}</b> ({{log.server.host}})</li>
-				<pre>{{log.output}}</pre>
-				{% if log.time != None %}
-					{% if log.status == 0 %}
-						<li class="text-success">finished in {{log.time}} s</li>
+		{% for server in command.servers.all %}
+			<ul class="log">
+				<li><b>{{server.server.name}}</b> ({{server.server.host}})</li>
+				<pre>{% if server.execution_command.execution.time != None %}{{server.output}}{% else %}{{server.get_live_log_output}}{% endif %}</pre>
+				{% if server.time != None %}
+					{% if server.status == 0 %}
+						<li class="text-success">finished in {{server.time}} s</li>
 					{% else %}
-						<li class="text-danger">failed with code {{log.status}} after {{log.time}} s</li>
+						<li class="text-danger">failed with code {{server.status}} after {{server.time}} s</li>
 					{% endif %}
 				{% endif %}
 			</ul>

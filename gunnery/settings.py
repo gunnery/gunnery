@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     'djcelery',
     'backend',
+    'django_extensions',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -93,3 +94,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend'
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
+
+PRIVATE_DIR = '/home/celery/private/'

@@ -3,7 +3,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from ..forms import *
 from .main import *
-from backend.tasks import execution_chain
 
 def task_page(request, task_id = None):
 	data = get_common_page_data()
@@ -36,22 +35,10 @@ def task_execute_page(request, task_id, environment_id=None):
 			raise ValueError('task.application.id did not match with environment.application.id')
 		execution = Execution(task=task, environment=environment)
 		execution.save()
+
 		for name, value in parameters.items():
 			if name != 'environment':
 				ExecutionParameter(execution=execution, name=name, value=value).save()
-		for command in task.commands.all():
-			parsed_command = command.command
-			execution_command = ExecutionCommand(execution=execution, command=parsed_command)
-			execution_command.save()
-			for role in command.roles.all():
-				execution_command.roles.add(role)
-			execution_command.save()
-			for server in environment.servers.filter(roles__in=command.roles.all()):
-				execution_command_log = ExecutionCommandLog(
-					execution_command=execution_command,
-					server=server)
-				execution_command_log.save()
-		execution_chain.delay(execution_id=execution.id)
 		return redirect(execution)
 
 	return render(request, 'page/task_execute.html', data)
