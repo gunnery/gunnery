@@ -1,6 +1,7 @@
 from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.urlresolvers import reverse
 from core.forms import *
 from .main import *
 import json
@@ -55,4 +56,10 @@ def modal_delete(request, model_name, id):
 	instance = get_object_or_404(form_objects[model_name], pk=id)
 	instance.delete()
 	data = {'status':True, 'action': 'reload'}
+	if model_name == 'application':
+		data['action'] = 'redirect'
+		data['target'] = reverse('settings_page')
+	if model_name == 'environment':
+		data['action'] = 'redirect'
+		data['target'] = instance.application.get_absolute_url()
 	return HttpResponse(json.dumps(data), content_type="application/json")

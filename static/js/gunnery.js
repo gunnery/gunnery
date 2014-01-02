@@ -78,6 +78,8 @@ $(document.body).on('shown.bs.modal', function () {
 				if (data.action == 'reload') {
 					window.location = window.location;
 					window.location.reload();
+				} else if (data.action == 'redirect') {
+					window.location = data.target;
 				}
 			}
 		}

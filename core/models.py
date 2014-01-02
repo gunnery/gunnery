@@ -1,9 +1,10 @@
 from django.db import models
+from django.db.models.signals import post_delete
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from backend.tasks import *
- 
+from backend.securefile import SecureFileStorage
 
 class Application(models.Model):
 	name = models.CharField(blank=False, max_length=128)
@@ -29,6 +30,12 @@ class Environment(models.Model):
 		super(Environment, self).save(*args, **kwargs)
 		if is_new:
 			generate_private_key.delay(environment_id=self.id)
+
+	@staticmethod
+	def cleanup_files(sender, instance, **kwargs):
+		cleanup_files.delay(instance.id)
+
+post_delete.connect(Environment.cleanup_files)
 
 
 class ServerRole(models.Model):

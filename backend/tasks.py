@@ -5,6 +5,7 @@ from django.utils.timezone import now
 from gunnery.celery import app
 from core.models import *
 from .ssh import *
+from .securefile import *
 
 logger = logging.getLogger(__name__)
 
@@ -91,4 +92,8 @@ def _dummy_callback( *args, **kwargs ):
 @app.task
 def generate_private_key(environment_id):
 	environment = Environment.objects.get(pk=environment_id)
-	PrivateKey(environment_id).generate(environment.application.name + '-' + environment.name)
+	PrivateKey(environment_id).generate('Gunnery-' + environment.application.name + '-' + environment.name)
+
+@app.task
+def cleanup_files(environment_id):
+	SecureFileStorage(environment_id).remove()
