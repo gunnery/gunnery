@@ -103,8 +103,10 @@ h1 .label {
 .side-nav {
 	width: 170px;
 }
-#wrapper {
-	padding-left: 170px;
+@media (min-width: 768px) {
+	#wrapper {
+		padding-left: 170px;
+	}
 }
 #page-wrapper {
 	padding-top: 5px;
@@ -116,4 +118,29 @@ pre {
 	color: #333333;
 	background-color: #fff;
 	border: 0 solid #cccccc;
+}
+
+.navbar-brand {
+	width: 170px;
+}
+
+body {
+	margin-top: 0;
+}
+
+@media (min-width: 768px) {
+.side-nav {
+	top: 0;
+	}
+.side-nav>li>a {
+	width: 170px;
+	}
+	.side-nav>li.dropdown>ul.dropdown-menu {
+		min-width: inherit;
+		width: 170px;
+	}
+}
+.nav > li.user-menu {
+	position: fixed;
+	bottom: 0;
 }

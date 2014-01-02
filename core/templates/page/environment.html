@@ -5,7 +5,7 @@
 <h1>{% model_icon 'environment' %} Environment <em>{{ environment.name }}</em>
 	<button type="submit" class="btn btn-primary pull-right"
 		data-toggle="modal" 
-		data-remote="{% url 'modal_form' form_name='environment' %}" 
+		data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}" 
 		data-target="#large-modal">
 		<i class="fa fa-edit"></i></button></h1>
 
