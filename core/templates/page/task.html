@@ -15,7 +15,7 @@
 	<li class="active">{% model_icon 'task' %} {{task.name}}</li>
 </ol>
 
-{% include "partial/execution_list_inline.html" with list=task.executions_inline %}
+{% include "partial/execution_list_inline.html" with list=task.executions_inline model_name='task' id=task.id %}
 
 {% if task.parameters.count %}
 <h4>Parameters</h4>

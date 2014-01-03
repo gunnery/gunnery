@@ -1,6 +1,6 @@
 {% load core_extras %}
 {% if not notitle and list.count > 0 %}
-<h3>Activity</h3>
+<h3>Activity <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id  %}"><span class="text-muted">View full history</span></a></small></h3>
 {% else %}
 <br/>
 {% endif %}
@@ -11,7 +11,7 @@
 			<span class="pull-right">{% execution_status list.0.status %}</span>
 			<a href="{{list.0.get_absolute_url}}">{{list.0.task.application.name}} / {{list.0.environment.name}} / {{list.0.task.name}}</a><br/>
 			{% if not list.0.time_start %}
-				Started {{list.0.time_created}}
+				Created {{list.0.time_created}}
 			{% else %}
 				Started {{list.0.time_start}}
 			{% endif %}
@@ -43,10 +43,5 @@
 		</div>
 	</div>
 	{% endif %}
-</div>
-<div class="row">
-	<div class="col-lg-12">
-		<p class="pull-right"><a href="/execution/">Full history</a></p>
-	</div>
 </div>
 {% endif %}

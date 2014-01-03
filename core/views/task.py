@@ -98,3 +98,22 @@ def create_formset(request, formset, parent_id):
 	else:
 		return formset(queryset=model_queryset[model.__name__],
 			prefix=model.__name__)
+
+def log_page(request, model_name, id):
+	data = get_common_page_data()
+	executions = Execution.objects
+	if model_name == 'application':
+		executions = executions.filter(environment__application_id=id)
+		related = get_object_or_404(Application, pk=id)
+	elif model_name == 'environment':
+		executions = executions.filter(environment_id=id)
+		related = get_object_or_404(Environment, pk=id)
+	elif model_name == 'task':
+		executions = executions.filter(task_id=id)
+		related = get_object_or_404(Task, pk=id)
+	else:
+		raise Http404()
+	data['executions'] = executions.order_by('-time_created')
+	data['model_name'] = model_name
+	data['related'] = related
+	return render(request, 'page/log.html', data)

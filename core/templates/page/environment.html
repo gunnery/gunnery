@@ -15,7 +15,7 @@
 	<li class="active">{% model_icon 'environment' %} {{ environment.name }}</li>
 </ol>
 
-{% include "partial/execution_list_inline.html" with list=environment.executions_inline %}
+{% include "partial/execution_list_inline.html" with list=environment.executions_inline model_name='environment' id=environment.id %}
 
 <div class="row">
 	<div class="col-md-6">

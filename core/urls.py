@@ -14,6 +14,8 @@ urlpatterns = patterns('',
     url(r'^task/(?P<task_id>[\d]+)/$', task_page, name='task_page'),
     url(r'^execution/(?P<execution_id>[\d]+)/$', execution_page, name='execution_page'),
 
+    url(r'^log/(?P<model_name>[a-z_]+)/(?P<id>[\d]+)/$', log_page, name='log'),
+
     url(r'^modal_form/(?P<form_name>[a-z_]+)/$', modal_form, name='modal_form'),
     url(r'^modal_form/(?P<form_name>[a-z_]+)/(?P<id>\d+)/$', modal_form, name='modal_form'),
     url(r'^modal_form/(?P<parent_name>[a-z_]+)/(?P<parent_id>\d+)/(?P<form_name>[a-z_]+)/(?P<id>\d+)?/?$', modal_form, name='modal_form'),

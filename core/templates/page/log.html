@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load core_extras %}
+
+{% block content %}
+<h1>{% model_icon 'task' %} Execution history
+</h1>
+
+<ol class="breadcrumb">
+	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+	{% if model_name == 'application' %}
+	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'application' %} {{related.name}}</a></li>
+	{% elif model_name == 'environment' %}
+	<li><a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{related.application.name}}</a></li>
+	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'environment' %} {{related.name}}</a></li>
+	{% elif model_name == 'task' %}
+	<li><a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{related.application.name}}</a></li>
+	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'task' %} {{related.name}}</a></li>
+	{% endif %}
+	<li class="active">{% model_icon 'execution' %} Executions</li>
+</ol>
+
+
+<div class="row execution-list">
+{% for execution in executions %}
+	<div class="col-md-12">
+		<a href="{{execution.get_absolute_url}}">{{execution.task.application.name}} / {{execution.environment.name}} / {{execution.task.name}}</a>
+		{% execution_status execution.status %}
+		<br/>
+			{% if not execution.time_start %}
+				Created by User {{execution.time_created}}
+			{% else %}
+				Started by User {{execution.time_start}}
+			{% endif %}
+		 (time taken: 1h 1m 1s)
+		{% if execution.parameters.count %}
+			with parameters:
+		<br/>
+		<ul>
+		{% for parameter in execution.parameters.all %}
+			<li><b>{{parametr.name}}</b>: {{parmeter.value}}</li>
+		{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+{% endfor %}
+</div>
+
+{% endblock %}
