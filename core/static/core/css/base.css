@@ -22,9 +22,17 @@ pre {
 	padding-top: 5px;
 }
 
+.navbar-collapse {
+	padding: 0;
+}
+
 .navbar-brand {
 	width: 170px;
 	border-bottom: 1px solid #333;
+}
+
+.nav-user {
+	border-top: 1px solid #333;
 }
 
 .nav ul {
@@ -36,6 +44,7 @@ pre {
 .nav ul > li > ul {
 	padding: 0;
 }
+
 .nav ul a {
 	display: block;
 	margin: 0;
@@ -58,19 +67,6 @@ ul.nav-environments a {
 }
 
 
-
-.nav-user {
-	border-top: 1px solid #333;
-}
-
-.side-nav {
-	width: 170px;
-}
-
-.navbar-collapse {
-	padding: 0;
-}
-
 @media (max-width: 768px) {
 	.navbar-nav {
 		margin:0;
@@ -82,7 +78,9 @@ ul.nav-environments a {
 	}
 	.side-nav {
 		top: 0;
+		width: 170px;
 	}
+
 }
 
 
