@@ -19,7 +19,7 @@ def add_relations(instance, parent_name=None, parent_id=None):
 			setattr(instance, relation[0], relation[1].objects.get(pk=parent_id))
 
 def modal_form(request, form_name, id=None, parent_name=None, parent_id=None):
-	form = create_form(form_name, request, id)
+	form = core_create_form(form_name, request, id)
 	form_template = 'partial/'+form_name+'_form.html'
 	is_new = id == None
 	if request.method == 'POST':

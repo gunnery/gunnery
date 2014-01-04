@@ -56,6 +56,7 @@ class PrivateKey(SecureFile):
 			stderr=STDOUT)
 		stdout, stderr = process.communicate()
 		if process.returncode != 0:
+			print stdout, stderr
 			raise RuntimeError('%s failed with code %d' % (command, process.returncode))
 
 		command = 'mv %s.pub %s' % (self.get_file_name(), PublicKey(self.uid).get_file_name())

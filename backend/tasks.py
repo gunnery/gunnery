@@ -4,6 +4,7 @@ from celery import group, chain, chord, Task
 from django.utils.timezone import now
 from gunnery.celery import app
 from core.models import *
+from task.models import *
 from .ssh import *
 from .securefile import *
 
@@ -34,7 +35,8 @@ def execution_chain(execution_id):
 	chord_chain = []
 	for command in execution.commands.all():
 		tasks = [command_process.si(execution_command_server_id=server.id) for server in command.servers.all()]
-		chord_chain.append( chord(tasks, _dummy_callback.s()) )
+		if len(tasks):
+			chord_chain.append( chord(tasks, _dummy_callback.s()) )
 	chord_chain.append(execution_end.si(execution_id))
 	chain( chord_chain )()
 
@@ -79,15 +81,6 @@ def command_process(execution_command_server_id):
 @app.task
 def _dummy_callback( *args, **kwargs ):
 	return
-	# logger.warning('dummy_callback')
-	# logger.warning('args')
-	# for arg in args:
-	# 	logger.warning(1,str(type(arg)))
-	# 	for arg2 in arg:
-	# 		logger.warning(2,str(type(arg2)))
-	# logger.warning('kwargs')
-	# for name, value in kwargs.items():
-	# 	logger.warning(str(type(name)), str(type(value)))
 
 @app.task
 def generate_private_key(environment_id):

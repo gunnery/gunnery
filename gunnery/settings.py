@@ -37,9 +37,10 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'core',
+    'task',
+    'backend',
     'crispy_forms',
     'djcelery',
-    'backend',
     'django_extensions',
 )
 

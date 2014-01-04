@@ -22,7 +22,3 @@ app.conf.update(
 	CELERY_TASK_SERIALIZER = "json",
 	CELERY_CHORD_PROPAGATES = False,
 )
-
-@app.task(bind=True)
-def debug_task(self):
-    print('Request: {0!r}'.format(self.request))

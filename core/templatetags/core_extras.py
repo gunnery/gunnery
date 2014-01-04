@@ -1,5 +1,5 @@
 from django import template
-from core.models import Execution
+from task.models import Execution
 register = template.Library()
 
 
