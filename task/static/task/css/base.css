@@ -1,0 +1,48 @@
+
+/** TASK **/
+.execution-list-inline .label{
+	display: block;
+	margin: -17px 0 0 0;
+}
+
+.execution-list-inline .well:hover {
+	background: #f0f0f0;
+	cursor: pointer;
+}
+.execution-list-inline .well:hover a {
+	text-decoration: underline;
+	color: #2a6496;
+}
+
+.execution-list div {
+	margin-bottom: 20px;
+}
+
+.parameter-list, .command-list, .command-list ul  {
+	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+	list-style: none;
+}
+
+
+/** subform **/
+.subform-multiple a i.fa {
+	cursor: pointer;
+	text-decoration: none;
+}
+
+.subform-multiple .actions {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+.form-group .actions a {
+	color: #dadada;
+}
+
+.form-group:hover .actions a {
+	color: #428bca;
+}

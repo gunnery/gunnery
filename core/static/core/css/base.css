@@ -1,0 +1,128 @@
+/** GLOBAL **/
+
+html {overflow-y: scroll;}
+
+body {
+	margin-top: 0;
+}
+
+h1 .label {
+	vertical-align: 0.5em;
+}
+
+pre {
+	padding: 0;
+	margin: 0;
+	color: #333333;
+	background-color: #fff;
+	border: 0 solid #cccccc;
+}
+
+#page-wrapper {
+	padding-top: 5px;
+}
+
+.navbar-brand {
+	width: 170px;
+	border-bottom: 1px solid #333;
+}
+
+.nav ul {
+	list-style: none;
+	margin: 0;
+	padding: 10px 0;
+}
+
+.nav ul > li > ul {
+	padding: 0;
+}
+.nav ul a {
+	display: block;
+	margin: 0;
+	padding: 1px 0 1px 10px;
+	color: #999;
+}
+
+.nav a:hover {
+	background: #111;
+	text-decoration: none;
+	color: #eee;
+}
+
+ul.nav-applications > li > a {
+	font-weight: bold;
+}
+
+ul.nav-environments a {
+	padding-left: 29px;
+}
+
+
+
+.nav-user {
+	border-top: 1px solid #333;
+}
+
+.side-nav {
+	width: 170px;
+}
+
+.navbar-collapse {
+	padding: 0;
+}
+
+@media (max-width: 768px) {
+	.navbar-nav {
+		margin:0;
+	}
+}
+@media (min-width: 768px) {
+	#wrapper {
+		padding-left: 170px;
+	}
+	.side-nav {
+		top: 0;
+	}
+}
+
+
+
+
+/** chosen **/
+.chosen-container input {
+	height: 25px !important;
+}
+
+.chosen-container-multi .chosen-choices li.search-field input[type=text] {
+	color: #888;
+}
+
+.chosen-container {
+	font-size: 14px;
+}
+
+.chosen-container-multi .chosen-choices {
+	border: 1px solid #ccc;
+	border-radius: 4px;
+	background-image: none;
+}
+
+.chosen-container-multi .chosen-choices li.search-field {
+	padding-top: 3px;
+	padding-bottom: 3px;
+}
+
+.chosen-container-multi .chosen-choices li.search-choice {
+	margin-top: 6px;
+	margin-bottom: 6px;
+}
+
+/** modal **/
+.modal-footer {
+	text-align: left;
+}
+.modal {
+    overflow-y: scroll;
+}
+
+

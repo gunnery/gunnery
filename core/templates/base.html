@@ -4,21 +4,17 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
     <title>Gunnery</title>
-    <!-- Bootstrap core CSS -->
     <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
-
-    <!-- Add custom CSS here -->
     <link href="{% static "css/sb-admin.css" %}" rel="stylesheet">
     <link href="{% static "vendor/chosen/chosen.min.css" %}" rel="stylesheet">
-    <link href="{% static "css/gunnery.css" %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static "font-awesome/css/font-awesome.min.css" %}">
-    <!-- Page Specific CSS -->
-    <!-- <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css"> -->
+    <link href="{% static "core/css/base.css" %}" rel="stylesheet">
+    <link href="{% static "task/css/base.css" %}" rel="stylesheet">
+    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
   </head>
 
   <body>
@@ -50,10 +46,23 @@
       </nav> -->
 
       <nav class="nav navbar-inverse navbar-nav side-nav">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-long-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
           <a class="navbar-brand" href="/">GUNNERY</a>
-
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-long-collapse">
           {% include 'partial/application_list_sidebar.html' %}
-
+          <ul class="nav-user">
+            <li><a href="#"><i class="fa fa-user"></i> John Smith</a></li>
+            <li><a href="{% url 'settings_page' %}"><i class="fa fa-gear"></i> Settings</a></li>
+            <li><a href="#"><i class="fa fa-power-off"></i> Log Out</a></li>
+          </ul>
+        </div>
       </nav>
 
       <div id="page-wrapper">
@@ -75,7 +84,7 @@
     <script src="{% static "js/tablesorter/jquery.tablesorter.js" %}"></script>
     <script src="{% static "js/tablesorter/tables.js" %}"></script>
     <script src="{% static "vendor/chosen/chosen.jquery.min.js" %}"></script>
-    <script src="{% static "js/gunnery.js" %}"></script>
+    <script src="{% static "core/js/base.js" %}"></script>
 
   </body>
 </html>

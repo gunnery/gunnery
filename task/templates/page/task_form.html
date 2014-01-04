@@ -16,8 +16,10 @@
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
 	<li><a href="{{ application.get_absolute_url }}">{% model_icon 'application' %} {{application.name}}</a></li>
-	<li class="active">{% model_icon 'task' %} 
-		{% if is_new %}Add task{% else %}<a href="{{ task.get_absolute_url }}">{{task.name}}</a>{% endif %}
+	<li class="active">
+		{% if not is_new %}<a href="{{ task.get_absolute_url }}">{% endif %}
+		{% model_icon 'task' %} 
+		{% if is_new %}Add task{% else %}{{task.name}}</a>{% endif %}
 	</li>
 </ol>
 
