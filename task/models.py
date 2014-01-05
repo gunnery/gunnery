@@ -8,7 +8,7 @@ from backend.securefile import SecureFileStorage
 from core.models import *
 
 class Task(models.Model):
-	name = models.CharField(blank=False, max_length=128)
+	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
 	description = models.TextField(blank=True)
 	application = models.ForeignKey(Application, related_name="tasks")
 	def get_absolute_url(self):
@@ -18,8 +18,7 @@ class Task(models.Model):
 	
 class TaskParameter(models.Model):
 	task = models.ForeignKey(Task, related_name="parameters")
-	name = models.CharField(blank=False, max_length=128, 
-		validators=[RegexValidator(regex='^[a-zA-Z0-9_\.\-]+$', message='Invalid characters')])
+	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
 	default_value = models.CharField(max_length=128)
 	description = models.TextField(blank=True)
 	order = models.IntegerField()
