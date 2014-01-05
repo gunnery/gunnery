@@ -1,6 +1,8 @@
+import json
 from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.urlresolvers import reverse
 from .forms import *
 from core.views.main import get_common_page_data, create_form
 from core.models import *
@@ -66,6 +68,8 @@ def task_form_page(request, application_id = None, task_id = None):
 			data['task'] = task
 			task_save_formset(form_parameters, task)
 			task_save_formset(form_commands, task)
+			if task_id == None:
+				return redirect(task.get_absolute_url())
 
 	data['application'] = application
 	data['is_new'] = task_id == None
@@ -132,3 +136,15 @@ def task_create_form(name, request, id):
 		'task': TaskForm,
 	}
 	return create_form(form_objects, name, request, id)
+
+def task_delete(request, task_id):
+	if request.method != 'POST':
+		return Http404
+	task = get_object_or_404(Task, pk=task_id)
+	task.delete()
+	data = {
+		'status':True, 
+		'action': 'redirect',
+		'target': task.application.get_absolute_url()
+		}
+	return HttpResponse(json.dumps(data), content_type="application/json")

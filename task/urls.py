@@ -6,6 +6,7 @@ urlpatterns = patterns('',
     url(r'^task/(?P<task_id>[\d]+)/execute/(?P<environment_id>[\d]+)/$', task_execute_page, name='task_execute_page'),
     url(r'^task/(?P<task_id>[\d]+)/execute/$', task_execute_page, name='task_execute_page'),
     url(r'^task/(?P<task_id>[\d]+)/edit/$', task_form_page, name='task_form_page'),
+    url(r'^task/(?P<task_id>[\d]+)/delete/$', task_delete, name='task_delete'),
     url(r'^task/(?P<task_id>[\d]+)/$', task_page, name='task_page'),
     url(r'^execution/(?P<execution_id>[\d]+)/$', execution_page, name='execution_page'),
 
