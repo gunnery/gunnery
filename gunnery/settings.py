@@ -96,4 +96,4 @@ CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend'
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
-PRIVATE_DIR = '/home/celery/private/'
+PRIVATE_DIR = '/var/lib/gunnery/'
