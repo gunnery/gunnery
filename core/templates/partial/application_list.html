@@ -19,11 +19,12 @@
       {% for application in applications.all %}
       <tr>
         <td><a href="{{ application.get_absolute_url }}">{{application.name}}</a></td>
-        <td><button type="submit" class="btn btn-primary btn-xs"
-          data-toggle="modal" 
-          data-remote="{% url 'modal_form' form_name='application' id=application.id %}" 
-          data-target="#large-modal">
-          <i class="fa fa-edit"></i></button></td>
+        <td class="text-right">
+          <button type="submit" class="btn btn-primary btn-xs"
+            data-toggle="modal" 
+            data-remote="{% url 'modal_form' form_name='application' id=application.id %}" 
+            data-target="#large-modal">
+            <i class="fa fa-edit"></i></button></td>
       </tr>
       {% endfor %}
     </tbody>

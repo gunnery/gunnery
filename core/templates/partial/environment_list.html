@@ -12,14 +12,14 @@
     <thead>
       <tr>
         <th class="header">Name <i class="fa fa-sort"></i></th>
-        <th class="header col-sm-2"></th>
+        <th class="header col-sm-3"></th>
       </tr>
     </thead>
     <tbody>
       {% for environment in application.environments.all %}
       <tr>
         <td><a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></td>
-        <td><button type="submit" class="btn btn-primary btn-xs"
+        <td class="text-right"><button type="submit" class="btn btn-primary btn-xs"
           data-toggle="modal" 
           data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}" 
           data-target="#large-modal">
