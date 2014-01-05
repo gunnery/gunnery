@@ -1,6 +1,7 @@
 {% load core_extras %}
 <h3>{% model_icon 'task' %} Tasks
   <a href="{% url 'task_add_form_page' application_id=application.id %}" type="button" class="btn btn-primary btn-xs"><i class="fa fa-plus"></i></a></h3>
+{% if application.tasks.count %}
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
     <thead>
@@ -21,3 +22,6 @@
     </tbody>
   </table>
 </div>
+{% else %}
+No tasks yet.
+{% endif %}

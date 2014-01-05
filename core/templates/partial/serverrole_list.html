@@ -6,6 +6,7 @@
     data-target="#large-modal">
     <i class="fa fa-plus"></i></button>
 </h3>
+{% if serverrole.count %}
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
     <thead>
@@ -28,3 +29,6 @@
     </tbody>
   </table>
 </div>
+{% else %}
+No roles yet.
+{% endif %}
