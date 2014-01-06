@@ -27,7 +27,10 @@ class PageForm(ModelForm):
 class TagSelect(SelectMultiple):
     def __init__(self, *args, **kwargs):
         super(TagSelect, self).__init__(*args, **kwargs)
-        self.attrs = {'class':'chosen-select', 'placeholder': 'Roles'}
+        self.attrs = {'class':'chosen-select', 'data-placeholder': ' '}
+        if 'attrs' in kwargs and 'data-placeholder' in kwargs['attrs']:
+            self.attrs['data-placeholder'] = kwargs['attrs']['data-placeholder']
+
 
 class ServerRoleField(ModelMultipleChoiceField):
     widget = TagSelect

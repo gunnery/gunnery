@@ -24,7 +24,7 @@ class TaskCommandForm(ModelForm):
     class Meta:
         model = TaskCommand
         fields = ['command', 'roles']
-        widgets = {'roles': TagSelect() }
+        widgets = {'roles': TagSelect(attrs={'data-placeholder': 'Roles'}) }
 
 		
 class ExecutionForm(ModelForm):
