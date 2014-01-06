@@ -73,6 +73,7 @@ $(document.body).on('shown.bs.modal', function () {
 			var contentType = response.getResponseHeader('Content-Type');
 			if (contentType.match(/text/)) {
 				form.parents('.modal-body').html(data);
+				$('.modal .save').prop('disabled', false);
 			} else if (contentType.match(/json/)) {
 				form.parents('.modal').find('.cancel').click();
 				if (data.action == 'reload') {
@@ -86,11 +87,13 @@ $(document.body).on('shown.bs.modal', function () {
 	}
 	function modalSaveHandler(event) {
 		event.preventDefault();
+		$(this).prop('disabled', true);
 		var form = $(this).parents('.modal-content').find('form[role="form"]');
 		$.post(form.attr('action'), form.serialize(), modalAjaxHandler(form));
 	}
 	function modalDeleteHandler(event) {
 		if (confirm('Are you sure?')) {
+			$(this).prop('disabled', true);
 			var form = $(this).parents('.modal-content').find('form[role="delete"]');
 			$.post(form.attr('action'), form.serialize(), modalAjaxHandler(form));
 		}
