@@ -44,6 +44,8 @@ class Modal(object):
 				instance.save()
 				form.save_m2m()
 				data = {'status':True, 'action': 'reload'}
+				if is_new:
+					data = self.trigger_event('create', data, instance)
 				return HttpResponse(json.dumps(data), content_type="application/json")
 		else:
 			template = 'partial/modal_form.html'
@@ -62,10 +64,15 @@ class Modal(object):
 		instance = get_object_or_404(self.definition['model'], pk=self.id)
 		instance.delete()
 		data = {'status':True, 'action': 'reload'}
-		if 'on_delete' in self.definition:
-			on_delete = getattr(self, self.definition['on_delete'])
-			data = on_delete(data)
+		data = self.trigger_event('delete', data, instance)
 		return HttpResponse(json.dumps(data), content_type="application/json")
+
+	def trigger_event(self, name, data, instance):
+		name = 'on_'+name
+		if name in self.definition:
+			callback = getattr(self, self.definition[name])
+			data = callback(data, instance)
+		return data
 
 class CoreModal(Modal):
 	definitions = {
@@ -73,7 +80,8 @@ class CoreModal(Modal):
 			'form': ApplicationForm,
 			'model': Application,
 			'parent': None,
-			'on_delete': 'on_delete_application' },
+			'on_delete': 'on_delete_application',
+			'on_create': 'on_create_application' },
 		'environment': {
 			'form': EnvironmentForm,
 			'model': Environment,
@@ -92,12 +100,17 @@ class CoreModal(Modal):
 	def get_form_creator(self):
 		return core_create_form
 
-	def on_delete_application(self, data):
+	def on_delete_application(self, data, instance):
 		data['action'] = 'redirect'
 		data['target'] = reverse('settings_page')
 		return data
 
-	def on_delete_environment(self, data):
+	def on_create_application(self, data, instance):
+		data['action'] = 'redirect'
+		data['target'] = instance.get_absolute_url()
+		return data
+
+	def on_delete_environment(self, data, instance):
 		data['action'] = 'redirect'
 		data['target'] = instance.application.get_absolute_url()
 		return data
