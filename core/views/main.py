@@ -32,22 +32,22 @@ def get_common_page_data():
 	data['application_list_sidebar'] = Application.objects.all()
 	return data
 
-def create_form(form_objects, name, request, id):
+def create_form(form_objects, name, request, id, args={}):
 	if not name in form_objects:
 		raise Http404()
 	if id:
 		instance = form_objects[name].Meta.model.objects.get(pk=id)
 		form = form_objects[name](request.POST or None, instance=instance)
 	else:
-
-		form = form_objects[name](request.POST or None)
+		instance = form_objects[name].Meta.model(**args)
+		form = form_objects[name](request.POST or None, instance=instance)
 	return form
 
-def core_create_form(name, request, id):
+def core_create_form(name, request, id, args={}):
 	form_objects = {
 		'application': ApplicationForm,
 		'environment': EnvironmentForm,
 		'server': ServerForm,
 		'serverrole': ServerRoleForm,
 	}
-	return create_form(form_objects, name, request, id)
+	return create_form(form_objects, name, request, id, args)

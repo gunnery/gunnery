@@ -1,5 +1,5 @@
 from django.forms import *
-from django.forms.widgets import Textarea, SelectMultiple
+from django.forms.widgets import Textarea, SelectMultiple, HiddenInput
 from .models import *
 from django.db import models
 from crispy_forms.helper import FormHelper
@@ -46,15 +46,17 @@ class ApplicationForm(ModalForm):
 class EnvironmentForm(ModalForm):
     class Meta:
         model = Environment
-        fields = ['name', 'description']
-        widgets = {'description': Textarea(attrs={'rows': 2}) }
+        fields = ['name', 'description', 'application']
+        widgets = {'description': Textarea(attrs={'rows': 2}),
+            'application': HiddenInput() }
 
 class ServerForm(ModalForm):
     roles = ServerRoleField()
     class Meta:
         model = Server
-        fields = ['name', 'host', 'user', 'roles']
-        widgets = {'roles': TagSelect() }
+        fields = ['name', 'host', 'user', 'roles', 'environment']
+        widgets = {'roles': TagSelect(),
+            'environment': HiddenInput() }
 
 class ServerRoleForm(ModalForm):
     class Meta:

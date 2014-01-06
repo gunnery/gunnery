@@ -11,7 +11,7 @@ urlpatterns = patterns('',
     url(r'^modal_form/(?P<form_name>[a-z_]+)/$', modal_form, name='modal_form'),
     url(r'^modal_form/(?P<form_name>[a-z_]+)/(?P<id>\d+)/$', modal_form, name='modal_form'),
     url(r'^modal_form/(?P<parent_name>[a-z_]+)/(?P<parent_id>\d+)/(?P<form_name>[a-z_]+)/(?P<id>\d+)?/?$', modal_form, name='modal_form'),
-    url(r'^modal_delete/(?P<model_name>[a-z_]+)/(?P<id>\d+)/$', modal_delete, name='modal_delete'),
+    url(r'^modal_delete/(?P<form_name>[a-z_]+)/(?P<id>\d+)/$', modal_delete, name='modal_delete'),
 
     url(r'^settings/', settings_page, name='settings_page'),
 

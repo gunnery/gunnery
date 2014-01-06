@@ -53,17 +53,18 @@ def task_form_page(request, application_id = None, task_id = None):
 		task = get_object_or_404(Task, pk=task_id)
 		application = task.application
 		data['task'] = task
+		args = {}
 	elif application_id:
 		application = get_object_or_404(Application, pk=application_id)
+		args = {'application_id':application_id}
 
-	form = task_create_form('task', request, task_id)
+	form = task_create_form('task', request, task_id, args)
 	form_parameters = create_formset(request, TaskParameterFormset, task_id)
 	form_commands = create_formset(request, TaskCommandFormset, task_id)
 
 	if request.method == 'POST':
 		if form.is_valid() and form_parameters.is_valid() and form_commands.is_valid():
 			task = form.save(commit=False)
-			task.application = application
 			task.save()
 			data['task'] = task
 			task_save_formset(form_parameters, task)
@@ -131,11 +132,11 @@ def execution_page(request, execution_id):
 	data['execution'] = execution
 	return render(request, 'page/execution.html', data)
 
-def task_create_form(name, request, id):
+def task_create_form(name, request, id, args={}):
 	form_objects = {
 		'task': TaskForm,
 	}
-	return create_form(form_objects, name, request, id)
+	return create_form(form_objects, name, request, id, args)
 
 def task_delete(request, task_id):
 	if request.method != 'POST':

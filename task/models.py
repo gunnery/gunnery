@@ -11,6 +11,8 @@ class Task(models.Model):
 	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
 	description = models.TextField(blank=True)
 	application = models.ForeignKey(Application, related_name="tasks")
+	class Meta:
+		unique_together = ("application", "name")
 	def get_absolute_url(self):
 	    return reverse('task_page', args=[str(self.id)])
 	def executions_inline(self):

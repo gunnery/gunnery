@@ -9,7 +9,7 @@ def gunnery_name():
     return RegexValidator(regex='^[a-zA-Z0-9_\.\-]+$', message='Invalid characters')
 
 class Application(models.Model):
-	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
+	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()], unique=True)
 	description = models.TextField(blank=True)
 	def get_absolute_url(self):
 	    return reverse('application_page', args=[str(self.id)])
@@ -22,6 +22,8 @@ class Environment(models.Model):
 	description = models.TextField(blank=True)
 	application = models.ForeignKey(Application, related_name="environments")
 	is_production = models.BooleanField(default=False)
+	class Meta:
+		unique_together = ("application", "name")
 	def get_absolute_url(self):
 	    return reverse('environment_page', args=[str(self.id)])
 
@@ -45,7 +47,7 @@ post_delete.connect(Environment.cleanup_files)
 
 
 class ServerRole(models.Model):
-	name = models.CharField(blank=False, max_length=32, validators=[gunnery_name()])
+	name = models.CharField(blank=False, max_length=32, validators=[gunnery_name()], unique=True)
 	def __unicode__(self):
 		return self.name
 
@@ -55,5 +57,7 @@ class Server(models.Model):
 	user = models.CharField(blank=False, max_length=128)
 	roles = models.ManyToManyField(ServerRole, related_name="servers")
 	environment = models.ForeignKey(Environment, related_name="servers")
+	class Meta:
+		unique_together = ("environment", "name")
 	
 	
