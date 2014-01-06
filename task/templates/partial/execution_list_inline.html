@@ -1,4 +1,6 @@
 {% load core_extras %}
+{% load humanize %}
+
 {% if not notitle and list.count > 0 %}
 <h3>Activity <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id  %}"><span class="text-muted">View full history</span></a></small></h3>
 {% else %}
@@ -11,9 +13,9 @@
 			<span class="pull-right">{% execution_status list.0.status %}</span>
 			<a href="{{list.0.get_absolute_url}}">{{list.0.task.application.name}} / {{list.0.environment.name}} / {{list.0.task.name}}</a><br/>
 			{% if not list.0.time_start %}
-				Created {{list.0.time_created}}
+				Created {{list.0.time_created|naturaltime}}
 			{% else %}
-				Started {{list.0.time_start}}
+				Started {{list.0.time_start|naturaltime}}
 			{% endif %}
 		</div>
 	</div>
@@ -23,9 +25,9 @@
 			<span class="pull-right">{% execution_status list.1.status %}</span>
 			<a href="{{list.1.get_absolute_url}}">{{list.1.task.application.name}} / {{list.1.environment.name}} / {{list.1.task.name}}</a><br/>
 			{% if not list.1.time_start %}
-				Started {{list.1.time_created}}
+				Started {{list.1.time_created|naturaltime}}
 			{% else %}
-				Started {{list.1.time_start}}
+				Started {{list.1.time_start|naturaltime}}
 			{% endif %}
 		</div>
 	</div>
@@ -36,9 +38,9 @@
 			<span class="pull-right">{% execution_status list.2.status %}</span>
 			<a href="{{list.2.get_absolute_url}}">{{list.2.task.application.name}} / {{list.2.environment.name}} / {{list.2.task.name}}</a><br/>
 			{% if not list.2.time_start %}
-				Started {{list.2.time_created}}
+				Started {{list.2.time_created|naturaltime}}
 			{% else %}
-				Started {{list.2.time_start}}
+				Started {{list.2.time_start|naturaltime}}
 			{% endif %}
 		</div>
 	</div>
