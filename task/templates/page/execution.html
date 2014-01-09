@@ -21,9 +21,6 @@
 	{% endfor %}
 </ul>
 
-<p>&nbsp;</p>
-
-<h4>Commands</h4>
 <ul class="command-list">
 	{% if execution.time_start != None %}
 	<li class="text-muted">started    {{execution.time_start}}</li>
@@ -37,12 +34,12 @@
 		{% for server in command.servers.all %}
 			<ul class="log">
 				<li><b>{{server.server.name}}</b> ({{server.server.host}})</li>
-				<pre>{% if server.execution_command.execution.time != None %}{{server.output}}{% else %}{{server.get_live_log_output}}{% endif %}</pre>
+				<pre>{{server.output}}</pre>
 				{% if server.time != None %}
-					{% if server.status == 0 %}
+					{% if server.status == server.SUCCESS %}
 						<li class="text-success">finished in {{server.time}} s</li>
 					{% else %}
-						<li class="text-danger">failed with code {{server.status}} after {{server.time}} s</li>
+						<li class="text-danger">failed with code {{server.return_code}} after {{server.time}} s</li>
 					{% endif %}
 				{% endif %}
 			</ul>

@@ -45,33 +45,36 @@ class Modal(object):
 				form.save_m2m()
 				data = {'status':True, 'action': 'reload'}
 				if is_new:
-					data = self.trigger_event('create', data, instance)
+					data = self.trigger_event('create', {'data': data, 'instance': instance})['data']
 				return HttpResponse(json.dumps(data), content_type="application/json")
 		else:
 			template = 'partial/modal_form.html'
-		return render(request, template, {
+		data = {
 			'form': form, 
-			'form_name': self.form_name, 
+			#'form_name': self.form_name, 
 			'form_template': form_template, 
 			'is_new': is_new,
 			'instance': form.instance,
 			'model_name': form.Meta.model.__name__,
-			'request': request,
-			'server_roles': ServerRole.objects.all()
-			})
+			'request_path': request.path
+		}
+		data = self.trigger_event('view', data)
+		return render(request, template, data)
 
 	def delete(self):
 		instance = get_object_or_404(self.definition['model'], pk=self.id)
 		instance.delete()
 		data = {'status':True, 'action': 'reload'}
-		data = self.trigger_event('delete', data, instance)
+		data = self.trigger_event('delete', {'data': data, 'instance': instance})['data']
 		return HttpResponse(json.dumps(data), content_type="application/json")
 
-	def trigger_event(self, name, data, instance):
-		name = 'on_'+name
-		if name in self.definition:
-			callback = getattr(self, self.definition[name])
-			data = callback(data, instance)
+	def trigger_event(self, event, data={}):
+		event = 'on_%s_%s' % (event, self.form_name)
+		try:
+			callback = getattr(self, event)
+			data = callback(data)
+		except AttributeError:
+			pass
 		return data
 
 class CoreModal(Modal):
@@ -79,14 +82,11 @@ class CoreModal(Modal):
 		'application': {
 			'form': ApplicationForm,
 			'model': Application,
-			'parent': None,
-			'on_delete': 'on_delete_application',
-			'on_create': 'on_create_application' },
+			'parent': None, },
 		'environment': {
 			'form': EnvironmentForm,
 			'model': Environment,
-			'parent': 'application_id',
-			'on_delete': 'on_delete_environment' },
+			'parent': 'application_id', },
 		'server': {
 			'form': ServerForm,
 			'model': Server,
@@ -100,17 +100,22 @@ class CoreModal(Modal):
 	def get_form_creator(self):
 		return core_create_form
 
-	def on_delete_application(self, data, instance):
-		data['action'] = 'redirect'
-		data['target'] = reverse('settings_page')
+	def on_create_application(self, data):
+		data['data']['action'] = 'redirect'
+		data['data']['target'] = data['instance'].get_absolute_url()
 		return data
 
-	def on_create_application(self, data, instance):
-		data['action'] = 'redirect'
-		data['target'] = instance.get_absolute_url()
+	def on_delete_application(self, data):
+		data['data']['action'] = 'redirect'
+		data['data']['target'] = reverse('settings_page')
 		return data
 
-	def on_delete_environment(self, data, instance):
-		data['action'] = 'redirect'
-		data['target'] = instance.application.get_absolute_url()
+	def on_delete_environment(self, data):
+		data['data']['action'] = 'redirect'
+		data['data']['target'] = data['instance'].application.get_absolute_url()
+		return data
+
+	def on_view_server(self, data):
+		from backend.tasks import read_public_key
+		data['pubkey'] = read_public_key.delay(data['instance'].environment_id).get()
 		return data

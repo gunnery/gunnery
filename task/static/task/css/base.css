@@ -23,6 +23,9 @@
 	list-style: none;
 }
 
+.command-list, .command-list ul {
+	padding-left: 20px;
+}
 
 /** subform **/
 .subform-multiple a i.fa {

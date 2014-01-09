@@ -39,5 +39,5 @@ class Server(object):
 			'%s@%s' % (self.user, self.host),
 			self.command
 		]
-		print self.command_array
+		print ' '.join(self.command_array)
 

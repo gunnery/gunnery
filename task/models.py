@@ -61,7 +61,7 @@ class Execution(models.Model):
 			return
 		for command in self.task.commands.all():
 			self._create_execution_commands(command)
-		execution_chain.delay(execution_id=self.id)
+		ExecutionTask().delay(execution_id=self.id)
 
 	def _create_execution_commands(self, command):
 		parsed_command = command.command
@@ -90,11 +90,22 @@ class ExecutionCommand(models.Model):
 	roles = models.ManyToManyField(ServerRole)
 
 class ExecutionCommandServer(models.Model):
+	PENDING = 3
+	RUNNING = 0
+	SUCCESS = 1
+	FAILED = 2
+	STATUS_CHOICES = (
+		(PENDING, 'pending'),
+		(RUNNING, 'running'),
+		(SUCCESS, 'success'),
+		(FAILED, 'failed'),
+	)
 	execution_command = models.ForeignKey(ExecutionCommand, related_name="servers")
+	status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
 	time_start = models.DateTimeField(blank=True, null=True)
 	time_end = models.DateTimeField(blank=True, null=True)
 	time = models.IntegerField(blank=True, null=True)
-	status = models.IntegerField(blank=True, null=True)
+	return_code = models.IntegerField(blank=True, null=True)
 	server = models.ForeignKey(Server)
 	# @todo store host, and ip here instead of relation to Server model
 	output = models.TextField(blank=True)
@@ -103,5 +114,6 @@ class ExecutionCommandServer(models.Model):
 		return ''.join(live_logs)
 
 class ExecutionLiveLog(models.Model):
-	execution_command_server = models.ForeignKey(ExecutionCommandServer, related_name="live_logs")
-	output = models.TextField(blank=True)
+	execution = models.ForeignKey(Execution, related_name="live_logs")
+	event = models.CharField(max_length=128)
+	data = models.TextField(blank=True)

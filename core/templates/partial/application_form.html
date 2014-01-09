@@ -1,5 +1,5 @@
 {% load crispy_forms_tags %}
-<form class="form-horizontal" role="form" method="POST" action='{{ request.path }}'>
+<form class="form-horizontal" role="form" method="POST" action='{{ request_path }}'>
 {% csrf_token %}
 {% crispy form form.helper %}
 </form>
