@@ -3,6 +3,7 @@ import json
 from time import sleep
 from celery import group, chain, chord, Task
 from django.utils.timezone import now
+from django.core.serializers.json import DjangoJSONEncoder
 from gunnery.celery import app
 from core.models import *
 from task.models import *
@@ -39,7 +40,6 @@ def cleanup_files(environment_id):
 	SecureFileStorage(environment_id).remove()
 
 
-from django.core.serializers.json import DjangoJSONEncoder
 def _trigger_event(execution_id, name, data={}, **kwargs):
 	data = dict(data.items() + kwargs.items())
 	data = json.dumps(data, cls=DjangoJSONEncoder)
