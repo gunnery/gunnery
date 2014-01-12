@@ -7,6 +7,5 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     url(r'^', include('core.urls')),
-
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^', include('task.urls')),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
