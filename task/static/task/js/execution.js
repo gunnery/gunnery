@@ -21,12 +21,10 @@
 				.parent().removeClass('text-muted');
 		},
 		execution_status: function(data) {
-			console.log('bbb');
 			executionStatus = statusDict[data.status].name;
 			$('.execution-label').html(statusDict[data.status].label);
 		},
 		execution_started: function(data) {
-			console.log('aaa');
 			handlers.execution_status(data);
 			$('.execution-time-start').html('started '+data.time_start)
 		},
