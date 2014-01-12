@@ -52,6 +52,9 @@
 
 
 @media (max-width: 768px) {
+	.row label {
+		margin-left: 16px;
+	}
 	.subform-multiple input {
 		margin-bottom: 10px;
 	}
