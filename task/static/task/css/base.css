@@ -49,3 +49,13 @@
 .form-group:hover .actions a {
 	color: #428bca;
 }
+
+
+@media (max-width: 768px) {
+	.subform-multiple input {
+		margin-bottom: 10px;
+	}
+	.subform-multiple .form-group {
+		margin-bottom: 30px;
+	}
+}
