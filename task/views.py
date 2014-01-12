@@ -3,6 +3,7 @@ from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.core.serializers.json import DjangoJSONEncoder
 from .forms import *
 from core.views.main import get_common_page_data, create_form
 from core.models import *
@@ -149,3 +150,8 @@ def task_delete(request, task_id):
 		'target': task.application.get_absolute_url()
 		}
 	return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+def live_log(request, execution_id, last_id):
+	data = ExecutionLiveLog.objects.filter(execution_id=execution_id, id__gt=last_id).order_by('id').values('id','event', 'data')
+	return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")

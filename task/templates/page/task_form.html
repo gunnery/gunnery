@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% load core_extras %}
 {% load crispy_forms_tags %}
+{% load staticfiles %}
+
+{% block page_scripts %}
+    <script src="{% static "task/js/form.js" %}"></script>
+{% endblock %}
 
 {% block content %}
 <h1>

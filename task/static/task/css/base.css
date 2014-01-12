@@ -18,13 +18,13 @@
 	margin-bottom: 20px;
 }
 
-.parameter-list, .command-list, .command-list ul  {
+#execution, .parameters  {
 	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
 	list-style: none;
 }
 
-.command-list, .command-list ul {
-	padding-left: 20px;
+#execution .server {
+	padding-left: 30px;
 }
 
 /** subform **/

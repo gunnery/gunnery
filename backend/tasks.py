@@ -12,16 +12,9 @@ from .securefile import *
 
 logger = logging.getLogger(__name__)
 
-def _trigger_event(execution_id, name, data={}, **kwargs):
-	data = dict(data.items() + kwargs.items())
-	data = json.dumps(data)
-	ExecutionLiveLog(execution_id=execution_id, event=name, data=data).save()
-
 @app.task
 def _dummy_callback( *args, **kwargs ):
 	return
-
-
 
 
 
@@ -42,6 +35,9 @@ def cleanup_files(environment_id):
 
 def _trigger_event(execution_id, name, data={}, **kwargs):
 	data = dict(data.items() + kwargs.items())
+	for key, value in data.items():
+		if key.startswith('time_'):
+			data[key] = value.strftime('%Y-%m-%d %H:%I')
 	data = json.dumps(data, cls=DjangoJSONEncoder)
 	ExecutionLiveLog(execution_id=execution_id, event=name, data=data).save()
 	
@@ -54,6 +50,10 @@ class ExecutionTask(app.Task):
 		execution.time_start = now()
 		execution.status = Execution.RUNNING
 		execution.save()
+
+		_trigger_event(execution_id, 'execution_started', 
+			status=execution.status,
+			time_start=execution.time_start)
 
 		chord_chain = []
 		for command in execution.commands.all():
@@ -101,6 +101,9 @@ class CommandTask(app.Task):
 		server = command_server.server
 		environment_id = command_server.execution_command.execution.environment.id
 		execution_id = command_server.execution_command.execution.id
+
+		_trigger_event(execution_id, 'command_started', 
+			command_server_id=command_server.id)
 
 		ssh_server = self._get_ssh_server(environment_id, server)
 		stdout = ssh_server.run(command_server.execution_command.command)
