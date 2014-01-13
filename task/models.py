@@ -17,6 +17,10 @@ class Task(models.Model):
 	    return reverse('task_page', args=[str(self.id)])
 	def executions_inline(self):
 		return Execution.objects.filter(task_id=self.id).order_by('-time_created')[:3]
+	def parameters_ordered(self):
+		return self.parameters.order_by('order')
+	def commands_ordered(self):
+		return self.commands.order_by('order')
 	
 class TaskParameter(models.Model):
 	task = models.ForeignKey(Task, related_name="parameters")

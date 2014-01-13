@@ -85,19 +85,20 @@ def task_form_page(request, application_id = None, task_id = None):
 def task_save_formset(formset, task):
 	formset.save(commit=False)
 	for instance, _ in formset.changed_objects:
-		instance.order = 1
 		instance.save()
 	for instance in formset.new_objects:
-		instance.order = 1
 		instance.task_id = task.id
 		instance.save()
+	for form in formset.ordered_forms:
+		form.instance.order = form.cleaned_data['ORDER']
+		form.instance.save()
 	formset.save_m2m()
 
 def create_formset(request, formset, parent_id):
 	model = formset.model
 	model_queryset = {
-		'TaskParameter': model.objects.filter(task_id=parent_id),
-		'TaskCommand': model.objects.filter(task_id=parent_id)
+		'TaskParameter': model.objects.filter(task_id=parent_id).order_by('order'),
+		'TaskCommand': model.objects.filter(task_id=parent_id).order_by('order')
 	}
 	if request.method == "POST":
 		return formset(request.POST, 

@@ -24,4 +24,4 @@ Submit feedback, bugs, feature requests [here](https://github.com/Eyjafjallajoku
 
 ### Contribute
 
-Vagrant+Puppet configuration is available for easy development on any environment [gunnery-vagrant](https://github.com/Eyjafjallajokull/gunnery-vagrant).
+Vagrant+Puppet configuration is available for easy development [gunnery-vagrant](https://github.com/Eyjafjallajokull/gunnery-vagrant).
