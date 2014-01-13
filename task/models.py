@@ -63,7 +63,7 @@ class Execution(models.Model):
 		super(Execution, self).save(*args, **kwargs)
 		if not is_new:
 			return
-		for command in self.task.commands.all():
+		for command in self.task.commands_ordered():
 			self._create_execution_commands(command)
 		ExecutionTask().delay(execution_id=self.id)
 
