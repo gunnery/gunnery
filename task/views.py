@@ -84,11 +84,9 @@ def task_form_page(request, application_id = None, task_id = None):
 
 def task_save_formset(formset, task):
 	formset.save(commit=False)
-	for instance, _ in formset.changed_objects:
-		instance.save()
+	#for instance, _ in formset.changed_objects:
 	for instance in formset.new_objects:
 		instance.task_id = task.id
-		instance.save()
 	for form in formset.ordered_forms:
 		form.instance.order = form.cleaned_data['ORDER']
 		form.instance.save()

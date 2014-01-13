@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url, include
 from .views.main import *
 from .views.modal import *
-from .views.task import *
 
 urlpatterns = patterns('',
     url(r'^$', index, name='index'),
