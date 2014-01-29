@@ -1,7 +1,9 @@
+import json
 from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from ..forms import *
+from backend.tasks import TestConnectionTask
 
 def index(request):
 	data = get_common_page_data()
@@ -31,6 +33,26 @@ def get_common_page_data():
 	data = {}
 	data['application_list_sidebar'] = Application.objects.all()
 	return data
+
+def server_test(request, server_id):
+	data = {}
+	server = get_object_or_404(Server, pk=server_id)
+	data['server'] = get_object_or_404(Server, pk=server_id)
+	data['task_id'] = TestConnectionTask().delay(server_id).id
+	return render(request, 'partial/server_test.html', data)
+
+def server_test_ajax(request, task_id):
+	data = {}
+	task = TestConnectionTask().AsyncResult(task_id)
+	print task.status
+	if task.status == 'SUCCESS':
+		print task.get()
+		data['status'] = task.get()
+	elif task.status == 'FAILED':
+		data['status'] = False
+	else:
+		data['status'] = None
+	return HttpResponse(json.dumps(data), content_type="application/json")
 
 def create_form(form_objects, name, request, id, args={}):
 	if not name in form_objects:

@@ -7,8 +7,8 @@ from django.core.serializers.json import DjangoJSONEncoder
 from gunnery.celery import app
 from core.models import *
 from task.models import *
-from .ssh import *
 from .securefile import *
+import ssh
 
 logger = logging.getLogger(__name__)
 
@@ -135,9 +135,31 @@ class CommandTask(app.Task):
 	def _get_ssh_server(self, environment_id, server):
 		ssh_private_key = PrivateKey(environment_id)
 		ssh_known_hosts = KnownHosts(environment_id)
-		return Server(server.host, server.user, ssh_private_key, ssh_known_hosts)
+		return ssh.Server(server.host, server.user, ssh_private_key, ssh_known_hosts)
 
 	def on_failure(self, exc, task_id, args, kwargs, einfo):
 		command_server = ExecutionCommandServer.objects.get(pk=kwargs['execution_command_server_id'])
 		kwargs['execution_id'] = command_server.execution_command.execution_id
 		ExecutionTaskFinish().run(execution_id=command_server.execution_command.execution_id)
+
+
+
+class TestConnectionTask(app.Task):
+	def run(self, server_id):
+		server_model = Server.objects.get(pk=server_id)
+		ssh_server = self._get_ssh_server(server_model)
+		status = -1
+		try:
+			out = ssh_server.run('echo test')
+			while True:
+				if out.readline() == '':
+					break
+			status = ssh_server.get_status()
+		except Exception:
+			pass
+		return status == 0
+
+	def _get_ssh_server(self, server):
+		ssh_private_key = PrivateKey(server.environment_id)
+		ssh_known_hosts = KnownHosts(server.environment_id)
+		return ssh.Server(server.host, server.user, ssh_private_key, ssh_known_hosts)

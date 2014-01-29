@@ -30,9 +30,16 @@
         <td class="text-right">
           <button type="submit" class="btn btn-primary btn-xs"
             data-toggle="modal" 
+            data-remote="{% url 'server_test' server_id=server.id %}" 
+            data-target="#large-modal"
+            title="Test connection with server">
+            <i class="fa fa-play-circle"></i></button>
+          <button type="submit" class="btn btn-primary btn-xs"
+            data-toggle="modal" 
             data-remote="{% url 'modal_form' form_name='server' id=server.id %}" 
             data-target="#large-modal">
-            <i class="fa fa-edit"></i></button></td>
+            <i class="fa fa-edit"></i></button>
+        </td>
       </tr>
       {% endfor %}
     </tbody>
