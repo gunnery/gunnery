@@ -1,0 +1,49 @@
+
+.jumbotron {
+	background: url('/img/bg03.jpg') no-repeat top center;
+	/* http://www.flickr.com/photos/bombaglot/4779911493/ */
+	height: 300px;
+	color: #333;
+	padding-top: 68px;
+}
+
+.jumbotron h1 {
+	font-size: 45px;
+	color: #fff;
+	text-shadow: 1px 2px 4px #333;
+}
+
+.jumbotron-inner {
+	margin: 0 auto;
+	width: 650px;
+}
+
+#top {
+	border-bottom: 2px solid #b7b7b7;
+	background: #efefef;
+	color: #555;
+}
+
+#top h1 {
+	margin-top: 45px;
+}
+
+#top h2 {
+	font-size: 1.4em;
+	font-style: italic;
+}
+
+h3 {
+	margin:45px;
+}
+
+.features div{
+}
+
+.features .glyphicon {
+	font-size: 40px;
+}
+
+.features .well {
+	text-align: center;
+}
