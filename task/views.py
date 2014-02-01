@@ -4,18 +4,21 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.decorators import login_required
 from .forms import *
-from core.views.main import get_common_page_data, create_form
+from core.views import get_common_page_data
 from core.models import *
 from .models import *
 
+@login_required
 def task_page(request, task_id = None):
-	data = get_common_page_data()
+	data = get_common_page_data(request)
 	data['task'] = get_object_or_404(Task, pk=task_id)
 	return render(request, 'page/task.html', data)
 
+@login_required
 def task_execute_page(request, task_id, environment_id=None):
-	data = get_common_page_data()
+	data = get_common_page_data(request)
 	task = get_object_or_404(Task, pk=task_id)
 	data['task'] = task
 	if environment_id:
@@ -48,8 +51,9 @@ def task_execute_page(request, task_id, environment_id=None):
 
 	return render(request, 'page/task_execute.html', data)
 
+@login_required
 def task_form_page(request, application_id = None, task_id = None):
-	data = get_common_page_data()
+	data = get_common_page_data(request)
 	if task_id:
 		task = get_object_or_404(Task, pk=task_id)
 		application = task.application
@@ -106,8 +110,9 @@ def create_formset(request, formset, parent_id):
 		return formset(queryset=model_queryset[model.__name__],
 			prefix=model.__name__)
 
+@login_required
 def log_page(request, model_name, id):
-	data = get_common_page_data()
+	data = get_common_page_data(request)
 	executions = Execution.objects
 	if model_name == 'application':
 		executions = executions.filter(environment__application_id=id)
@@ -125,19 +130,14 @@ def log_page(request, model_name, id):
 	data['related'] = related
 	return render(request, 'page/log.html', data)
 
-
+@login_required
 def execution_page(request, execution_id):
-	data = get_common_page_data()
+	data = get_common_page_data(request)
 	execution = get_object_or_404(Execution, pk=execution_id)
 	data['execution'] = execution
 	return render(request, 'page/execution.html', data)
 
-def task_create_form(name, request, id, args={}):
-	form_objects = {
-		'task': TaskForm,
-	}
-	return create_form(form_objects, name, request, id, args)
-
+@login_required
 def task_delete(request, task_id):
 	if request.method != 'POST':
 		return Http404
@@ -150,7 +150,7 @@ def task_delete(request, task_id):
 		}
 	return HttpResponse(json.dumps(data), content_type="application/json")
 
-
+@login_required
 def live_log(request, execution_id, last_id):
 	data = ExecutionLiveLog.objects.filter(execution_id=execution_id, id__gt=last_id).order_by('id').values('id','event', 'data')
 	return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")

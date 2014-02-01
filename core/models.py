@@ -43,7 +43,7 @@ class Environment(models.Model):
 		from backend.tasks import cleanup_files
 		cleanup_files.delay(instance.id)
 
-post_delete.connect(Environment.cleanup_files)
+post_delete.connect(Environment.cleanup_files, sender=Environment)
 
 
 class ServerRole(models.Model):

@@ -37,12 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_extensions',
+    'crispy_forms',
+    'djcelery',
     'core',
     'task',
     'backend',
-    'crispy_forms',
-    'djcelery',
-    'django_extensions',
+    'account',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -101,3 +102,6 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
 PRIVATE_DIR = '/var/lib/gunnery/'
+
+LOGIN_URL = '/user/login/'
+LOGIN_REDIRECT_URL = '/'

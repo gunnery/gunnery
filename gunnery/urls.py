@@ -8,4 +8,5 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^', include('core.urls')),
     url(r'^', include('task.urls')),
+    url(r'^', include('account.urls')),
 ) + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

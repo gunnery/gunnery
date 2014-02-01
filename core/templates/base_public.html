@@ -1,0 +1,46 @@
+{% load staticfiles %}
+{% load core_extras %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gunnery</title>
+    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "css/sb-admin.css" %}" rel="stylesheet">
+    <link href="{% static "vendor/chosen/chosen.min.css" %}" rel="stylesheet">
+    <link href="{% static "core/css/base.css" %}" rel="stylesheet">
+    <link href="{% static "task/css/base.css" %}" rel="stylesheet">
+    <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
+  </head>
+
+  <body>
+
+    <div id="wrapper">
+      <h1><a href="/">GUNNERY</a></h1>
+
+      <div id="page-wrapper">
+        {% block content %}{% endblock %}
+      </div>
+
+    </div>
+
+    
+    <!-- JavaScript -->
+    <script src="{% static "js/jquery-1.10.2.js" %}"></script>
+    <script src="{% static "js/bootstrap.js" %}"></script>
+
+    <!-- Page Specific Plugins -->
+    <!-- <script src="{% static "//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js" %}"></script> -->
+    <!-- <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script> -->
+    <!-- <script src="{% static "js/morris/chart-data-morris.js" %}"></script> -->
+    <script src="{% static "js/tablesorter/jquery.tablesorter.js" %}"></script>
+    <script src="{% static "js/tablesorter/tables.js" %}"></script>
+    <script src="{% static "vendor/chosen/chosen.jquery.min.js" %}"></script>
+    <script src="{% static "core/js/base.js" %}"></script>
+    {% block page_scripts %}{% endblock %}
+  </body>
+</html>

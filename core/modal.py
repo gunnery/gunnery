@@ -1,18 +1,30 @@
+import json
 from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
+from django.db import IntegrityError
+from django.conf import settings
 from core.forms import *
-from .main import *
-import json
+from .views import *
 
-def modal_form(request, form_name, id=None, parent_name=None, parent_id=None):
-	return CoreModal(form_name, id, parent_id).render(request)
+def modal_form(request, form_name, id=None, parent_name=None, parent_id=None, app=None):
+	return _get_app_modal(app)(form_name, id, parent_id).render(request)
 
-def modal_delete(request, form_name, id):
-	return CoreModal(form_name, id).delete()
+def modal_delete(request, form_name, id, app='core'):
+	return _get_app_modal(app)(form_name, id).delete()
 
-class Modal(object):
+def _get_app_modal(app):
+	if app == None:
+		obj = Modal
+	else:
+		if app in settings.INSTALLED_APPS:
+			obj = __import__(app, fromlist=['modal']).modal.Modal
+		else:
+			raise Http404()
+	return obj
+
+class BaseModal(object):
 	definitions = {}
 
 	def __init__(self, form_name, id=None, parent_id=None):
@@ -35,23 +47,32 @@ class Modal(object):
 
 	def render(self, request):
 		form = self.create_form(request)
+		form = self.trigger_event('form_create', form)
 		form_template = 'partial/'+self.form_name+'_form.html'
 		is_new = self.id == None
 		if request.method == 'POST':
 			template = form_template
 			if form.is_valid():
-				instance = form.save(commit=False)
-				instance.save()
-				form.save_m2m()
-				data = {'status':True, 'action': 'reload'}
-				if is_new:
-					data = self.trigger_event('create', {'data': data, 'instance': instance})['data']
-				return HttpResponse(json.dumps(data), content_type="application/json")
+				try:
+					form = self.trigger_event('before_save', {'form': form})['form']
+					instance = form.save()
+					data = {'status':True, 'action': 'reload'}
+				
+					if is_new:
+						data = self.trigger_event('create', {'data': data, 'instance': instance})['data']
+					else:
+						data = self.trigger_event('update', {'data': data, 'instance': instance})['data']
+					return HttpResponse(json.dumps(data), content_type="application/json")
+				except IntegrityError as e:
+					from django.forms.util import ErrorList
+					errors = form._errors.setdefault("__all__", ErrorList())
+					errors.append('Integrity error')
+					errors.append(e)
+
 		else:
 			template = 'partial/modal_form.html'
 		data = {
 			'form': form, 
-			#'form_name': self.form_name, 
 			'form_template': form_template, 
 			'is_new': is_new,
 			'instance': form.instance,
@@ -77,7 +98,7 @@ class Modal(object):
 			pass
 		return data
 
-class CoreModal(Modal):
+class Modal(BaseModal):
 	definitions = {
 		'application': {
 			'form': ApplicationForm,
@@ -94,7 +115,7 @@ class CoreModal(Modal):
 		'serverrole': {
 			'form': ServerRoleForm,
 			'model': ServerRole,
-			'parent': None },
+			'parent': None }
 	}
 
 	def get_form_creator(self):

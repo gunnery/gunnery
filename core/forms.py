@@ -1,10 +1,10 @@
 from django.forms import *
 from django.forms.widgets import Textarea, SelectMultiple, HiddenInput
-from .models import *
+from django.forms.models import modelformset_factory
 from django.db import models
 from crispy_forms.helper import FormHelper
-from django.forms.models import modelformset_factory
 from crispy_forms.layout import *
+from .models import *
 
 class ModalForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -14,6 +14,7 @@ class ModalForm(ModelForm):
         self.helper.form_class = 'form-horizontal'
         self.helper.label_class = 'col-sm-3'
         self.helper.field_class = 'col-sm-7'
+        self.helper.label_size = ' col-sm-offset-3'
 
 class PageForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -65,3 +66,24 @@ class ServerRoleForm(ModalForm):
     class Meta:
         model = ServerRole
         fields = ['name']
+        
+def create_form(form_objects, name, request, id, args={}):
+    if not name in form_objects:
+        raise Http404()
+    if id:
+        instance = form_objects[name].Meta.model.objects.get(pk=id)
+        form = form_objects[name](request.POST or None, instance=instance)
+    else:
+        instance = form_objects[name].Meta.model(**args)
+        form = form_objects[name](request.POST or None, instance=instance)
+    return form
+
+def core_create_form(name, request, id, args={}):
+    form_objects = {
+        'application': ApplicationForm,
+        'environment': EnvironmentForm,
+        'server': ServerForm,
+        'serverrole': ServerRoleForm
+    }
+    return create_form(form_objects, name, request, id, args)
+

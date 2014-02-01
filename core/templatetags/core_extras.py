@@ -12,6 +12,7 @@ icons_mapping = {
 	"task": "tasks",
 	"execution": "bars",
 	"settings": "gear",
+	"user": "user",
 }
 
 status_mapping = {
