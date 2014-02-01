@@ -2,26 +2,37 @@
 {% load core_extras %}
 
 {% block content %}
-
-{% if form.errors %}
-<p>Your username and password didn't match. Please try again.</p>
-{% endif %}
-
-<form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-{% csrf_token %}
-<table>
-<tr>
-    <td>{{ form.username.label_tag }}</td>
-    <td>{{ form.username }}</td>
-</tr>
-<tr>
-    <td>{{ form.password.label_tag }}</td>
-    <td>{{ form.password }}</td>
-</tr>
-</table>
-
-<input type="submit" value="login" />
-<input type="hidden" name="next" value="{{ next }}" />
-</form>
-
+<div class="row">
+    <div class="col-md-4 col-md-offset-4">
+    	<h1 class="text-center">GUNNERY</h1>
+        <div class="login-panel panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">Please Sign In</h3>
+            </div>
+            <div class="panel-body">
+				{% if form.errors %}
+				<div class="alert alert-danger">Your username and password didn't match. Please try again.</div>
+				{% endif %}
+                <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+					{% csrf_token %}
+					<input type="hidden" name="next" value="{{ next }}" />
+                    <fieldset>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="E-mail" name="username" type="email" autofocus="">
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control" placeholder="Password" name="password" type="password" value="">
+                        </div>
+                        <div class="checkbox">
+                            <label>
+                                <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                            </label>
+                        </div>
+                        <button type="submit" href="index.html" class="btn btn-lg btn-success btn-block">Login</button>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

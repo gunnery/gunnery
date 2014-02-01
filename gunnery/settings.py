@@ -103,5 +103,5 @@ CELERY_TASK_SERIALIZER = "json"
 
 PRIVATE_DIR = '/var/lib/gunnery/'
 
-LOGIN_URL = '/user/login/'
+LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
