@@ -1,4 +1,6 @@
-
+body {
+	color: #555;
+}
 .jumbotron {
 	background: url('/img/bg03.jpg') no-repeat top center;
 	/* http://www.flickr.com/photos/bombaglot/4779911493/ */
@@ -20,8 +22,7 @@
 
 #top {
 	border-bottom: 2px solid #b7b7b7;
-	background: #efefef;
-	color: #555;
+	background: #f5f5f5;
 }
 
 #top h1 {
