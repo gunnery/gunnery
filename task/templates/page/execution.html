@@ -31,7 +31,7 @@
 	data-execution-status="{{execution.status}}">
 
 	<div>
-		{% model_icon 'user' %} {{execution.user.first_name}}
+		{% model_icon 'user' %} <a href="{{execution.user.get_absolute_url}}">{{execution.user.first_name}}</a>
 	</div>
 
 	<div class="text-muted">

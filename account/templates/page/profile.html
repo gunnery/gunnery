@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load core_extras %}
+
+{% block content %}
+<h1>{% model_icon 'user' %} {{user.first_name}}</h1>
+
+<ol class="breadcrumb">
+    <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+    <li><a href="{{ user.get_absolute_url }}">{% model_icon 'user' %} {{user.first_name}}</a></li>
+</ol>
+
+{% include "partial/execution_list_inline.html" with list=user_executions model_name='user' id=user.id %}
+
+{% endblock %}

@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.core.urlresolvers import reverse
 from django.core.serializers.json import DjangoJSONEncoder
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from .forms import *
 from core.views import get_common_page_data
 from core.models import *
@@ -122,6 +123,9 @@ def log_page(request, model_name, id):
 	elif model_name == 'task':
 		executions = executions.filter(task_id=id)
 		related = get_object_or_404(Task, pk=id)
+	elif model_name == 'user':
+		executions = executions.filter(user_id=id)
+		related = get_object_or_404(User, pk=id)
 	else:
 		raise Http404()
 	data['executions'] = executions.order_by('-time_created')

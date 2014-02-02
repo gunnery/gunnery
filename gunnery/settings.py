@@ -101,7 +101,12 @@ CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend'
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
-PRIVATE_DIR = '/var/lib/gunnery/'
-
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
+ABSOLUTE_URL_OVERRIDES = {
+    'auth.user': lambda u: "/account/profile/%d/" % u.id,
+}
+# AUTH_USER_MODEL = 'account.User'
+
+
+PRIVATE_DIR = '/var/lib/gunnery/'

@@ -18,7 +18,7 @@
     <tbody>
       {% for user in users %}
       <tr>
-        <td>{{user.first_name}}</td>
+        <td><a href="{{user.get_absolute_url}}">{{user.first_name}}</a></td>
         <td class="text-right"><button type="submit" class="btn btn-primary btn-xs"
           data-toggle="modal" 
           data-remote="{% url 'modal_form' app='account' form_name='user' id=user.id %}" 
