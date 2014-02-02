@@ -30,7 +30,6 @@ def task_execute_page(request, task_id, environment_id=None):
 	if request.method == 'POST':
 		parameter_prefix = 'parameter-'
 		parameters = {}
-		environment_id = request.POST
 		for name, value in request.POST.items():
 			if name.startswith(parameter_prefix):
 				name = name[len(parameter_prefix):]
@@ -41,7 +40,7 @@ def task_execute_page(request, task_id, environment_id=None):
 		environment = get_object_or_404(Environment, pk=int(parameters['environment']))
 		if task.application.id != environment.application.id:
 			raise ValueError('task.application.id did not match with environment.application.id')
-		execution = Execution(task=task, environment=environment)
+		execution = Execution(task=task, environment=environment, user=request.user)
 		execution.save()
 
 		for name, value in parameters.items():

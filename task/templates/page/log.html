@@ -26,12 +26,10 @@
 		<a href="{{execution.get_absolute_url}}">{{execution.task.application.name}} / {{execution.environment.name}} / {{execution.task.name}}</a>
 		{% execution_status execution.status %}
 		<br/>
-			{% if not execution.time_start %}
-				Created by User {{execution.time_created}}
-			{% else %}
-				Started by User {{execution.time_start}}
-			{% endif %}
-		 (time taken: 1h 1m 1s)
+		<ul class="list-inline">
+		    <li>{% model_icon 'user' %} {{execution.user.first_name}}</li>
+		    <li><i class="fa fa-clock-o"></i> {{execution.time_created}}</li>
+		</ul>
 		{% if execution.parameters.count %}
 			with parameters:
 		<br/>

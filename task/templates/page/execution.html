@@ -30,8 +30,15 @@
 	data-execution-id="{{execution.id}}"
 	data-execution-status="{{execution.status}}">
 
-	<div class="execution-time-start text-muted">
-		{% if execution.time_start != None %}started {{execution.time_start}}{%else%}pending{%endif%}
+	<div>
+		{% model_icon 'user' %} {{execution.user.first_name}}
+	</div>
+
+	<div class="text-muted">
+		<i class="fa fa-clock-o"></i>
+		<span class="execution-time-start">
+			{% if execution.time_start != None %}{{execution.time_start}}{%else%}pending{%endif%}
+		</span>
 	</div>
 	
 	{% for command in execution.commands.all %}
@@ -58,8 +65,14 @@
 	</div>
 	{% endfor %}
 	
-	<div class="execution-time-end text-muted">
-		{% if execution.time_end %}finished {{execution.time_end}}, {{execution.time}} s{% endif %}
+	<div class="text-muted">
+		<i class="fa fa-clock-o" {% if not execution.time_end %}style="display:none"{% endif %}></i>
+		<span class="execution-time-end">
+			{% if execution.time_end %}{{execution.time_end}}{% endif %}
+		</span>
+		<span class="execution-time-end">
+			{% if execution.time %}{{execution.time}} s{% endif %}
+		</span>
 	</div>
 	
 </div>

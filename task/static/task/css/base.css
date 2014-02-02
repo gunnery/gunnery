@@ -14,8 +14,16 @@
 	color: #2a6496;
 }
 
+.execution-list-inline .list-inline {
+	margin-bottom: 0;
+}
+
 .execution-list div {
 	margin-bottom: 20px;
+}
+
+.execution-list-inline .list-inline, .execution-list .list-inline {
+	color: #666;
 }
 
 #execution, .parameters  {

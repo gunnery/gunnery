@@ -4,7 +4,7 @@ from core.forms import ModalForm, create_form
 
 class UserForm(ModalForm):
     email = CharField(required=True)
-    password = CharField(widget=PasswordInput(render_value = False), required=False)
+    password = CharField(widget=PasswordInput(render_value = False), required=False, min_length=8)
     first_name = CharField(label='Name')
     is_superuser = BooleanField(required=False)
     class Meta:
