@@ -1,6 +1,6 @@
 from core.modal import BaseModal
 from django.contrib.auth.models import User
-from .views import account_create_form
+from .forms import account_create_form
 
 class Modal(BaseModal):
 	definitions = {

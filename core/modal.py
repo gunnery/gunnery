@@ -138,5 +138,8 @@ class Modal(BaseModal):
 
 	def on_view_server(self, data):
 		from backend.tasks import read_public_key
-		data['pubkey'] = read_public_key.delay(data['instance'].environment_id).get()
+		try:
+			data['pubkey'] = read_public_key.delay(data['instance'].environment_id).get()
+		except Exception as e:
+			data['pubkey'] = 'Couldn\'t load'
 		return data
