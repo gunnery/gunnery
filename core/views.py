@@ -51,10 +51,10 @@ def server_test(request, server_id):
 def server_test_ajax(request, task_id):
 	data = {}
 	task = TestConnectionTask().AsyncResult(task_id)
-	print task.status
 	if task.status == 'SUCCESS':
-		print task.get()
-		data['status'] = task.get()
+		status, output = task.get()
+		data['status'] = status
+		data['output'] = output
 	elif task.status == 'FAILED':
 		data['status'] = False
 	else:

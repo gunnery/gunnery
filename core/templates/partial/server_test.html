@@ -4,6 +4,7 @@
 
 {% block body %}
 <h3 class="text-center" id="test-connection-body"><i class="fa fa-spinner fa-spin"></i></h3>
+<pre id="test-connection-debug"></pre>
 <script>
 (function() {
 	var testConnectionInterval = setInterval(function() {
@@ -13,6 +14,7 @@
 				clearInterval(testConnectionInterval);
 			} else if (data && data.status == false) {
 				$('#test-connection-body').html('<span class="text-danger"><i class="fa fa-thumbs-o-down"></i> Failed</span>');
+				$('#test-connection-debug').html(data.output);
 				clearInterval(testConnectionInterval);
 			}
 		})

@@ -6,7 +6,7 @@
 
 <ol class="breadcrumb">
     <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-    <li><a href="{{ user.get_absolute_url }}">{% model_icon 'user' %} {{user.first_name}}</a></li>
+    <li class="active">{% model_icon 'user' %} {{user.first_name}}</li>
 </ol>
 
 {% include "partial/execution_list_inline.html" with list=user_executions model_name='user' id=user.id %}

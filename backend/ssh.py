@@ -6,6 +6,7 @@ class Server(object):
 		self.user = user
 		self.private_key = private_key
 		self.known_hosts = known_hosts
+		self.verbose = False
 
 	def run(self, command):
 		self.command = command
@@ -39,5 +40,7 @@ class Server(object):
 			'%s@%s' % (self.user, self.host),
 			self.command
 		]
+		if self.verbose:
+			self.command_array.insert(1,'-v')
 		print ' '.join(self.command_array)
 

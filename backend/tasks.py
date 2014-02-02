@@ -148,16 +148,20 @@ class TestConnectionTask(app.Task):
 	def run(self, server_id):
 		server_model = Server.objects.get(pk=server_id)
 		ssh_server = self._get_ssh_server(server_model)
+		ssh_server.verbose = True
 		status = -1
+		output = ''
 		try:
-			out = ssh_server.run('echo test')
+			stdout = ssh_server.run('echo test')
 			while True:
-				if out.readline() == '':
+				line = stdout.readline()
+				if line == '':
 					break
+				output += line
 			status = ssh_server.get_status()
 		except Exception:
 			pass
-		return status == 0
+		return (status == 0, output)
 
 	def _get_ssh_server(self, server):
 		ssh_private_key = PrivateKey(server.environment_id)
