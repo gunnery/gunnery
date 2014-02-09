@@ -41,13 +41,21 @@ def task_execute_page(request, task_id, environment_id=None):
 		environment = get_object_or_404(Environment, pk=int(parameters['environment']))
 		if task.application.id != environment.application.id:
 			raise ValueError('task.application.id did not match with environment.application.id')
-		execution = Execution(task=task, environment=environment, user=request.user)
-		execution.save()
 
-		for name, value in parameters.items():
-			if name != 'environment':
-				ExecutionParameter(execution=execution, name=name, value=value).save()
-		return redirect(execution)
+		duplicateExecution = Execution.objects.filter(task=task, environment=environment,
+			status__in=[Execution.PENDING, Execution.RUNNING])
+		if duplicateExecution.count():
+			data['duplicate_error'] = True
+			data['task'] = task
+			data['environment'] = environment
+		else:
+			execution = Execution(task=task, environment=environment, user=request.user)
+			execution.save()
+
+			for name, value in parameters.items():
+				if name != 'environment':
+					ExecutionParameter(execution=execution, name=name, value=value).save()
+			return redirect(execution)
 
 	return render(request, 'page/task_execute.html', data)
 

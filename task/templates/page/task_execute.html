@@ -18,13 +18,19 @@
 	<li class="active">{% model_icon 'execution' %} Execution</li>
 </ol>
 
+{% if duplicate_error %}
+<div class="alert alert-block alert-danger"><ul>
+<li>Task <i>{{task.name}}</i> is already running on <i>{{environment.name}}</i> environment.</li>
+</ul></div>
+{% endif %}
+
 <form class="form-horizontal" role="form" method="post" action="{{request.path}}">
 {% csrf_token %}
   <div class="form-group">
     <label for="server-form-host" class="col-sm-3 control-label">Environment</label>
     <div class="col-sm-7">
       <select class="form-control" id="server-form-host" name="parameter-environment"
-      {%if environment or task.application.environments.count == 1%}readonly="readonly"{%endif%}>
+      {%if task.application.environments.count == 1%}readonly="readonly"{%endif%}>
         <option></option>
         {% for option in task.application.environments.all %}
           <option value="{{option.id}}" {%if option.id == environment.id or task.application.environments.count == 1 %}selected{% endif %}>{{option.name}}</option>

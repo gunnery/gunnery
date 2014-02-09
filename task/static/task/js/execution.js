@@ -39,20 +39,25 @@
 		execution = $('#execution');
 		executionId = execution.data('execution-id'),
 		executionStatus = statusDict[execution.data('execution-status')].name,
+		request = false,
 		interval = false;
 	interval = setInterval(function() {
 		if (executionStatus == 'pending' || executionStatus == 'running') {
-			$.get('/execution/live_log/'+executionId+'/'+lastId, function (data, status, response) {
-				var item;
-				for (var i=0, n=data.length; i<n; i++) {
-					item = data[i]
-					console.log(item.event, item.data);
-					if (item.event in handlers) {
-						handlers[item.event](JSON.parse(item.data));
+			if (!request) {
+				request = true;
+				$.get('/execution/live_log/'+executionId+'/'+lastId+'/', function (data, status, response) {
+					var item;
+					for (var i=0, n=data.length; i<n; i++) {
+						item = data[i]
+						console.log(item.event, item.data);
+						if (item.event in handlers) {
+							handlers[item.event](JSON.parse(item.data));
+						}
+						lastId = item.id;
 					}
-					lastId = item.id;
-				}
-			});
+					request = false;
+				});
+			}
 		} else {
 			clearInterval(interval);
 		}
