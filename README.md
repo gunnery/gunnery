@@ -12,11 +12,26 @@ Gunnery is multipurpose task execution tool for distributed systems with easy to
 
 ### Requirements
 
-Gunnery is build on top of Django framework, and uses Celery for background job handling. Postgres is recommended database, but others can be used too.
+Gunnery is build on top of Django framework, and depends of few other technologies:
+
+* Celery for background job handling
+* Postgres which can be replaced by other supported by Django database
+
+All python packages required by application are listend in pip requirements files.
 
 ### Installation
 
-//todo
+Recommended way:
+
+// todo
+
+Manual way:
+
+1. Install Celery and Postgres
+2. Install and configure python web stack: nginx and uwsgi
+3. Clone gunnery
+4. Configure project
+5. python manage.py syncdb
 
 ### Feedback
 
