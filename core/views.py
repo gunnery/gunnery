@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import User
 from .forms import *
 from backend.tasks import TestConnectionTask
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 def get_common_page_data(request):
 	data = {}
@@ -31,7 +31,7 @@ def environment_page(request, environment_id):
 	data['environment'] = Environment.objects.get(pk=environment_id)
 	return render(request, 'page/environment.html', data)
 
-@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def settings_page(request):
 	data = get_common_page_data(request)
 	data['serverrole'] = ServerRole.objects.all()

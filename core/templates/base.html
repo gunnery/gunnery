@@ -58,8 +58,10 @@
         <div class="collapse navbar-collapse" id="navbar-long-collapse">
           {% include 'partial/application_list_sidebar.html' %}
           <ul class="nav-user">
-            <li><a href="{{user.get_absolute_url}}"><i class="fa fa-user"></i> {{user.first_name}}</a></li>
+            <li><a href="{% url 'account_settings' %}"><i class="fa fa-user"></i> {{user.first_name}}</a></li>
+            {% if user.is_superuser %}
             <li><a href="{% url 'settings_page' %}"><i class="fa fa-gear"></i> Settings</a></li>
+            {% endif %}
             <li><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
           </ul>
         </div>

@@ -12,9 +12,29 @@ def login(request, *args, **kwargs):
     return views.login(request, *args, **kwargs)
 
 @login_required
-def profile(request, user_id):
+def profile_page(request, user_id):
 	data = get_common_page_data(request)
 	user = get_object_or_404(User, pk=user_id)
 	data['user'] = user
 	data['user_executions'] = Execution.objects.filter(user_id=user.id).order_by('-time_created')[:3]
 	return render(request, 'page/profile.html', data)
+
+@login_required
+def settings_page(request):
+	data = get_common_page_data(request)
+	from account.forms import account_create_form
+	form = account_create_form('user_settings', request, request.user.id)
+	form.fields['email'].widget.attrs['readonly'] = True
+	data['form'] = form
+	if request.method == 'POST':
+		if form.is_valid():
+			on_before_save_user(form.instance)
+			form.save()
+			data['user'] = form.instance
+	return render(request, 'page/account_settings.html', data)
+
+def on_before_save_user(instance):
+	if len(instance.password):
+		instance.set_password(instance.password)
+	else:
+		instance.password = User.objects.get(pk=instance.id).password
