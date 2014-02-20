@@ -3,6 +3,7 @@ from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.models import User
+from django.core.urlresolvers import reverse
 from .forms import *
 from backend.tasks import TestConnectionTask
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -17,6 +18,8 @@ def get_common_page_data(request):
 def index(request):
 	data = get_common_page_data(request)
 	data['application_list'] = Application.objects.all()
+	if not data['application_list']:
+		return redirect(reverse('help_page'))
 	return render(request, 'page/index.html', data)
 
 @login_required
@@ -61,3 +64,7 @@ def server_test_ajax(request, task_id):
 		data['status'] = None
 	return HttpResponse(json.dumps(data), content_type="application/json")
 
+@login_required
+def help_page(request):
+	data = get_common_page_data(request)
+	return render(request, 'page/help.html', data)

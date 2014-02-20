@@ -15,4 +15,5 @@ urlpatterns = patterns('',
     url(r'^modal_delete/a(?P<app>[a-z]+)?/(?P<form_name>[a-z_]+)/(?P<id>\d+)/$', modal_delete, name='modal_delete'),
 
     url(r'^settings/', settings_page, name='settings_page'),
+    url(r'^help/', help_page, name='help_page'),
 )

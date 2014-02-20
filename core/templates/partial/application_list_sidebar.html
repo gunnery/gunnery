@@ -1,5 +1,6 @@
 
 {% load core_extras %}
+{% if application_list_sidebar %}
   <ul class="nav-applications">
     {% for application in application_list_sidebar %}
     <li>
@@ -14,3 +15,4 @@
     </li>
     {% endfor %}
   </ul>
+{% endif %}

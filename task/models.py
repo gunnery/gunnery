@@ -67,6 +67,7 @@ class Execution(models.Model):
 			return
 		for command in self.task.commands_ordered():
 			self._create_execution_commands(command)
+		from backend.tasks import ExecutionTask
 		ExecutionTask().delay(execution_id=self.id)
 
 	def _create_execution_commands(self, command):

@@ -29,6 +29,9 @@ pre {
 .navbar-brand {
 	width: 170px;
 	border-bottom: 1px solid #333;
+	font-size: 19px;
+	letter-spacing: 6px;
+	font-weight: bold;
 }
 
 .nav-user {
@@ -49,13 +52,17 @@ pre {
 	display: block;
 	margin: 0;
 	padding: 1px 0 1px 10px;
-	color: #999;
+	color: #a0a0a0;
 }
 
 .nav a:hover {
-	background: #111;
+	background: #172226;
 	text-decoration: none;
 	color: #eee;
+}
+
+.side-nav {
+	background-color: #1e2933;
 }
 
 ul.nav-applications > li > a {
@@ -66,6 +73,12 @@ ul.nav-environments a {
 	padding-left: 29px;
 }
 
+h1 > i.fa, h3 > i.fa {
+	color: #3776ab;
+}
+h1 > i.fa:after {
+	content: "\00a0";
+}
 
 @media (max-width: 768px) {
 	.navbar-nav {

@@ -1,0 +1,19 @@
+[
+	{
+		"model": "core.ServerRole",
+		"pk": 1,
+		"fields": { "name": "app" }
+	},
+
+	{
+		"model": "core.ServerRole",
+		"pk": 2,
+		"fields": { "name": "db" }
+	},
+
+	{
+		"model": "core.ServerRole",
+		"pk": 3,
+		"fields": { "name": "cache" }
+	}
+]

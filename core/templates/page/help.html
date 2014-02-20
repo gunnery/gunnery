@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load core_extras %}
+{% block content %}
+
+<h1><i class="fa fa-question-circle"></i> Help</h1>
+
+<ol class="breadcrumb">
+	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+	<li class="active"><i class="fa fa-question-circle"></i> Help</li>
+</ol>
+
+<h3>First steps with Gunnery</h3>
+
+
+<h4>1. Create {% model_icon 'application' %} application</h4>
+<h4>2. Create {% model_icon 'environment' %} environment</h4>
+<h4>3. Create {% model_icon 'server' %} servers and test connections</h4>
+<h4>4. Create {% model_icon 'task' %} task</h4>
+<h4>5. {% model_icon 'execution' %} Execute task</h4>
+
+{% endblock %}

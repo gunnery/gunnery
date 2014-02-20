@@ -70,10 +70,7 @@ def task_form_page(request, application_id = None, task_id = None):
 	elif application_id:
 		application = get_object_or_404(Application, pk=application_id)
 		args = {'application_id':application_id}
-
-	form = task_create_form('task', request, task_id, args)
-	form_parameters = create_formset(request, TaskParameterFormset, task_id)
-	form_commands = create_formset(request, TaskCommandFormset, task_id)
+	form, form_parameters, form_commands = create_forms(request, task_id, args)
 
 	if request.method == 'POST':
 		if form.is_valid() and form_parameters.is_valid() and form_commands.is_valid():
@@ -84,6 +81,9 @@ def task_form_page(request, application_id = None, task_id = None):
 			task_save_formset(form_commands, task)
 			if task_id == None:
 				return redirect(task.get_absolute_url())
+			request.method = 'GET'
+			form, form_parameters, form_commands = create_forms(request, task_id, args)
+			request.method = 'POST'
 
 	data['application'] = application
 	data['is_new'] = task_id == None
@@ -93,6 +93,12 @@ def task_form_page(request, application_id = None, task_id = None):
 	data['form_commands'] = form_commands
 	data['server_roles'] = ServerRole.objects.all()
 	return render(request, 'page/task_form.html', data)
+
+def create_forms(request, task_id, args):
+	form = task_create_form('task', request, task_id, args)
+	form_parameters = create_formset(request, TaskParameterFormset, task_id)
+	form_commands = create_formset(request, TaskCommandFormset, task_id)
+	return (form, form_parameters, form_commands)
 
 def task_save_formset(formset, task):
 	formset.save(commit=False)

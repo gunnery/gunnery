@@ -19,10 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '6x09uq7d4f&so^q(&akentw^ud=rdu-u94pu9r83$l_!+jus$m'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -109,4 +105,4 @@ ABSOLUTE_URL_OVERRIDES = {
 # AUTH_USER_MODEL = 'account.User'
 
 
-PRIVATE_DIR = '/var/lib/gunnery/'
+PRIVATE_DIR = '/var/gunnery/secure'
