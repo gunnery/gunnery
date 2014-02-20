@@ -13,7 +13,7 @@
 {% if is_new %}Add task{% else %}Task <em>{{task.name}}</em>{% endif %}
 {% if not is_new %}
 	<div class=" pull-right">
-		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</a>
+		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i class="fa fa-bolt"></i> Execute</a>
 	</div>
 {% endif %}
 </h1>

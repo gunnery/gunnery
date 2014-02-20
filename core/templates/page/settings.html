@@ -9,14 +9,22 @@
 	<li class="active">{% model_icon 'settings' %} Settings</li>
 </ol>
 
-{% include 'partial/serverrole_list.html' %}
+<!-- Nav tabs -->
+<ul class="nav nav-tabs">
+  <li {% if section == 'applications' %}class="active"{% endif %}>
+  	<a href="{% url 'settings_page' section='applications' %}">{% model_icon 'application' %} Applications</a></li>
+  <li {% if section == 'users' %}class="active"{% endif %}>
+  	<a href="{% url 'settings_page' section='users' %}">{% model_icon 'user' %} Users</a></li>
+  <li {% if section == 'serverroles' %}class="active"{% endif %}>
+  	<a href="{% url 'settings_page' section='serverroles' %}">{% model_icon 'serverrole' %} Server Roles</a></li>
+</ul>
 
-<p>&nbsp;</p>
-
-{% include 'partial/application_list.html' %}
-
-<p>&nbsp;</p>
-
-{% include 'partial/user_list.html' %}
+{% if section == 'serverroles' %}
+	{% include 'partial/serverrole_list.html' %}
+{% elif section == 'applications' %}
+	{% include 'partial/application_list.html' %}
+{% elif section == 'users' %}
+	{% include 'partial/user_list.html' %}
+{% endif %}
 
 {% endblock %}

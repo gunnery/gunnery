@@ -1,6 +1,6 @@
 {% load core_extras %}
 <h3>{% model_icon 'environment' %} Environments
-  <button type="button" class="btn btn-primary btn-xs"
+  <button type="button" class="btn btn-default btn-xs"
     data-toggle="modal" 
     data-remote="{% url 'modal_form' form_name='environment' id='' parent_name='application' parent_id=application.id %}" 
     data-target="#large-modal">
@@ -9,17 +9,17 @@
 {% if application.environments.count %}
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
-    <thead>
+    <!-- <thead>
       <tr>
         <th class="header">Name <i class="fa fa-sort"></i></th>
         <th class="header col-sm-3"></th>
       </tr>
-    </thead>
+    </thead> -->
     <tbody>
       {% for environment in application.environments.all %}
       <tr>
         <td><a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></td>
-        <td class="text-right"><button type="submit" class="btn btn-primary btn-xs"
+        <td class="text-right"><button type="submit" class="btn btn-default btn-xs"
           data-toggle="modal" 
           data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}" 
           data-target="#large-modal">

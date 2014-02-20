@@ -3,7 +3,7 @@
 
 {% block content %}
 <h1>{% model_icon 'application' %} Application <em>{{application.name}}</em>
-	<button type="submit" class="btn btn-primary pull-right" 
+	<button type="submit" class="btn btn-default pull-right" 
 		data-toggle="modal" 
 		data-remote="{% url 'modal_form' form_name='application' id=application.id %}" 
 		data-target="#large-modal">

@@ -35,11 +35,17 @@ def environment_page(request, environment_id):
 	return render(request, 'page/environment.html', data)
 
 @user_passes_test(lambda u: u.is_superuser)
-def settings_page(request):
+def settings_page(request, section='applications'):
 	data = get_common_page_data(request)
-	data['serverrole'] = ServerRole.objects.all()
-	data['applications'] = Application.objects.all()
-	data['users'] = User.objects.order_by('email')
+	sections = {
+		'serverroles': ServerRole.objects.all(),
+		'applications': Application.objects.all(),
+		'users': User.objects.order_by('email')
+	}
+	if not section in sections:
+		raise Http404()
+	data[section] = sections[section]
+	data['section'] = section
 	return render(request, 'page/settings.html', data)
 
 @login_required

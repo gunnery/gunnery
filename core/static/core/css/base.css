@@ -55,7 +55,7 @@ pre {
 	color: #a0a0a0;
 }
 
-.nav a:hover {
+.side-nav a:hover {
 	background: #172226;
 	text-decoration: none;
 	color: #eee;
@@ -63,6 +63,10 @@ pre {
 
 .side-nav {
 	background-color: #1e2933;
+}
+
+.nav-tabs {
+	margin-bottom: 20px;
 }
 
 ul.nav-applications > li > a {
@@ -76,7 +80,7 @@ ul.nav-environments a {
 h1 > i.fa, h3 > i.fa {
 	color: #3776ab;
 }
-h1 > i.fa:after {
+h1 > i.fa:after, h3 > i.fa:after {
 	content: "\00a0";
 }
 
