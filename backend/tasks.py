@@ -2,6 +2,7 @@ import logging
 import json
 from time import sleep
 from celery import group, chain, chord, Task
+from django.conf import settings
 from django.utils.timezone import now
 from django.core.serializers.json import DjangoJSONEncoder
 from gunnery.celery import app
@@ -108,13 +109,19 @@ class CommandTask(app.Task):
 		ssh_server = self._get_ssh_server(environment_id, server)
 		stdout = ssh_server.run(command_server.execution_command.command)
 
-		while True:
-			lines = stdout.readline()
-			if lines == '':
-				break
-			command_server.output += lines
-			_trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
-		command_server.return_code = ssh_server.get_status()
+		try:
+			while True:
+				lines = stdout.readline()
+				if lines == '':
+					break
+				command_server.output += lines
+				_trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
+			command_server.return_code = ssh_server.get_status()
+		except Exception as e:
+			line = 'Task failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
+			command_server.output += line
+			_trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=line)
+			command_server.return_code = 1024
 
 		if command_server.return_code == 0:
 			command_server.status = command_server.SUCCESS
