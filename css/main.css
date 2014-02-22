@@ -1,6 +1,10 @@
+
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro);
 body {
 	color: #555;
 }
+
+body, h1, h2, h3, h4 {font-family: 'Source Sans Pro', sans-serif;}
 .jumbotron {
 	background: url('/img/bg03.jpg') no-repeat top center;
 	/* http://www.flickr.com/photos/bombaglot/4779911493/ */
@@ -31,7 +35,7 @@ body {
 
 #top h2 {
 	font-size: 1.4em;
-	font-style: italic;
+	/*font-style: italic;*/
 }
 
 h3, .get-it {
@@ -47,4 +51,27 @@ h3, .get-it {
 
 .features .well {
 	text-align: center;
+}
+
+
+#gallery {
+	height:516px;
+}
+
+#gallery img {
+	margin: 0 auto;
+}
+
+.carousel-control {
+	color: #333;
+	text-shadow: 1px 1px 2px #eee;
+}
+
+.carousel-control:hover {
+	color: #000;
+	text-shadow: 1px 1px 2px #fff;
+}
+
+.carousel-control.right, .carousel-control.left {
+	background: transparent;
 }
