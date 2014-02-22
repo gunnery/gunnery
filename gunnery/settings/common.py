@@ -49,6 +49,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'gunnery.urls'
@@ -88,8 +89,9 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+   # os.path.join(BASE_DIR, "static"),
 )
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
@@ -106,6 +108,5 @@ ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/account/profile/%d/" % u.id,
 }
 # AUTH_USER_MODEL = 'account.User'
-
 
 PRIVATE_DIR = '/var/gunnery/secure'
