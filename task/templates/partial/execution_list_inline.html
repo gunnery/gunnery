@@ -1,12 +1,12 @@
 {% load core_extras %}
 {% load humanize %}
 
-{% if not notitle and list.count > 0 %}
+{% if not notitle and list|length > 0 %}
 <h3>Activity <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id  %}"><span class="text-muted">View full history</span></a></small></h3>
 {% else %}
 <br/>
 {% endif %}
-{% if list.count > 0 %}
+{% if list|length %}
 <div class="row execution-list-inline">
 	<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 		<div class="well well-sm">

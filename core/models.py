@@ -15,7 +15,7 @@ class Application(models.Model):
 	    return reverse('application_page', args=[str(self.id)])
 	def executions_inline(self):
 		from task.models import Execution 
-		return Execution.objects.filter(task__application_id=self.id).order_by('-time_created')[:4]
+		return Execution.get_inline_by_application(self.id)
 	
 class Environment(models.Model):
 	name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
@@ -29,7 +29,7 @@ class Environment(models.Model):
 
 	def executions_inline(self):
 		from task.models import Execution
-		return Execution.objects.filter(environment_id=self.id).order_by('-time_created')[:3]
+		return Execution.get_inline_by_environment(self.id)
 
 	def save(self, *args, **kwargs):
 		is_new = not self.id

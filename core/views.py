@@ -10,14 +10,14 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 def get_common_page_data(request):
 	data = {}
-	data['application_list_sidebar'] = Application.objects.all()
+	data['application_list_sidebar'] = Application.objects.all().prefetch_related('environments')
 	data['user'] = request.user
 	return data
 
 @login_required
 def index(request):
 	data = get_common_page_data(request)
-	data['application_list'] = Application.objects.all()
+	data['application_list'] = data['application_list_sidebar']
 	if not data['application_list']:
 		return redirect(reverse('help_page'))
 	return render(request, 'page/index.html', data)

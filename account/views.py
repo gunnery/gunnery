@@ -16,7 +16,7 @@ def profile_page(request, user_id):
 	data = get_common_page_data(request)
 	user = get_object_or_404(User, pk=user_id)
 	data['user'] = user
-	data['user_executions'] = Execution.objects.filter(user_id=user.id).order_by('-time_created')[:3]
+	data['user_executions'] = Execution.get_inline_by_user(user.id)
 	return render(request, 'page/profile.html', data)
 
 @login_required

@@ -14,12 +14,16 @@ class Task(models.Model):
 	application = models.ForeignKey(Application, related_name="tasks")
 	class Meta:
 		unique_together = ("application", "name")
+
 	def get_absolute_url(self):
 	    return reverse('task_page', args=[str(self.id)])
+
 	def executions_inline(self):
-		return Execution.objects.filter(task_id=self.id).order_by('-time_created')[:3]
+		return Execution.get_inline_by_task(self.id)
+
 	def parameters_ordered(self):
 		return self.parameters.order_by('order')
+
 	def commands_ordered(self):
 		return self.commands.order_by('order')
 	
@@ -85,6 +89,26 @@ class Execution(models.Model):
 				execution_command=execution_command,
 				server=server)
 			execution_command_server.save()
+
+	@staticmethod
+	def get_inline_by_query(**kwargs):
+		return list(Execution.objects.filter(**kwargs).prefetch_related('user').prefetch_related('task').prefetch_related('environment').order_by('-time_created')[:4])
+
+	@staticmethod
+	def get_inline_by_application(id):
+		return Execution.get_inline_by_query(task__application_id=id)
+
+	@staticmethod
+	def get_inline_by_environment(id):
+		return Execution.get_inline_by_query(environment_id=id)
+
+	@staticmethod
+	def get_inline_by_task(id):
+		return Execution.get_inline_by_query(task_id=id)
+
+	@staticmethod
+	def get_inline_by_user(id):
+		return Execution.get_inline_by_query(user_id=id)
 
 class ExecutionParameter(models.Model):
 	execution = models.ForeignKey(Execution, related_name="parameters")
