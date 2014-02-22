@@ -80,8 +80,11 @@ ul.nav-environments a {
 h1 > i.fa, h3 > i.fa {
 	color: #3776ab;
 }
-h1 > i.fa:after, h3 > i.fa:after {
+i.fa:after {
 	content: "\00a0";
+}
+button > i.fa:after {
+	content: "";
 }
 
 @media (max-width: 768px) {
