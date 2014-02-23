@@ -32,12 +32,12 @@
 		</ul>
 		{% if execution.parameters.count %}
 			with parameters:
-		<br/>
-		<ul>
-		{% for parameter in execution.parameters.all %}
-			<li><b>{{parametr.name}}</b>: {{parmeter.value}}</li>
-		{% endfor %}
-		</ul>
+			<br/>
+			<ul>
+			{% for parameter in execution.parameters.all %}
+				<li><b>{{parameter.name}}</b>: {{parameter.value}}</li>
+			{% endfor %}
+			</ul>
 		{% endif %}
 	</div>
 {% endfor %}
