@@ -91,6 +91,15 @@ button > i.fa:after {
 	.navbar-nav {
 		margin:0;
 	}
+	h1 {
+		font-size: 2em;
+	}
+	.long-title {
+		display: none;
+	}
+    .nav-tabs > li {
+        float:none;
+    }
 }
 @media (min-width: 768px) {
 	#wrapper {
@@ -100,7 +109,6 @@ button > i.fa:after {
 		top: 0;
 		width: 170px;
 	}
-
 }
 
 

@@ -2,12 +2,13 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'task' %} Task <em>{{task.name}}</em> 
+<h1>{% model_icon 'task' %} <span class="long-title">Task</span> <em>{{task.name}}</em> 
 	<div class=" pull-right">
 		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i class="fa fa-bolt"></i> Execute</a>
 		<a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-default"><i class="fa fa-edit"></i></a> 
 	</div>
 </h1>
+<div class="clearfix"></div>
 
 <ol class="breadcrumb">
 	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
