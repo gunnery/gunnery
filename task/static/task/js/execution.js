@@ -30,8 +30,9 @@
 		},
 		execution_completed: function(data) {
 			handlers.execution_status(data);
-			$('.execution-time-end').html(data.time_end).prev().show()
-			$('.execution-time').html(data.time+' s')
+			$('.execution-time-end').html(data.time_end).prev().show();
+			$('.execution-time').html(data.time+' s');
+			$('#execute-button').show();
 		}
 	};
 
