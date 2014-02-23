@@ -21,12 +21,6 @@ All python packages required by application are listend in pip requirements file
 
 ### Installation
 
-Recommended way:
-
-// todo
-
-Manual way:
-
 1. Install Celery and Postgres
 2. Install and configure python web stack: nginx and uwsgi
 3. Clone gunnery
