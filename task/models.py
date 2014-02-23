@@ -71,6 +71,8 @@ class Execution(models.Model):
 			return
 		for command in self.task.commands_ordered():
 			self._create_execution_commands(command)
+
+	def start(self):
 		from backend.tasks import ExecutionTask
 		ExecutionTask().delay(execution_id=self.id)
 
@@ -119,6 +121,23 @@ class ExecutionCommand(models.Model):
 	execution = models.ForeignKey(Execution, related_name="commands")
 	command = models.TextField()
 	roles = models.ManyToManyField(ServerRole)
+
+	def replace_params(self):
+		import calendar
+		format = '${%s}'
+		global_params = {
+			'application': self.execution.task.application.name,
+			'environment': self.execution.environment.name,
+			'task': self.execution.task.name,
+			'user': self.execution.user.username,
+			'time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
+		}
+		for name, value in global_params.items():
+			self.command = self.command.replace(format % name, value)
+
+		execution_params = self.execution.parameters.all()
+		for param in execution_params:
+			self.command = self.command.replace(format % param.name, param.value)
 
 class ExecutionCommandServer(models.Model):
 	PENDING = 3

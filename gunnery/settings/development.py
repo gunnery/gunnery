@@ -8,9 +8,6 @@ INSTALLED_APPS += (
 	'debug_toolbar',
 )
 
-CELERYD_TASK_TIME_LIMIT=60*5
-CELERYD_TASK_SOFT_TIME_LIMIT=60*1
-
 from fnmatch import fnmatch
 class glob_list(list):
     def __contains__(self, key):

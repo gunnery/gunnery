@@ -118,7 +118,7 @@ class CommandTask(app.Task):
 				_trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
 			command_server.return_code = ssh_server.get_status()
 		except Exception as e:
-			line = 'Task failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
+			line = 'Command failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
 			command_server.output += line
 			_trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=line)
 			command_server.return_code = 1024

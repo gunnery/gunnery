@@ -10,6 +10,7 @@ from .forms import *
 from core.views import get_common_page_data
 from core.models import *
 from .models import *
+from django.db import transaction
 
 @login_required
 def task_page(request, task_id = None):
@@ -18,6 +19,7 @@ def task_page(request, task_id = None):
 	return render(request, 'page/task.html', data)
 
 @login_required
+@transaction.atomic
 def task_execute_page(request, task_id, environment_id=None):
 	data = get_common_page_data(request)
 	task = get_object_or_404(Task, pk=task_id)
@@ -55,6 +57,11 @@ def task_execute_page(request, task_id, environment_id=None):
 			for name, value in parameters.items():
 				if name != 'environment':
 					ExecutionParameter(execution=execution, name=name, value=value).save()
+
+			for command in execution.commands.all():
+				command.replace_params()
+				command.save()
+			execution.start()
 			return redirect(execution)
 
 	return render(request, 'page/task_execute.html', data)
@@ -142,6 +149,8 @@ def log_page(request, model_name, id):
 		related = get_object_or_404(User, pk=id)
 	else:
 		raise Http404()
+	for related_model in ['task', 'user', 'environment', 'parameters']:
+		executions = executions.prefetch_related(related_model)
 	data['executions'] = executions.order_by('-time_created')
 	data['model_name'] = model_name
 	data['related'] = related
