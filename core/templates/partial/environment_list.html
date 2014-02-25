@@ -9,12 +9,6 @@
 {% if application.environments.count %}
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
-    <!-- <thead>
-      <tr>
-        <th class="header">Name <i class="fa fa-sort"></i></th>
-        <th class="header col-sm-3"></th>
-      </tr>
-    </thead> -->
     <tbody>
       {% for environment in application.environments.all %}
       <tr>

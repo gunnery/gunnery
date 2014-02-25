@@ -1,24 +1,20 @@
 {% load core_extras %}
 
-{% if applications.count %}
 <div class="row">
   <div class="col col-sm-offset-1 col-sm-9 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 ">
-    <button type="button" class="btn btn-default btn-sm pull-right"
+{% if empty %}
+  No applications yet.
+{% endif %}
+    <button type="button" class="btn btn-default btn-sm {% if not empty %}pull-right{% endif %}"
       data-toggle="modal" 
       data-remote="{% url 'modal_form' form_name='application' %}" 
       data-target="#large-modal">
-      <i class="fa fa-plus"></i> Create</button>
+      <i class="fa fa-plus"></i> Create{% if empty %} first{% endif %}</button>
     <br/>
     <br/>
 
     <div class="table-responsive">
       <table class="table table-hover tablesorter">
-        <!-- <thead>
-          <tr>
-            <th class="header">Name <i class="fa fa-sort"></i></th>
-            <th class="header col-sm-2"></th>
-          </tr>
-        </thead> -->
         <tbody>
           {% for application in applications.all %}
           <tr>
@@ -36,6 +32,3 @@
     </div>
   </div>
 </div>
-{% else %}
-No applications yet.
-{% endif %}

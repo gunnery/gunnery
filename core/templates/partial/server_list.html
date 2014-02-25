@@ -6,19 +6,10 @@
     data-target="#large-modal">
     <i class="fa fa-plus"></i></button>
 </h3>
-{% if servers.count %}
+{% if servers %}
 <div class="table-responsive">
   <table class="table table-hover tablesorter">
-  <!--   <thead>
-      <tr>
-        <th class="header">Name <i class="fa fa-sort"></i></th>
-        <th class="header">Host <i class="fa fa-sort"></i></th>
-        <th class="header">Roles <i class="fa fa-sort"></i></th>
-        <th class="header"></th>
-      </tr>
-    </thead>
- -->    <tbody>
-      {% for server in servers.all %}
+      {% for server in servers %}
       <tr>
         <td>{{server.name}}</td>
         <td>{{server.host}}</td>

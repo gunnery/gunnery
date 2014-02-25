@@ -32,7 +32,7 @@ def application_page(request, application_id):
 def environment_page(request, environment_id):
 	data = get_common_page_data(request)
 	data['environment'] = Environment.objects.get(pk=environment_id)
-	data['servers'] = Server.objects.filter(environment_id=environment_id).prefetch_related('roles')
+	data['servers'] = list(Server.objects.filter(environment_id=environment_id).prefetch_related('roles'))
 	return render(request, 'page/environment.html', data)
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -47,6 +47,7 @@ def settings_page(request, section='applications'):
 		raise Http404()
 	data[section] = sections[section]
 	data['section'] = section
+	data['empty'] = data[section].count() == 0
 	return render(request, 'page/settings.html', data)
 
 @login_required
