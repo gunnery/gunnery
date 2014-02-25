@@ -26,7 +26,7 @@ class SecureFile(object):
 			uid = str(uid)
 		self.uid = uid
 		name_hash = md5(settings.SECRET_KEY + self.prefix + uid).hexdigest()
-		self.file_name = settings.PRIVATE_DIR + name_hash
+		self.file_name = os.path.join(settings.PRIVATE_DIR, name_hash)
 		# if not os.path.exists(self.file_name):
 		# 	open(self.file_name, 'w')
 		# 	os.chmod(self.file_name, 0700)
