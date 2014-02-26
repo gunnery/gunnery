@@ -8,6 +8,10 @@ INSTALLED_APPS += (
 	'debug_toolbar',
 )
 
+MIDDLEWARE_CLASSES += (
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+)
+
 from fnmatch import fnmatch
 class glob_list(list):
     def __contains__(self, key):
