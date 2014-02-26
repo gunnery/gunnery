@@ -1,0 +1,7 @@
+[
+	{
+		"model": "core.Application",
+		"pk": 1,
+		"fields": { "name": "testapp" }
+	}
+]

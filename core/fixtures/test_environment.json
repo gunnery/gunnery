@@ -1,0 +1,10 @@
+[
+	{
+		"model": "core.Environment",
+		"pk": 1,
+		"fields": { 
+			"name": "testenvironment",
+			"application": 1
+		}
+	}
+]
