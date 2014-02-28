@@ -1,6 +1,6 @@
 from django.test import TestCase
 import core.models as models
-from .base import LoggedTestCase
+from .base import LoggedTestCase, BaseModalTestCase
 
 class GuestTest(TestCase):
     def test_index(self):
@@ -59,3 +59,21 @@ class HelpTest(LoggedTestCase):
     def test_help(self):
         response = self.client.get('/help/')
         self.assertContains(response, 'Help')
+
+
+class CoreModalServerroleTest(LoggedTestCase, BaseModalTestCase):
+    @property
+    def url(self):
+        return '/modal_form/a:/serverrole/'
+
+class CoreModalApplicationTest(LoggedTestCase, BaseModalTestCase):
+    fixtures = ['test_user', 'test_application']
+    @property
+    def url(self):
+        return '/modal_form/a:/application/'
+
+class CoreModalEnvironmentTest(LoggedTestCase, BaseModalTestCase):
+    fixtures = ['test_user', 'test_application', 'test_environment']
+    @property
+    def url(self):
+        return '/modal_form/a:/environment/'
