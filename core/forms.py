@@ -68,6 +68,7 @@ class ServerRoleForm(ModalForm):
         fields = ['name']
         
 def create_form(form_objects, name, request, id, args={}):
+    """ Helper function for creating form object """
     if not name in form_objects:
         raise Http404()
     if id:
@@ -79,6 +80,7 @@ def create_form(form_objects, name, request, id, args={}):
     return form
 
 def core_create_form(name, request, id, args={}):
+    """ Helper function for creating core form object """
     form_objects = {
         'application': ApplicationForm,
         'environment': EnvironmentForm,
