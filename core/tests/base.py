@@ -1,7 +1,7 @@
 from django.test import TestCase
 
 class LoggedTestCase(TestCase):
-    fixtures = ['test_user']
+    fixtures = ['test_user.json']
 
     def setUp(self):
         result = self.client.login(username='admin@test.com', password='test')
