@@ -19,3 +19,5 @@ class glob_list(list):
             if fnmatch(key, elt): return True
         return False
 INTERNAL_IPS = glob_list(['127.0.0.1', '10.0.*.*'])
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
