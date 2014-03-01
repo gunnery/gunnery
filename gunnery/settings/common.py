@@ -56,6 +56,7 @@ ROOT_URLCONF = 'gunnery.urls'
 WSGI_APPLICATION = 'gunnery.wsgi.application'
 
 
+
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
@@ -106,6 +107,7 @@ LOGIN_REDIRECT_URL = '/'
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/account/profile/%d/" % u.id,
 }
-# AUTH_USER_MODEL = 'account.User'
+AUTHENTICATION_BACKENDS = ('account.backend.EmailAuthBackend',)
+AUTH_USER_MODEL = 'account.CustomUser'
 
 PRIVATE_DIR = '/var/gunnery/secure'

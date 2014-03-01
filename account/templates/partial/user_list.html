@@ -15,7 +15,7 @@
         <tbody>
           {% for user in users %}
           <tr>
-            <td><a href="{{user.get_absolute_url}}">{{user.first_name|default:user.username}}</a></td>
+            <td><a href="{{user.get_absolute_url}}">{{user.get_full_name}}</a></td>
             <td class="text-right">
               <button type="submit" class="btn btn-default btn-xs"
                 data-toggle="modal" 

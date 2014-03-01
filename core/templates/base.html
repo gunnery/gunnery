@@ -32,7 +32,7 @@
         <div class="collapse navbar-collapse" id="navbar-long-collapse">
           {% include 'partial/application_list_sidebar.html' %}
           <ul class="nav-user">
-            <li><a href="{% url 'account_settings' %}"><i class="fa fa-user"></i> {{user.first_name|default:user.username }}</a></li>
+            <li><a href="{% url 'account_settings' %}"><i class="fa fa-user"></i> {{user.get_full_name}}</a></li>
             {% if user.is_superuser %}
             <li><a href="{% url 'settings_page' %}"><i class="fa fa-gear"></i> Settings</a></li>
             <li><a href="{% url 'help_page' %}"><i class="fa fa-question-circle"></i> Help</a></li>

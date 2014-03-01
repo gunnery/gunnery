@@ -27,7 +27,7 @@
 		{% execution_status execution.status %}
 		<br/>
 		<ul class="list-inline">
-		    <li>{% model_icon 'user' %} {{execution.user.first_name}}</li>
+		    <li>{% model_icon 'user' %} {{execution.user.get_full_name}}</li>
 		    <li><i class="fa fa-clock-o"></i> {{execution.time_created}}</li>
 		</ul>
 		{% if execution.parameters.count %}

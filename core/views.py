@@ -2,11 +2,12 @@ import json
 from django import template
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.core.urlresolvers import reverse
 from .forms import *
 from backend.tasks import TestConnectionTask
 from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 def get_common_page_data(request):
 	data = {}
@@ -41,7 +42,7 @@ def settings_page(request, section='applications'):
 	sections = {
 		'serverroles': ServerRole.objects.all(),
 		'applications': Application.objects.all(),
-		'users': User.objects.order_by('email')
+		'users': get_user_model().objects.order_by('email')
 	}
 	if not section in sections:
 		raise Http404()

@@ -1,11 +1,13 @@
 from core.modal import BaseModal
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .forms import account_create_form
+
+_user = get_user_model()
 
 class Modal(BaseModal):
 	definitions = {
 		'user': {
-			'model': User,
+			'model': _user,
 			'parent': None
 		}
 	}
@@ -23,7 +25,7 @@ class Modal(BaseModal):
 		if len(instance.password):
 			instance.set_password(instance.password)
 		else:
-			instance.password = User.objects.get(pk=instance.id).password
+			instance.password = _user.objects.get(pk=instance.id).password
 		return data
 
 	def on_form_create_user(self, form):

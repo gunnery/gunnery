@@ -1,23 +1,25 @@
 from django.forms import *
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from core.forms import ModalForm, create_form
+
+_user = get_user_model()
 
 class UserForm(ModalForm):
     email = CharField(required=True)
     password = CharField(widget=PasswordInput(render_value = False), required=False, min_length=8)
-    first_name = CharField(label='Name')
+    name = CharField(label='Name')
     is_superuser = BooleanField(required=False)
     class Meta:
-        model = User
-        fields = ['email', 'password', 'first_name', 'is_superuser']
+        model = _user
+        fields = ['email', 'password', 'name', 'is_superuser']
 
 class UserSettingsForm(ModalForm):
     email = CharField(required=True)
     password = CharField(widget=PasswordInput(render_value = False), required=False, min_length=8)
-    first_name = CharField(label='Name')
+    name = CharField(label='Name')
     class Meta:
-        model = User
-        fields = ['email', 'password', 'first_name']
+        model = _user
+        fields = ['email', 'password', 'name']
 
 
 def account_create_form(name, request, id, args={}):

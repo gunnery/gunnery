@@ -2,19 +2,17 @@
 	{ 
 		"fields" : { 
 			"date_joined" : "2014-02-20T17:38:40.708Z",
-			"username" : "admin@test.com",
 			"email" : "admin@test.com",
-			"first_name" : "Test UserName",
+			"name" : "Test UserName",
 			"groups" : [  ],
 			"is_active" : true,
 			"is_staff" : true,
 			"is_superuser" : true,
 			"last_login" : "2014-02-25T20:48:36.129Z",
-			"last_name" : "",
-			"password" : "pbkdf2_sha256$12000$rjSEYR7p2upe$t6rSfbmfLvb+6t0IjqarD6qEKecLzG5Uo6SQH2V3iis=",
+			"password" : "pbkdf2_sha256$12000$HlnW2tSrH6tq$CiQeYQsA/NuDNeHQnwWK3RSXGzzk/WmFUFfRmV1BOOE=",
 			"user_permissions" : [  ]
 		},
-		"model" : "auth.user",
+		"model" : "account.CustomUser",
 		"pk" : 1
 	}
 ]

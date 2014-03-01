@@ -1,6 +1,6 @@
 from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect, render
 from core.views import get_common_page_data
 from task.models import Execution 
@@ -14,7 +14,7 @@ def login(request, *args, **kwargs):
 @login_required
 def profile_page(request, user_id):
 	data = get_common_page_data(request)
-	user = get_object_or_404(User, pk=user_id)
+	user = get_object_or_404(get_user_model(), pk=user_id)
 	data['user'] = user
 	data['user_executions'] = Execution.get_inline_by_user(user.id)
 	return render(request, 'page/profile.html', data)
@@ -37,4 +37,4 @@ def on_before_save_user(instance):
 	if len(instance.password):
 		instance.set_password(instance.password)
 	else:
-		instance.password = User.objects.get(pk=instance.id).password
+		instance.password = get_user_model().objects.get(pk=instance.id).password

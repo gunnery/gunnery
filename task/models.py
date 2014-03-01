@@ -1,5 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.db.models.signals import post_delete
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
@@ -59,7 +60,7 @@ class Execution(models.Model):
 	time_end = models.DateTimeField(blank=True, null=True)
 	time = models.IntegerField(blank=True, null=True)
 	environment = models.ForeignKey(Environment, related_name="executions")
-	user = models.ForeignKey(User, related_name="executions")
+	user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="executions")
 	status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
 	def get_absolute_url(self):
 		return reverse('execution_page', args=[str(self.id)])
@@ -129,7 +130,7 @@ class ExecutionCommand(models.Model):
 			'application': self.execution.task.application.name,
 			'environment': self.execution.environment.name,
 			'task': self.execution.task.name,
-			'user': self.execution.user.username,
+			'user': self.execution.user.email,
 			'time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
 		}
 		for name, value in global_params.items():
