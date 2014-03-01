@@ -2,6 +2,8 @@
 
 Gunnery is multipurpose task execution tool for distributed systems with easy to use interface.
 
+[![Build Status](https://travis-ci.org/Eyjafjallajokull/gunnery.png?branch=master)](https://travis-ci.org/Eyjafjallajokull/gunnery)
+
 ### Features
 
 * Supports capistrano, ant, phing, fabric, make, puppet, or any other tool
