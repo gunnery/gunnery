@@ -8,7 +8,7 @@ class locales($default="en_US.UTF-8", $available=["en_US.UTF-8 UTF-8"]) {
   }
 
   exec { "locale-gen":
-    command => "locale-gen @default",
+    command => "locale-gen ${default}",
     subscribe => [File["/etc/locale.gen"], File["/etc/default/locale"]],
     refreshonly => true,
   }
