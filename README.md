@@ -30,4 +30,4 @@ Please submit feedback, bugs, feature requests [here](https://github.com/Eyjafja
 
 ### Contribute
 
-Vagrant configuration is available for easy development. Separate repository also contains Puppet rules to build complete dev environment. [Read more](https://github.com/Eyjafjallajokull/gunnery/wiki/Develop)
+Vagrant configuration is available for easy development, included Puppet rules will build complete environment. [Read more](https://github.com/Eyjafjallajokull/gunnery/wiki/Develop)
