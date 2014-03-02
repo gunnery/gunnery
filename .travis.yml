@@ -4,4 +4,4 @@ python:
 install:
   - pip install -r requirements/production.txt
 script:
-  - python manage.py test --settings=gunnery.settings.test -v2
+  - (cd gunnery; python manage.py test --settings=gunnery.settings.test -v2)
