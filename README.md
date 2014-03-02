@@ -1,8 +1,10 @@
 # Gunnery
 
+[![Build Status](https://travis-ci.org/Eyjafjallajokull/gunnery.png?branch=master)](https://travis-ci.org/Eyjafjallajokull/gunnery)
+
 Gunnery is multipurpose task execution tool for distributed systems with easy to use interface.
 
-[![Build Status](https://travis-ci.org/Eyjafjallajokull/gunnery.png?branch=master)](https://travis-ci.org/Eyjafjallajokull/gunnery)
+If your application is divided into multiple servers, you are probably connecting to them via ssh and executing over and over the same commands. Clearing caches, restarting services, backups, checking health. Wouldn't it be cool if you could do that from browser or smartphone? Gunnery is here for you!
 
 ### Features
 
@@ -12,27 +14,20 @@ Gunnery is multipurpose task execution tool for distributed systems with easy to
 * Commands are executed via SHH with key authorization
 * Clear, responsive interface
 
-### Requirements
+### Screenshots
 
-Gunnery is build on top of Django framework, and depends of few other technologies:
-
-* Celery for background job handling
-* Postgres which can be replaced by other supported by Django database
-
-All python packages required by application are listend in pip requirements files.
+![test](https://raw.github.com/Eyjafjallajokull/gunnery/gh-pages/img/1.png)
+![test](https://raw.github.com/Eyjafjallajokull/gunnery/gh-pages/img/2.png)
+![test](https://raw.github.com/Eyjafjallajokull/gunnery/gh-pages/img/fig.gif)
 
 ### Installation
 
-1. Install Celery and Postgres
-2. Install and configure python web stack: nginx and uwsgi
-3. Clone gunnery
-4. Configure project
-5. python manage.py syncdb
+Step by step install instructions are described on [wiki page](https://github.com/Eyjafjallajokull/gunnery/wiki/Install).
 
 ### Feedback
 
-Submit feedback, bugs, feature requests [here](https://github.com/Eyjafjallajokull/gunnery/issues).
+Please submit feedback, bugs, feature requests [here](https://github.com/Eyjafjallajokull/gunnery/issues).
 
 ### Contribute
 
-Vagrant+Puppet configuration is available for easy development [gunnery-vagrant](https://github.com/Eyjafjallajokull/gunnery-vagrant).
+Vagrant configuration is available for easy development. Separate repository also contains Puppet rules to build complete dev environment. [Read more](https://github.com/Eyjafjallajokull/gunnery/wiki/Develop)
