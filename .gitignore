@@ -1,4 +1,5 @@
 development.txt
 *.pyc
-gunnery/static
+gunnery/gunnery/static
 .coverage
+.vagrant

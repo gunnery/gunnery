@@ -1,0 +1,35 @@
+#   but you can also start multiple and configure settings
+#   for each in CELERYD_OPTS (see `celery multi --help` for examples).
+CELERYD_NODES="worker1 worker2 worker3"
+
+# Absolute or relative path to the 'celery' command:
+#CELERY_BIN="/usr/local/bin/celery"
+CELERY_BIN="<%= @virtualenv_path %>/bin/celery"
+
+# App instance to use
+# comment out this line if you don't use an app
+CELERY_APP="<%= @app_name %>"
+# or fully qualified:
+#CELERY_APP="gunnery.tasks:app"
+
+# Where to chdir at start.
+CELERYD_CHDIR="<%= @app_path %>"
+
+# Extra command-line arguments to the worker
+CELERYD_OPTS="--time-limit=300 --concurrency=8"
+
+# %N will be replaced with the first part of the nodename.
+CELERYD_LOG_FILE="<%= @log_path %>/celery.%N.log"
+CELERYD_PID_FILE="<%= @run_path %>/celery.%N.pid"
+
+# Workers should run as an unprivileged user.
+#   You need to create this user manually (or you can choose
+#   a user/group combination that already exists, e.g. nobody).
+CELERYD_USER="<%= @user %>"
+CELERYD_GROUP="<%= @user %>"
+
+# If enabled pid and log directories will be created if missing,
+# and owned by the userid/group configured.
+CELERY_CREATE_DIRS=1
+
+export DJANGO_SETTINGS_MODULE="<%= @app_name %>.settings.<%= @environment %>"

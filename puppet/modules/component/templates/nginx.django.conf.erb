@@ -1,0 +1,19 @@
+server {
+        listen 80;
+
+        server_name <%= @domain_name %>;
+
+        access_log <%= @log_path %>/nginx.access.log combined;
+        error_log <%= @log_path %>/nginx.error.log error;
+
+        location / {
+                uwsgi_pass unix:<%= @run_path %>/uwsgi.<%= @app_name %>.sock;
+                include uwsgi_params;
+        }
+
+        location /static/ {
+                sendfile off;
+                root <%= @app_path %>/;
+                try_files $uri /core$uri /task$uri /gunnery$uri /404;
+        }
+}
