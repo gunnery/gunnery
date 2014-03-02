@@ -18,6 +18,10 @@
 	margin-bottom: 0;
 }
 
+.execution-list-inline li {
+	padding-left: 0;
+}
+
 .execution-list div {
 	margin-bottom: 20px;
 }
