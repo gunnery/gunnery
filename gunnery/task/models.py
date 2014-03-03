@@ -123,23 +123,6 @@ class ExecutionCommand(models.Model):
 	command = models.TextField()
 	roles = models.ManyToManyField(ServerRole)
 
-	def replace_params(self):
-		import calendar
-		format = '${%s}'
-		global_params = {
-			'application': self.execution.task.application.name,
-			'environment': self.execution.environment.name,
-			'task': self.execution.task.name,
-			'user': self.execution.user.email,
-			'time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
-		}
-		for name, value in global_params.items():
-			self.command = self.command.replace(format % name, value)
-
-		execution_params = self.execution.parameters.all()
-		for param in execution_params:
-			self.command = self.command.replace(format % param.name, param.value)
-
 class ExecutionCommandServer(models.Model):
 	PENDING = 3
 	RUNNING = 0
@@ -168,3 +151,41 @@ class ExecutionLiveLog(models.Model):
 	execution = models.ForeignKey(Execution, related_name="live_logs")
 	event = models.CharField(max_length=128)
 	data = models.TextField(blank=True)
+
+
+class ParameterParser(object):
+	parameter_format = '${%s}'
+	global_parameters = {
+		'gun_application': 'application name',
+		'gun_environment': 'environment name',
+		'gun_task': 'task name',
+		'gun_user': 'user email',
+		'gun_time': 'execution start timestamp'
+	}
+
+	def __init__(self, execution):
+		self.execution = execution
+		import calendar
+		self.global_parameter_values = {
+			'gun_application': self.execution.task.application.name,
+			'gun_environment': self.execution.environment.name,
+			'gun_task': self.execution.task.name,
+			'gun_user': self.execution.user.email,
+			'gun_time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
+		}
+
+	def process(self, cmd):
+		cmd = self._process_global_parameters(cmd)
+		cmd = self._process_parameters(cmd)
+		return cmd
+
+	def _process_global_parameters(self, cmd):
+		for name, value in self.global_parameter_values.items():
+			cmd = cmd.replace(self.parameter_format % name, value)
+		return cmd
+
+	def _process_parameters(self, cmd):
+		execution_params = self.execution.parameters.all()
+		for param in execution_params:
+			cmd = cmd.replace(self.parameter_format % param.name, param.value)
+		return cmd
