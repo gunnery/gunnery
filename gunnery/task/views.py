@@ -58,8 +58,9 @@ def task_execute_page(request, task_id, environment_id=None):
 				if name != 'environment':
 					ExecutionParameter(execution=execution, name=name, value=value).save()
 
+			parameter_parser = ParameterParser(execution)
 			for command in execution.commands.all():
-				command.replace_params()
+				command.command = parameter_parser.process(command.command)
 				command.save()
 			execution.start()
 			return redirect(execution)
@@ -99,6 +100,7 @@ def task_form_page(request, application_id = None, task_id = None):
 	data['form_parameters'] = form_parameters
 	data['form_commands'] = form_commands
 	data['server_roles'] = ServerRole.objects.all()
+	data['global_parameters'] = ParameterParser.global_parameters.items()
 	return render(request, 'page/task_form.html', data)
 
 def create_forms(request, task_id, args):
