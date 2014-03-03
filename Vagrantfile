@@ -17,7 +17,7 @@ Vagrant.configure("1") do |config|
     puppet.manifests_path = "puppet/manifests"
     puppet.module_path = "puppet/modules"
     puppet.manifest_file = "base.pp"
-    puppet.options = "--hiera_config /vagrant/puppet/manifests/hiera.yaml"
+    puppet.options = "--hiera_config /vagrant/puppet/manifests/hiera-vagrant.yaml"
     puppet.facter = {
         "environment" => "development",
     }

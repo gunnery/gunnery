@@ -1,8 +1,9 @@
 ---
 :hierarchy:
+    - vagrant
     - "%{::environment}"
     - common
 :backends:
     - yaml
 :yaml:
-    :datadir: "/var/gunnery/puppet/manifests/hieradata"
+    :datadir: "/vagrant/puppet/manifests/hieradata"
