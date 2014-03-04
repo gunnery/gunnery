@@ -4,6 +4,7 @@ from django.conf import settings
 import os
 
 class SecureFileStorage(object):
+	""" Handler for storing SSH keys per environment """
 	def __init__(self, uid):
 		self.files = {
 			'private_key': PrivateKey(uid),
@@ -20,6 +21,7 @@ class SecureFileStorage(object):
 
 
 class SecureFile(object):
+	""" Base class for secure file """
 	prefix = ''
 	def __init__(self, uid):
 		if isinstance(uid, int):
@@ -44,8 +46,11 @@ class SecureFile(object):
 		    pass
 
 class PrivateKey(SecureFile):
+	""" Private key handler """
 	prefix = 'private_key'
+	
 	def generate(self, comment, remove=True):
+		""" Generates private and public key files """
 		if remove:
 			Popen(['/bin/rm', self.get_file_name() ]).communicate()
 
@@ -68,7 +73,9 @@ class PrivateKey(SecureFile):
 		print stdout, stderr
 
 class PublicKey(SecureFile):
+	""" Public key handler """
 	prefix = 'public_key'
 
 class KnownHosts(SecureFile):
+	""" Known hosts file key handler """
 	prefix = 'known_hosts'
