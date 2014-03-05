@@ -21,20 +21,24 @@ def _dummy_callback( *args, **kwargs ):
 
 @app.task
 def generate_private_key(environment_id):
+	""" Generate publi and private key pair for environment """
 	environment = Environment.objects.get(pk=environment_id)
 	PrivateKey(environment_id).generate('Gunnery-' + environment.application.name + '-' + environment.name)
 
 @app.task
 def read_public_key(environment_id):
+	""" Return public key contents """
 	environment = Environment.objects.get(pk=environment_id)
 	return PublicKey(environment_id).read()
 
 @app.task
 def cleanup_files(environment_id):
+	""" Remove public, private and host keys for envirionment """
 	SecureFileStorage(environment_id).remove()
 
 
 def _trigger_event(execution_id, name, data={}, **kwargs):
+	""" Triggers execution event """
 	data = dict(data.items() + kwargs.items())
 	for key, value in data.items():
 		if key.startswith('time_'):
