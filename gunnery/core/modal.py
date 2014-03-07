@@ -25,6 +25,9 @@ def _get_app_modal(app):
 	return obj
 
 class BaseModal(object):
+	""" Base class for modal dialog boxes """
+
+	""" Defines associated types, their models and forms """
 	definitions = {}
 
 	def __init__(self, form_name, id=None, parent_id=None):
@@ -37,6 +40,7 @@ class BaseModal(object):
 			raise ValueError('Modal: Unknown form_name')
 
 	def create_form(self, request):
+		""" Returns form object """
 		return self.get_form_creator()(self.form_name, request, self.id, self.get_form_args())
 
 	def get_form_args(self):
@@ -46,6 +50,7 @@ class BaseModal(object):
 		return args
 
 	def render(self, request):
+		""" Returns rendered view """
 		form = self.create_form(request)
 		form = self.trigger_event('form_create', form)
 		form_template = 'partial/'+self.form_name+'_form.html'
@@ -83,6 +88,7 @@ class BaseModal(object):
 		return render(request, template, data)
 
 	def delete(self):
+		""" Handles delete on modal model """
 		instance = get_object_or_404(self.definition['model'], pk=self.id)
 		instance.delete()
 		data = {'status':True, 'action': 'reload'}
@@ -90,6 +96,7 @@ class BaseModal(object):
 		return HttpResponse(json.dumps(data), content_type="application/json")
 
 	def trigger_event(self, event, data={}):
+		""" Triggers modal event """
 		event = 'on_%s_%s' % (event, self.form_name)
 		try:
 			callback = getattr(self, event)
