@@ -1,0 +1,23 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Gunnery</title>
+    <link href="{% static "css/bootstrap.css" %}" rel="stylesheet">
+    <link href="{% static "core/css/base.css" %}" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="row">
+    	<div class="col col-md-12 text-center">
+	      <h1>{% block title%}{%endblock%}</h1>
+	      <img src="{% static "img/cat.jpg" %}" />
+	    </div>
+    </div>
+  </body>
+</html>
