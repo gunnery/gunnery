@@ -1,6 +1,8 @@
 from subprocess import Popen, PIPE, STDOUT
 
 class Server(object):
+	""" Creates SSH connection process and streams output """
+	
 	def __init__(self, host, user, private_key, known_hosts):
 		self.host = host
 		self.user = user
@@ -9,6 +11,7 @@ class Server(object):
 		self.verbose = False
 
 	def run(self, command):
+		""" Run command and return output stream """
 		self.command = command
 		self.format_command()
 		self.process = Popen(self.command_array, 
@@ -18,10 +21,12 @@ class Server(object):
 		return self.process.stdout
 
 	def get_status(self):
+		""" Get return code of command """
 		self.process.communicate()
 		return self.process.returncode
 
 	def format_command(self):
+		""" Prepare ssh command """
 		self.command_array =  [
 			'/usr/bin/ssh',
 
