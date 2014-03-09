@@ -13,14 +13,14 @@ class component::uwsgi {
     enable => true,
     hasrestart => true,
     hasstatus  => true,
-    require => [ File['apps-enabled config'], Class["component::virtualenv"] ]
+    require => [ File['sites-enabled config'], Class["component::virtualenv"] ]
   }
   
   # Prepare directories
-  file { ['/etc/uwsgi', '/etc/uwsgi/apps-available', '/etc/uwsgi/apps-enabled']: 
+  file { ['/etc/uwsgi', '/etc/uwsgi/sites-available', '/etc/uwsgi/sites-enabled']: 
     ensure => directory,
     require => Class["component::virtualenv"],
-    before => File['apps-available config'],
+    before => File['sites-available config'],
     recurse => true, 
     purge   => true, 
   }
@@ -34,18 +34,18 @@ class component::uwsgi {
   }
   
   # Vassals ini file
-  file { 'apps-available config':
-    path => "/etc/uwsgi/apps-available/${domain_name}.ini",
+  file { 'sites-available config':
+    path => "/etc/uwsgi/sites-available/${domain_name}.ini",
     ensure => file,
     content => template("component/uwsgi.ini.erb"),
     notify => Service['uwsgi']
   }
   
-  file { 'apps-enabled config':
-    path => "/etc/uwsgi/apps-enabled/${domain_name}.ini",
+  file { 'sites-enabled config':
+    path => "/etc/uwsgi/sites-enabled/${domain_name}.ini",
     ensure => link,
-    target => "/etc/uwsgi/apps-available/${domain_name}.ini",
-    require => File['apps-available config']
+    target => "/etc/uwsgi/sites-available/${domain_name}.ini",
+    require => File['sites-available config']
   }
   
 }

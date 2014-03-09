@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 ### BEGIN INIT INFO
 # Provides:          uwsgi
@@ -9,58 +9,177 @@
 # Short-Description: starts the uwsgi app server
 # Description:       starts uwsgi app server using start-stop-daemon
 ### END INIT INFO
+set -e
 
-PATH="/opt/uwsgi:/sbin:/bin:/usr/sbin:/usr/bin"
 LOGTO="<%= @log_path %>/uwsgi.emperor.log"
 PIDFILE="<%= @run_path %>/uwsgi.emperor.pid"
-DAEMON="<%= @virtualenv_path %>/bin/uwsgi"
-DAEMON_OPTS="-d --master --die-on-term --emperor /etc/uwsgi/apps-enabled --logto $LOGTO"
+DAEMON="<%= @virtualenv_path%>/bin/uwsgi"
 
+VERSION=$(basename $0)
+PATH=/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+ENABLED_CONFIGS_DIR=/etc/uwsgi/sites-enabled
+AVAILABLE_CONFIGS_DIR=/etc/uwsgi/sites-available
 OWNER=root
-NAME=uwsgi
-DESC=uwsgi
+NAME=$VERSION
+DESC=$VERSION
+OP=$1
 
-function start_service {
-	echo -n "Starting $DESC: "
-	start-stop-daemon --start --chuid $OWNER:$OWNER --user $OWNER --make-pidfile --pidfile $PIDFILE --exec $DAEMON -- $DAEMON_OPTS
-	echo "done"
+[[ -x $DAEMON ]] || exit 0
+
+DAEMON_OPTS=""
+
+# Include uwsgi defaults if available
+if [[ -f /etc/default/$VERSION ]]; then
+    . /etc/default/$VERSION
+fi
+
+do_pid_check()
+{
+    [[ -f $PIDFILE ]] || return 0
+    local PID=$(cat $PIDFILE)
+    for p in $(pgrep $VERSION); do
+        [[ $p == $PID ]] && return 1
+    done
+    return 0
 }
 
-function stop_service {
-	echo -n "Stopping $DESC: "
-	start-stop-daemon --signal 3 --user $OWNER --quiet --retry 2 --stop --exec $DAEMON
-	echo "done"
+
+do_start()
+{
+    local START_OPTS=" \
+    	-d --master --die-on-term \
+        --emperor $ENABLED_CONFIGS_DIR \
+        --pidfile $PIDFILE \
+        --logto $LOGTO \
+        "
+    if do_pid_check $PIDFILE; then
+        sudo -u $OWNER -i $DAEMON $DAEMON_OPTS $START_OPTS
+    else
+        echo "Already running!"
+    fi
 }
 
-function status_service {
-	start-stop-daemon --status --pidfile $PIDFILE --exec $DAEMON
+send_sig()
+{
+    set +e
+    [[ -f $PIDFILE ]] && kill $1 $(cat $PIDFILE) > /dev/null 2>&1
+    set -e
 }
 
-test -x $DAEMON || exit 0
-case "$1" in
-	start)
-		status_service || start_service
-		;;
-	stop)
-		status_service && stop_service
-		;;
-	reload)
-		killall -1 $DAEMON
-		;;
-	force-reload)
-		killall -15 $DAEMON
-		;;
-	restart)
-		status_service && stop_service
-		start_service
-		;;
-	status)  
-		status_service
-		;;
-	*)  
-		N=/etc/init.d/$NAME
-		echo "Usage: $N {start|stop|restart|reload|force-reload|status}" >&2
-		exit 1
-		;;
+wait_and_clean_pidfile()
+{
+    until do_pid_check $PIDFILE; do
+        echo -n "";
+    done
+    rm -f $PIDFILE
+}
+
+do_stop()
+{
+    send_sig -3
+    wait_and_clean_pidfile
+}
+
+do_reload()
+{
+    send_sig -1
+}
+
+do_force_reload()
+{
+    send_sig -15
+}
+
+get_status()
+{
+    send_sig -10
+}
+
+enable_configs()
+{
+    local configs
+
+    if [[ $# -eq 0 || ${1,,} = 'all' ]]; then
+        configs=$(diff $AVAILABLE_CONFIGS_DIR $ENABLED_CONFIGS_DIR \
+            | grep $AVAILABLE_CONFIGS_DIR \
+            | sed -re 's#.+: (.+)$#\1#')
+    else
+        configs=$@
+    fi
+
+    for c in $configs; do
+        echo -n "Enabling $c..."
+        [[ -f $ENABLED_CONFIGS_DIR/$c ]] && echo "Skipped" && continue
+        [[ -f $AVAILABLE_CONFIGS_DIR/$c ]] && \
+            ln -s $AVAILABLE_CONFIGS_DIR/$c $ENABLED_CONFIGS_DIR && \
+            echo "Done" && \
+            continue
+        echo "Error"
+    done
+}
+
+disable_configs()
+{
+    local configs
+    if [[ $# -eq 0 || ${1,,} = 'all' ]]; then
+        configs=$(find $ENABLED_CONFIGS_DIR -type l -exec basename {} \;)
+    else
+        configs=$@
+    fi
+
+    for c in $configs; do
+        local config_path="$ENABLED_CONFIGS_DIR/$c"
+        echo -n "Disabling $c..."
+        [[ ! -L $config_path ]] && echo "Skipped" && continue
+        [[ -f $config_path ]] && rm $config_path && echo "Done" && continue
+        echo "Error"
+    done
+}
+
+case "$OP" in
+    start)
+        echo "Starting $DESC: "
+        do_start
+        echo "$NAME."
+        ;;
+    stop)
+        echo -n "Stopping $DESC: "
+        do_stop
+        echo "$NAME."
+        ;;
+    reload)
+        echo -n "Reloading $DESC: "
+        do_reload
+        echo "$NAME."
+        ;;
+    force-reload)
+        echo -n "Force-reloading $DESC: "
+        do_force_reload
+        echo "$NAME."
+       ;;
+    restart)
+        echo  "Restarting $DESC: "
+        do_stop
+        sleep 1
+        do_start
+        echo "$NAME."
+        ;;
+    status)
+        pgrep --pidfile $PIDFILE >/dev/null 2>&1 && echo Running || echo Stopped
+        ;;
+    enable)
+        shift
+        enable_configs $@
+        ;;
+    disable)
+        shift
+        disable_configs $@
+        ;;
+    *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart|reload|force-reload|status"
+            "|enable|disable}">&2
+        exit 1
+        ;;
 esac
 exit 0
