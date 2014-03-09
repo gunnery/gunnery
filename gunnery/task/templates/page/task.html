@@ -18,6 +18,8 @@
 
 {% include "partial/execution_list_inline.html" with list=task.executions_inline model_name='task' id=task.id %}
 
+<p>{{task.description}}</p>
+
 {% if task.parameters.count %}
 <ul class="parameters">
 	{% for parameter in task.parameters_ordered %}
