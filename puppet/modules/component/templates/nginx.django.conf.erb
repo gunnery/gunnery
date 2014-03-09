@@ -16,4 +16,9 @@ server {
                 root <%= @app_path %>/;
                 try_files $uri /core$uri /task$uri /gunnery$uri /404;
         }
+
+        error_page 502 /502.html;
+        location = /502.html {
+                root /var/gunnery/gunnery/core/templates/;
+        }
 }
