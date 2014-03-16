@@ -11,7 +11,7 @@ If your application is divided into multiple servers, you are probably connectin
 * Supports capistrano, ant, phing, fabric, make, puppet, or any other tool
 * Supports multistaging environments, and server grouping
 * Usable for deployment, service control, backups
-* Commands are executed via SHH with key authorization
+* Commands are executed via SSH with key authorization
 * Clear, responsive interface
 
 ### Screenshots
