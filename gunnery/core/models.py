@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_delete
+from django.db.models.signals import post_delete, post_save
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
@@ -67,21 +67,19 @@ class Environment(models.Model):
 
         return Execution.get_inline_by_environment(self.id)
 
-    def save(self, *args, **kwargs):
-        is_new = not self.id
-        super(Environment, self).save(*args, **kwargs)
-        if is_new:
+    @staticmethod
+    def generate_keys(sender, instance, created, **kwargs):
+        if created:
             from backend.tasks import generate_private_key
-
-            generate_private_key.delay(environment_id=self.id)
+            generate_private_key.delay(environment_id=instance.id)
 
     @staticmethod
     def cleanup_files(sender, instance, **kwargs):
         from backend.tasks import cleanup_files
-
         cleanup_files.delay(instance.id)
 
 
+post_save.connect(Environment.generate_keys, sender=Environment)
 post_delete.connect(Environment.cleanup_files, sender=Environment)
 
 
