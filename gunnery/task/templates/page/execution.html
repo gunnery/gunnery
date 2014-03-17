@@ -7,83 +7,95 @@
 {% endblock %}
 
 {% block content %}
-<h1>{% model_icon 'execution' %} <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
-	<small class="execution-label">{% execution_status execution.status %}</small>
-	<a href="{% url 'task_execute_page' task_id=execution.task.id environment_id=execution.environment.id %}" 
-		role="button" class="btn btn-default pull-right" id="execute-button"
-		{% if execution.status == execution.PENDING or execution.status == execution.RUNNING %}style="display:none"{% endif %}><i class="fa fa-bolt"></i> Execute</a>
-</h1>
-<div class="clearfix"></div>
+    <h1>{% model_icon 'execution' %} <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
+        <small class="execution-label">{% execution_status execution.status %}</small>
+        <a href="{% url 'task_execute_page' task_id=execution.task.id environment_id=execution.environment.id %}"
+           role="button" class="btn btn-default pull-right" id="execute-button"
+           {% if execution.status == execution.PENDING or execution.status == execution.RUNNING %}style="display:none"{% endif %}><i
+                class="fa fa-bolt"></i> Execute</a>
+    </h1>
+    <div class="clearfix"></div>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="{{ execution.task.application.get_absolute_url }}">{% model_icon 'application' %} {{ execution.task.application.name }}</a></li>
-	<li><a href="{{ execution.environment.get_absolute_url }}">{% model_icon 'environment' %} {{ execution.environment.name }}</a></li>
-	<li><a href="{{ execution.task.get_absolute_url }}">{% model_icon 'task' %} {{ execution.task.name }}</a></li>
-	<li class="active">{% model_icon 'execution' %} Execution</li>
-</ol>
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li>
+            <a href="{{ execution.task.application.get_absolute_url }}">{% model_icon 'application' %} {{ execution.task.application.name }}</a>
+        </li>
+        <li>
+            <a href="{{ execution.environment.get_absolute_url }}">{% model_icon 'environment' %} {{ execution.environment.name }}</a>
+        </li>
+        <li><a href="{{ execution.task.get_absolute_url }}">{% model_icon 'task' %} {{ execution.task.name }}</a></li>
+        <li class="active">{% model_icon 'execution' %} Execution</li>
+    </ol>
 
-<ul class="parameters">
-	{% for parameter in execution.parameters.all %}
-	<li>{{parameter.name}} = {{parameter.value}}</li>
-	{% endfor %}
-</ul>
+    <ul class="parameters">
+        {% for parameter in execution.parameters.all %}
+            <li>{{ parameter.name }} = {{ parameter.value }}</li>
+        {% endfor %}
+    </ul>
 
-<div id="execution"
-	data-execution-id="{{execution.id}}"
-	data-execution-status="{{execution.status}}">
+    <div id="execution"
+         data-execution-id="{{ execution.id }}"
+         data-execution-status="{{ execution.status }}">
 
-	<div>
-		{% model_icon 'user' %} <a href="{{execution.user.get_absolute_url}}">{{execution.user.get_full_name}}</a>
-	</div>
+        <div>
+            {% model_icon 'user' %} <a
+                href="{{ execution.user.get_absolute_url }}">{{ execution.user.get_full_name }}</a>
+        </div>
 
-	<div class="text-muted">
-		<i class="fa fa-clock-o"></i>
+        <div class="text-muted">
+            <i class="fa fa-clock-o"></i>
 		<span class="execution-time-start">
-			{% if execution.time_start != None %}{{execution.time_start}}{%else%}pending{%endif%}
+			{% if execution.time_start != None %}{{ execution.time_start }}{% else %}pending{% endif %}
 		</span>
-	</div>
-	
-	{% for command in execution.commands.all %}
-	<div class="command {% if command.servers.first.time_start == None %}text-muted{%endif%}">
-		{{command.command}}
-		{% for role in command.roles.all %}
-			<span class="label label-default">{{role.name}}</span>
-		{% endfor %}
-		{% for server in command.servers.all %}
-			<div class="server {% if server.time_start == None %}text-muted{%endif%}" data-command-server-id="{{server.id}}">
-				<div><b>{{server.server.name}}</b> ({{server.server.host}})</div>
-				<pre>{{server.output}}</pre>
-				<div class="server-status">
-				{% if server.time != None %}
-					{% if server.status == server.SUCCESS %}
-						<span class="text-success">finished in {{server.time}} s</span>
-					{% else %}
-						<span class="text-danger">failed with code {{server.return_code}} after {{server.time}} s</span>
-					{% endif %}
-				{% endif %}
-				</div>
-			</div>
-		{% endfor %}
-	</div>
-	{% endfor %}
-	
-	<div class="text-muted">
-		<i class="fa fa-clock-o" {% if not execution.time_end %}style="display:none"{% endif %}></i>
+        </div>
+
+        {% for command in execution.commands.all %}
+            <div class="command {% if command.servers.first.time_start == None %}text-muted{% endif %}">
+                {{ command.command }}
+                {% for role in command.roles.all %}
+                    <span class="label label-default">{{ role.name }}</span>
+                {% endfor %}
+                {% for server in command.servers.all %}
+                    <div class="server {% if server.time_start == None %}text-muted{% endif %}"
+                         data-command-server-id="{{ server.id }}">
+                        <div><b>{{ server.server.name }}</b> ({{ server.server.host }})</div>
+                        <pre>{{ server.output }}</pre>
+                        <div class="server-status">
+                            {% if server.time != None %}
+                                {% if server.status == server.SUCCESS %}
+                                    <span class="text-success">finished in {{ server.time }} s</span>
+                                {% else %}
+                                    <span class="text-danger">failed with code {{ server.return_code }} after {{ server.time }} s</span>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
+        <div class="text-muted">
+            <i class="fa fa-clock-o" {% if not execution.time_end %}style="display:none"{% endif %}></i>
 		<span class="execution-time-end">
-			{% if execution.time_end %}{{execution.time_end}}{% endif %}
+			{% if execution.time_end %}{{ execution.time_end }}{% endif %}
 		</span>
 		<span class="execution-time">
-			{% if execution.time %}{{execution.time}} s{% endif %}
+			{% if execution.time %}{{ execution.time }} s{% endif %}
 		</span>
-	</div>
-	
-</div>
-<script type="text/javascript">
-var statusDict = {
-{% for status in execution.STATUS_CHOICES %}
-{{status.0}}: { name: "{{status.1}}", label: "{% filter addslashes %}{% execution_status status.0 %}{% endfilter %}"},
-{% endfor %}
-};
-</script>
+        </div>
+
+    </div>
+    <script type="text/javascript">
+        var statusDict = {
+        {% for status in execution.STATUS_CHOICES %}
+            {{status.0}}: {
+            name: "{{status.1}}", label
+        :
+            "{% filter addslashes %}{% execution_status status.0 %}{% endfilter %}"
+        },
+        {% endfor %}
+        }
+        ;
+    </script>
 {% endblock %}

@@ -1,31 +1,42 @@
 {% load core_extras %}
 
 <div class="row">
-  <div class="col col-sm-offset-1 col-sm-9 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 ">
-    <button type="button" class="btn btn-default btn-sm pull-right"
-      data-toggle="modal" 
-      data-remote="{% url 'modal_form' app='account' form_name='user' %}" 
-      data-target="#large-modal">
-      <i class="fa fa-plus"></i> Create</button>
-    <br/>
-    <br/>
-
-    <div class="table-responsive">
-      <table class="table table-hover tablesorter">
-        <tbody>
-          {% for user in users %}
-          <tr>
-            <td><a href="{{user.get_absolute_url}}">{{user.get_full_name}}</a></td>
-            <td class="text-right">
-              <button type="submit" class="btn btn-default btn-xs"
-                data-toggle="modal" 
-                data-remote="{% url 'modal_form' app='account' form_name='user' id=user.id %}" 
+    <div class="col col-sm-offset-1 col-sm-9 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 ">
+        <button type="button" class="btn btn-default btn-sm pull-right"
+                data-toggle="modal"
+                data-remote="{% url 'modal_form' app='account' form_name='user' %}"
                 data-target="#large-modal">
-                <i class="fa fa-edit"></i></button></td>
-          </tr>
-          {% endfor %}
-        </tbody>
-      </table>
+            <i class="fa fa-plus"></i> Create
+        </button>
+        <br/>
+        <br/>
+
+        <div class="table-responsive">
+            <table class="table table-hover tablesorter">
+                <tbody>
+                {% for luser in users %}
+                    <tr>
+                        <td><a href="{{ luser.get_absolute_url }}">{{ luser.get_full_name }}</a>
+                            {% if luser.is_staff %}<span class="label label-default">staff</span>{% endif %}
+                        </td>
+                        <td class="text-right">
+                            {% if user.is_staff %}
+                            <button type="submit" class="btn btn-default btn-xs"
+                                    data-toggle="modal"
+                                    data-remote="{% url 'modal_permissions' id=luser.id %}"
+                                    data-target="#large-modal">
+                                <i class="fa fa-lock"></i></button>
+                            {% endif %}
+                            <button type="submit" class="btn btn-default btn-xs"
+                                    data-toggle="modal"
+                                    data-remote="{% url 'modal_form' app='account' form_name='user' id=luser.id %}"
+                                    data-target="#large-modal">
+                                <i class="fa fa-edit"></i></button>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
-  </div>
 </div>

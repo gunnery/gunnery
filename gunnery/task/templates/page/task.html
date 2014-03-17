@@ -2,41 +2,46 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'task' %} <span class="long-title">Task</span> <em>{{task.name}}</em> 
-	<div class=" pull-right">
-		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i class="fa fa-bolt"></i> Execute</a>
-		<a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-default"><i class="fa fa-edit"></i></a> 
-	</div>
-</h1>
-<div class="clearfix"></div>
+    <h1>{% model_icon 'task' %} <span class="long-title">Task</span> <em>{{ task.name }}</em>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="{{ task.application.get_absolute_url }}">{% model_icon 'application' %} {{task.application.name}}</a></li>
-	<li class="active">{% model_icon 'task' %} {{task.name}}</li>
-</ol>
+        <div class=" pull-right">
+            <a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i
+                    class="fa fa-bolt"></i> Execute</a>
+            <a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-default"><i
+                    class="fa fa-edit"></i></a>
+        </div>
+    </h1>
+    <div class="clearfix"></div>
 
-{% include "partial/execution_list_inline.html" with list=task.executions_inline model_name='task' id=task.id %}
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li>
+            <a href="{{ task.application.get_absolute_url }}">{% model_icon 'application' %} {{ task.application.name }}</a>
+        </li>
+        <li class="active">{% model_icon 'task' %} {{ task.name }}</li>
+    </ol>
 
-<p>{{task.description}}</p>
+    {% include "partial/execution_list_inline.html" with list=task.executions_inline model_name='task' id=task.id %}
 
-{% if task.parameters.count %}
-<ul class="parameters">
-	{% for parameter in task.parameters_ordered %}
-	<li>{{parameter.name}}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-<p>&nbsp;</p>
+    <p>{{ task.description }}</p>
 
-<div id="execution">
-	{% for command in task.commands_ordered %}
-	<div class="command">{{command.command}}
-		{% for role in command.roles.all %}
-		<span class="label label-default">{{role.name}}</span>
-		{% endfor %}
-	</div>
-	{% endfor %}
-</div>
+    {% if task.parameters.count %}
+        <ul class="parameters">
+            {% for parameter in task.parameters_ordered %}
+                <li>{{ parameter.name }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <p>&nbsp;</p>
+
+    <div id="execution">
+        {% for command in task.commands_ordered %}
+            <div class="command">{{ command.command }}
+                {% for role in command.roles.all %}
+                    <span class="label label-default">{{ role.name }}</span>
+                {% endfor %}
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

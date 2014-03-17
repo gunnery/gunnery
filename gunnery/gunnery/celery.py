@@ -16,8 +16,8 @@ app = Celery('gunnery')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.conf.update(
-    CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend',
-	CELERY_RESULT_SERIALIZER = "json",
-	CELERY_TASK_SERIALIZER = "json",
-	CELERY_CHORD_PROPAGATES = False,
+    CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend',
+    CELERY_RESULT_SERIALIZER="json",
+    CELERY_TASK_SERIALIZER="json",
+    CELERY_CHORD_PROPAGATES=False,
 )

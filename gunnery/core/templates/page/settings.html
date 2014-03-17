@@ -2,29 +2,72 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'settings' %} Settings</h1>
+    <h1>{% model_icon 'settings' %} Settings</h1>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li class="active">{% model_icon 'settings' %} Settings</li>
-</ol>
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li class="active">{% model_icon 'settings' %} Settings</li>
+        <li class="active">{% model_icon 'settings' %} {{ section }}</li>
+        <li class="active">{% model_icon 'settings' %} {{ subsection }}</li>
+    </ol>
 
-<!-- Nav tabs -->
-<ul class="nav nav-tabs">
-  <li {% if section == 'applications' %}class="active"{% endif %}>
-  	<a href="{% url 'settings_page' section='applications' %}">{% model_icon 'application' %} Applications</a></li>
-  <li {% if section == 'users' %}class="active"{% endif %}>
-  	<a href="{% url 'settings_page' section='users' %}">{% model_icon 'user' %} Users</a></li>
-  <li {% if section == 'serverroles' %}class="active"{% endif %}>
-  	<a href="{% url 'settings_page' section='serverroles' %}">{% model_icon 'serverrole' %} Server Roles</a></li>
-</ul>
+    <ul id="settings" class="nav nav-pills">
+        <li class="dropdown {% if section == 'user' %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                User <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li {% if subsection == 'profile' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='user' subsection='profile' %}">{% model_icon 'user' %}
+                        Profile</a></li>
+                <li {% if subsection == 'password' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='user' subsection='password' %}">{% model_icon 'user' %} Change
+                        Password</a></li>
+            </ul>
+        </li>
 
-{% if section == 'serverroles' %}
-	{% include 'partial/serverrole_list.html' %}
-{% elif section == 'applications' %}
-	{% include 'partial/application_list.html' %}
-{% elif section == 'users' %}
-	{% include 'partial/user_list.html' %}
-{% endif %}
+        <li class="dropdown {% if section == 'department' %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                Department <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li {% if subsection == 'applications' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='department' subsection='applications' %}">{% model_icon 'application' %}
+                        Applications</a></li>
+                <li {% if section == 'department' and subsection == 'users' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='department' subsection='users' %}">{% model_icon 'user' %}
+                        Users</a></li>
+    {#            <li {% if subsection == 'groups' %}class="active"{% endif %}>#}
+    {#                <a href="{% url 'settings_page' section='department' subsection='groups' %}">{% model_icon 'group' %}#}
+    {#                    Groups</a></li>#}
+                <li {% if subsection == 'serverroles' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='department' subsection='serverroles' %}">{% model_icon 'serverrole' %}
+                        Server Roles</a></li>
+            </ul>
+        </li>
+
+        {% if user.is_staff %}
+        <li class="dropdown {% if section == 'system' %}active{% endif %}">
+            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                System <span class="caret"></span>
+            </a>
+            <ul class="dropdown-menu">
+                <li {% if subsection == 'departments' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='system' subsection='departments' %}">{% model_icon 'department' %}
+                        Departments</a></li>
+                <li {% if section == 'system' and subsection == 'users' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='system' subsection='users' %}">{% model_icon 'user' %}
+                        Users</a></li>
+            </ul>
+        </li>
+        {% endif %}
+    </ul>
+
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+    {% block subsection_content %}
+        {% include subsection_template %}
+    {% endblock subsection_content %}
 
 {% endblock %}

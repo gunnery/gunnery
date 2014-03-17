@@ -1,10 +1,10 @@
 from django.forms import *
 from django.forms.widgets import Textarea, SelectMultiple, HiddenInput
-from django.forms.models import modelformset_factory
-from django.db import models
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import *
+from django.http import Http404
+
 from .models import *
+
 
 class ModalForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -16,6 +16,7 @@ class ModalForm(ModelForm):
         self.helper.field_class = 'col-sm-7'
         self.helper.label_size = ' col-sm-offset-3'
 
+
 class PageForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(PageForm, self).__init__(*args, **kwargs)
@@ -25,16 +26,18 @@ class PageForm(ModelForm):
         self.helper.label_class = 'col-sm-3'
         self.helper.field_class = 'col-sm-7'
 
+
 class TagSelect(SelectMultiple):
     def __init__(self, *args, **kwargs):
         super(TagSelect, self).__init__(*args, **kwargs)
-        self.attrs = {'class':'chosen-select', 'data-placeholder': ' '}
+        self.attrs = {'class': 'chosen-select', 'data-placeholder': ' '}
         if 'attrs' in kwargs and 'data-placeholder' in kwargs['attrs']:
             self.attrs['data-placeholder'] = kwargs['attrs']['data-placeholder']
 
 
 class ServerRoleField(ModelMultipleChoiceField):
     widget = TagSelect
+
     def __init__(self, *args, **kwargs):
         kwargs['queryset'] = ServerRole.objects.all()
         super(ServerRoleField, self).__init__(*args, **kwargs)
@@ -45,28 +48,39 @@ class ApplicationForm(ModalForm):
     class Meta:
         model = Application
         fields = ['name', 'description']
-        widgets = {'description': Textarea(attrs={'rows': 2}) }
+        widgets = {'description': Textarea(attrs={'rows': 2})}
+
 
 class EnvironmentForm(ModalForm):
     class Meta:
         model = Environment
         fields = ['name', 'description', 'application']
         widgets = {'description': Textarea(attrs={'rows': 2}),
-            'application': HiddenInput() }
+                   'application': HiddenInput()}
+
 
 class ServerForm(ModalForm):
     roles = ServerRoleField()
+
     class Meta:
         model = Server
         fields = ['name', 'host', 'user', 'roles', 'environment']
         widgets = {'roles': TagSelect(),
-            'environment': HiddenInput() }
+                   'environment': HiddenInput()}
+
 
 class ServerRoleForm(ModalForm):
     class Meta:
         model = ServerRole
         fields = ['name']
-        
+
+
+class DepartmentForm(ModalForm):
+    class Meta:
+        model = Department
+        fields = ['name']
+
+
 def create_form(form_objects, name, request, id, args={}):
     """ Helper function for creating form object """
     if not name in form_objects:
@@ -79,13 +93,15 @@ def create_form(form_objects, name, request, id, args={}):
         form = form_objects[name](request.POST or None, instance=instance)
     return form
 
+
 def core_create_form(name, request, id, args={}):
     """ Helper function for creating core form object """
     form_objects = {
         'application': ApplicationForm,
         'environment': EnvironmentForm,
         'server': ServerForm,
-        'serverrole': ServerRoleForm
+        'serverrole': ServerRoleForm,
+        'department': DepartmentForm
     }
     return create_form(form_objects, name, request, id, args)
 

@@ -1,76 +1,77 @@
-
 /** TASK **/
-.execution-list-inline .label{
-	display: block;
-	margin: -17px 0 0 0;
+.execution-list-inline .label {
+    display: block;
+    margin: -17px 0 0 0;
 }
 
 .execution-list-inline .well:hover {
-	background: #f0f0f0;
-	cursor: pointer;
+    background: #f0f0f0;
+    cursor: pointer;
 }
+
 .execution-list-inline .well:hover a {
-	text-decoration: underline;
-	color: #2a6496;
+    text-decoration: underline;
+    color: #2a6496;
 }
 
 .execution-list-inline .list-inline {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .execution-list-inline li {
-	padding-left: 0;
+    padding-left: 0;
 }
 
 .execution-list div {
-	margin-bottom: 20px;
+    margin-bottom: 20px;
 }
 
 .execution-list-inline .list-inline, .execution-list .list-inline {
-	color: #666;
+    color: #666;
 }
 
-#execution, .parameters  {
-	font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
-	list-style: none;
+#execution, .parameters {
+    font-family: Monaco, Menlo, Consolas, "Courier New", monospace;
+    list-style: none;
 }
 
 #execution .server {
-	padding-left: 30px;
+    padding-left: 30px;
 }
 
 /** subform **/
 .subform-multiple a i.fa {
-	cursor: pointer;
-	text-decoration: none;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 .subform-multiple .actions {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .form-group .actions a {
-	color: #dadada;
+    color: #dadada;
 }
 
 .form-group:hover .actions a {
-	color: #428bca;
+    color: #428bca;
 }
 
-
 @media (max-width: 768px) {
-	.row label {
-		margin-left: 16px;
-	}
-	.subform-multiple input {
-		margin-bottom: 10px;
-	}
-	.subform-multiple .form-group {
-		margin-bottom: 30px;
-	}
+    .row label {
+        margin-left: 16px;
+    }
+
+    .subform-multiple input {
+        margin-bottom: 10px;
+    }
+
+    .subform-multiple .form-group {
+        margin-bottom: 30px;
+    }
 }

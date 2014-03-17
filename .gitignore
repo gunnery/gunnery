@@ -3,3 +3,4 @@ development.txt
 gunnery/gunnery/static
 .coverage
 .vagrant
+.idea

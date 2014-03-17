@@ -2,57 +2,63 @@
 {% load humanize %}
 
 {% if not notitle and list|length > 0 %}
-<h3>Activity <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id  %}"><span class="text-muted">View full history</span></a></small></h3>
+    <h3>Activity
+        <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id %}"><span class="text-muted">View full history</span></a>
+        </small>
+    </h3>
 {% else %}
-<br/>
+    <br/>
 {% endif %}
 {% if list|length %}
-<div class="row execution-list-inline">
-	<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
-		<div class="well well-sm">
-			<span class="pull-right">{% execution_status list.0.status %}</span>
-			<a href="{{list.0.get_absolute_url}}">{{list.0.environment.name}} / {{list.0.task.name}}</a><br/>
-			<ul class="list-inline">
-			    <li>{% model_icon 'user' %} {{list.0.user.get_full_name}}</li>
-			    <li><i class="fa fa-clock-o"></i> {{list.0.time_created|naturaltime}}</li>
-			</ul>
-		</div>
-	</div>
-	{% if list.1 %}
-	<div class="col-sm-6 col-md-4 col-lg-3 hidden-xs">
-		<div class="well well-sm">
-			<span class="pull-right">{% execution_status list.1.status %}</span>
-			<a href="{{list.1.get_absolute_url}}">{{list.1.environment.name}} / {{list.1.task.name}}</a><br/>
-			<ul class="list-inline">
-			    <li>{% model_icon 'user' %} {{list.1.user.get_full_name}}</li>
-			    <li><i class="fa fa-clock-o"></i> {{list.1.time_created|naturaltime}}</li>
-			</ul>
-		</div>
-	</div>
-	{% endif %}
-	{% if list.2 %}
-	<div class="col-xs-4 col-md-4 col-lg-3 hidden-xs hidden-sm">
-		<div class="well well-sm">
-			<span class="pull-right">{% execution_status list.2.status %}</span>
-			<a href="{{list.2.get_absolute_url}}">{{list.2.environment.name}} / {{list.2.task.name}}</a><br/>
-			<ul class="list-inline">
-			    <li>{% model_icon 'user' %} {{list.2.user.get_full_name}}</li>
-			    <li><i class="fa fa-clock-o"></i> {{list.2.time_created|naturaltime}}</li>
-			</ul>
-		</div>
-	</div>
-	{% endif %}
-	{% if list.3 %}
-	<div class="col-xs-4 col-lg-3 hidden-xs hidden-sm hidden-md">
-		<div class="well well-sm">
-			<span class="pull-right">{% execution_status list.3.status %}</span>
-			<a href="{{list.3.get_absolute_url}}">{{list.3.environment.name}} / {{list.3.task.name}}</a><br/>
-			<ul class="list-inline">
-			    <li>{% model_icon 'user' %} {{list.3.user.get_full_name}}</li>
-			    <li><i class="fa fa-clock-o"></i> {{list.3.time_created|naturaltime}}</li>
-			</ul>
-		</div>
-	</div>
-	{% endif %}
-</div>
+    <div class="row execution-list-inline">
+        <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
+            <div class="well well-sm">
+                <span class="pull-right">{% execution_status list.0.status %}</span>
+                <a href="{{ list.0.get_absolute_url }}">{{ list.0.environment.name }} / {{ list.0.task.name }}</a><br/>
+                <ul class="list-inline">
+                    <li>{% model_icon 'user' %} {{ list.0.user.get_full_name }}</li>
+                    <li><i class="fa fa-clock-o"></i> {{ list.0.time_created|naturaltime }}</li>
+                </ul>
+            </div>
+        </div>
+        {% if list.1 %}
+            <div class="col-sm-6 col-md-4 col-lg-3 hidden-xs">
+                <div class="well well-sm">
+                    <span class="pull-right">{% execution_status list.1.status %}</span>
+                    <a href="{{ list.1.get_absolute_url }}">{{ list.1.environment.name }}
+                        / {{ list.1.task.name }}</a><br/>
+                    <ul class="list-inline">
+                        <li>{% model_icon 'user' %} {{ list.1.user.get_full_name }}</li>
+                        <li><i class="fa fa-clock-o"></i> {{ list.1.time_created|naturaltime }}</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        {% if list.2 %}
+            <div class="col-xs-4 col-md-4 col-lg-3 hidden-xs hidden-sm">
+                <div class="well well-sm">
+                    <span class="pull-right">{% execution_status list.2.status %}</span>
+                    <a href="{{ list.2.get_absolute_url }}">{{ list.2.environment.name }}
+                        / {{ list.2.task.name }}</a><br/>
+                    <ul class="list-inline">
+                        <li>{% model_icon 'user' %} {{ list.2.user.get_full_name }}</li>
+                        <li><i class="fa fa-clock-o"></i> {{ list.2.time_created|naturaltime }}</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+        {% if list.3 %}
+            <div class="col-xs-4 col-lg-3 hidden-xs hidden-sm hidden-md">
+                <div class="well well-sm">
+                    <span class="pull-right">{% execution_status list.3.status %}</span>
+                    <a href="{{ list.3.get_absolute_url }}">{{ list.3.environment.name }}
+                        / {{ list.3.task.name }}</a><br/>
+                    <ul class="list-inline">
+                        <li>{% model_icon 'user' %} {{ list.3.user.get_full_name }}</li>
+                        <li><i class="fa fa-clock-o"></i> {{ list.3.time_created|naturaltime }}</li>
+                    </ul>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endif %}

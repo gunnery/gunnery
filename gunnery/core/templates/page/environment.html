@@ -2,29 +2,32 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'environment' %} <span class="long-title">Environment</span> <em>{{ environment.name }}</em>
-	<button type="submit" class="btn btn-default pull-right"
-		data-toggle="modal" 
-		data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}" 
-		data-target="#large-modal">
-		<i class="fa fa-edit"></i></button></h1>
-<div class="clearfix"></div>
+    <h1>{% model_icon 'environment' %} <span class="long-title">Environment</span> <em>{{ environment.name }}</em>
+        <button type="submit" class="btn btn-default pull-right"
+                data-toggle="modal"
+                data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}"
+                data-target="#large-modal">
+            <i class="fa fa-edit"></i></button>
+    </h1>
+    <div class="clearfix"></div>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="{{ environment.application.get_absolute_url }}">{% model_icon 'application' %} {{ environment.application.name }}</a></li>
-	<li class="active">{% model_icon 'environment' %} {{ environment.name }}</li>
-</ol>
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li>
+            <a href="{{ environment.application.get_absolute_url }}">{% model_icon 'application' %} {{ environment.application.name }}</a>
+        </li>
+        <li class="active">{% model_icon 'environment' %} {{ environment.name }}</li>
+    </ol>
 
-{% include "partial/execution_list_inline.html" with list=environment.executions_inline model_name='environment' id=environment.id %}
+    {% include "partial/execution_list_inline.html" with list=environment.executions_inline model_name='environment' id=environment.id %}
 
-<div class="row">
-	<div class="col-md-6">
-    	{% include "partial/server_list.html" %}
-	</div>
-	<div class="visible-xs visible-sm">&nbsp;</div>
-	<div class="col-md-6">
-		{% include "partial/task_list.html" with application=environment.application %}
-	</div>
-</div>
+    <div class="row">
+        <div class="col-md-6">
+            {% include "partial/server_list.html" %}
+        </div>
+        <div class="visible-xs visible-sm">&nbsp;</div>
+        <div class="col-md-6">
+            {% include "partial/task_list.html" with application=environment.application %}
+        </div>
+    </div>
 {% endblock %}

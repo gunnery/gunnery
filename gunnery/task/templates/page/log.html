@@ -2,45 +2,50 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'task' %} Execution history
-</h1>
+    <h1>{% model_icon 'task' %} Execution history
+    </h1>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	{% if model_name == 'application' %}
-	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'application' %} {{related.name}}</a></li>
-	{% elif model_name == 'environment' %}
-	<li><a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{related.application.name}}</a></li>
-	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'environment' %} {{related.name}}</a></li>
-	{% elif model_name == 'task' %}
-	<li><a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{related.application.name}}</a></li>
-	<li><a href="{{ related.get_absolute_url }}">{% model_icon 'task' %} {{related.name}}</a></li>
-	{% endif %}
-	<li class="active">{% model_icon 'execution' %} Executions</li>
-</ol>
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        {% if model_name == 'application' %}
+            <li><a href="{{ related.get_absolute_url }}">{% model_icon 'application' %} {{ related.name }}</a></li>
+        {% elif model_name == 'environment' %}
+            <li>
+                <a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{ related.application.name }}</a>
+            </li>
+            <li><a href="{{ related.get_absolute_url }}">{% model_icon 'environment' %} {{ related.name }}</a></li>
+        {% elif model_name == 'task' %}
+            <li>
+                <a href="{{ related.application.get_absolute_url }}">{% model_icon 'application' %} {{ related.application.name }}</a>
+            </li>
+            <li><a href="{{ related.get_absolute_url }}">{% model_icon 'task' %} {{ related.name }}</a></li>
+        {% endif %}
+        <li class="active">{% model_icon 'execution' %} Executions</li>
+    </ol>
 
 
-<div class="row execution-list">
-{% for execution in executions %}
-	<div class="col-md-12">
-		<a href="{{execution.get_absolute_url}}">{{execution.task.application.name}} / {{execution.environment.name}} / {{execution.task.name}}</a>
-		{% execution_status execution.status %}
-		<br/>
-		<ul class="list-inline">
-		    <li>{% model_icon 'user' %} {{execution.user.get_full_name}}</li>
-		    <li><i class="fa fa-clock-o"></i> {{execution.time_created}}</li>
-		</ul>
-		{% if execution.parameters.count %}
-			with parameters:
-			<br/>
-			<ul>
-			{% for parameter in execution.parameters.all %}
-				<li><b>{{parameter.name}}</b>: {{parameter.value}}</li>
-			{% endfor %}
-			</ul>
-		{% endif %}
-	</div>
-{% endfor %}
-</div>
+    <div class="row execution-list">
+        {% for execution in executions %}
+            <div class="col-md-12">
+                <a href="{{ execution.get_absolute_url }}">{{ execution.task.application.name }}
+                    / {{ execution.environment.name }} / {{ execution.task.name }}</a>
+                {% execution_status execution.status %}
+                <br/>
+                <ul class="list-inline">
+                    <li>{% model_icon 'user' %} {{ execution.user.get_full_name }}</li>
+                    <li><i class="fa fa-clock-o"></i> {{ execution.time_created }}</li>
+                </ul>
+                {% if execution.parameters.count %}
+                    with parameters:
+                    <br/>
+                    <ul>
+                        {% for parameter in execution.parameters.all %}
+                            <li><b>{{ parameter.name }}</b>: {{ parameter.value }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
 
 {% endblock %}

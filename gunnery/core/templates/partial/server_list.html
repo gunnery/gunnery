@@ -1,41 +1,41 @@
 {% load core_extras %}
 <h3>{% model_icon 'server' %} Servers
-  <button type="button" class="btn btn-default btn-xs"
-    data-toggle="modal" 
-    data-remote="{% url 'modal_form' form_name='server' id='' parent_name='environment' parent_id=environment.id %}" 
-    data-target="#large-modal">
-    <i class="fa fa-plus"></i></button>
+    <button type="button" class="btn btn-default btn-xs"
+            data-toggle="modal"
+            data-remote="{% url 'modal_form' form_name='server' id='' parent_name='environment' parent_id=environment.id %}"
+            data-target="#large-modal">
+        <i class="fa fa-plus"></i></button>
 </h3>
 {% if servers %}
-<div class="table-responsive">
-  <table class="table table-hover tablesorter">
-      {% for server in servers %}
-      <tr>
-        <td>{{server.name}}</td>
-        <td>{{server.host}}</td>
-        <td>
-          {% for role in server.roles.all %}
-            <span class="label label-default">{{role.name}}</span>
-          {% endfor %}
-        </td>
-        <td class="text-right">
-          <button type="submit" class="btn btn-default btn-xs"
-            data-toggle="modal" 
-            data-remote="{% url 'server_test' server_id=server.id %}" 
-            data-target="#large-modal"
-            title="Test connection with server">
-            <i class="fa fa-play-circle"></i></button>
-          <button type="submit" class="btn btn-default btn-xs"
-            data-toggle="modal" 
-            data-remote="{% url 'modal_form' form_name='server' id=server.id %}" 
-            data-target="#large-modal">
-            <i class="fa fa-edit"></i></button>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
+    <div class="table-responsive">
+        <table class="table table-hover tablesorter">
+            {% for server in servers %}
+                <tr>
+                    <td>{{ server.name }}</td>
+                    <td>{{ server.host }}</td>
+                    <td>
+                        {% for role in server.roles.all %}
+                            <span class="label label-default">{{ role.name }}</span>
+                        {% endfor %}
+                    </td>
+                    <td class="text-right">
+                        <button type="submit" class="btn btn-default btn-xs"
+                                data-toggle="modal"
+                                data-remote="{% url 'server_test' server_id=server.id %}"
+                                data-target="#large-modal"
+                                title="Test connection with server">
+                            <i class="fa fa-play-circle"></i></button>
+                        <button type="submit" class="btn btn-default btn-xs"
+                                data-toggle="modal"
+                                data-remote="{% url 'modal_form' form_name='server' id=server.id %}"
+                                data-target="#large-modal">
+                            <i class="fa fa-edit"></i></button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% else %}
-No servers yet.
+    No servers yet.
 {% endif %}

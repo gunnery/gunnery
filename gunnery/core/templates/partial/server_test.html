@@ -1,30 +1,30 @@
 {% extends "partial/modal.html" %}
 
-{% block title %}Test connection with server <i>{{server.name}}</i>{% endblock %}
+{% block title %}Test connection with server <i>{{ server.name }}</i>{% endblock %}
 
 {% block body %}
-<h3 class="text-center" id="test-connection-body"><i class="fa fa-spinner fa-spin"></i></h3>
-<pre id="test-connection-debug"></pre>
-<script>
-(function() {
-	var testConnectionInterval = setInterval(function() {
-		$.get('{% url 'server_test_ajax' task_id=task_id %}', function(data) {
-			if (data && data.status == true) {
-				$('#test-connection-body').html('<span class="text-success"><i class="fa fa-thumbs-o-up"></i> Success</span>');
-				clearInterval(testConnectionInterval);
-			} else if (data && data.status == false) {
-				$('#test-connection-body').html('<span class="text-danger"><i class="fa fa-thumbs-o-down"></i> Failed</span>');
-				$('#test-connection-debug').html(data.output);
-				clearInterval(testConnectionInterval);
-			}
-		})
-	}, 1000);
-})();
-</script>
+    <h3 class="text-center" id="test-connection-body"><i class="fa fa-spinner fa-spin"></i></h3>
+    <pre id="test-connection-debug"></pre>
+    <script>
+        (function () {
+            var testConnectionInterval = setInterval(function () {
+                $.get('{% url 'server_test_ajax' task_id=task_id %}', function (data) {
+                    if (data && data.status == true) {
+                        $('#test-connection-body').html('<span class="text-success"><i class="fa fa-thumbs-o-up"></i> Success</span>');
+                        clearInterval(testConnectionInterval);
+                    } else if (data && data.status == false) {
+                        $('#test-connection-body').html('<span class="text-danger"><i class="fa fa-thumbs-o-down"></i> Failed</span>');
+                        $('#test-connection-debug').html(data.output);
+                        clearInterval(testConnectionInterval);
+                    }
+                })
+            }, 1000);
+        })();
+    </script>
 {% endblock %}
 
 {% block footer %}
-<div class="pull-right">
-  <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-</div>
+    <div class="pull-right">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
 {% endblock %}

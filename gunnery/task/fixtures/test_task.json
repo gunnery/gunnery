@@ -1,7 +1,0 @@
-[
-	{
-		"model": "task.Task",
-		"pk": 1,
-		"fields": { "name": "testtask", "application": 1 }
-	}
-]

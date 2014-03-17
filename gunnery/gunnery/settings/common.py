@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -18,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '6x09uq7d4f&so^q(&akentw^ud=rdu-u94pu9r83$l_!+jus$m'
-
 
 ALLOWED_HOSTS = []
 
@@ -34,6 +34,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_extensions',
+    'guardian',
     'crispy_forms',
     'djcelery',
     'core',
@@ -49,6 +50,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'core.middleware.CurrentDepartment'
+
 )
 
 ROOT_URLCONF = 'gunnery.urls'
@@ -89,18 +94,18 @@ DATETIME_FORMAT = 'Y-m-d H:i'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-   # os.path.join(BASE_DIR, "static"),
+    # os.path.join(BASE_DIR, "static"),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
-CELERY_RESULT_BACKEND ='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_SERIALIZER = "json"
 
-CELERYD_TASK_TIME_LIMIT=60*60
-CELERYD_TASK_SOFT_TIME_LIMIT=60*30
+CELERYD_TASK_TIME_LIMIT = 60 * 60
+CELERYD_TASK_SOFT_TIME_LIMIT = 60 * 30
 
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/'
@@ -109,5 +114,6 @@ ABSOLUTE_URL_OVERRIDES = {
 }
 AUTHENTICATION_BACKENDS = ('account.backend.EmailAuthBackend',)
 AUTH_USER_MODEL = 'account.CustomUser'
+ANONYMOUS_USER_ID = None
 
 PRIVATE_DIR = '/var/gunnery/secure'

@@ -2,12 +2,12 @@
 {% load core_extras %}
 
 {% block content %}
-{% for application in application_list %}
-	<h3>
-		{% model_icon 'application' %}
-		<a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
-	</h3>
-	{% include "partial/execution_list_inline.html" with notitle=True list=application.executions_inline %}
-{% endfor %}
+    {% for application in application_list %}
+        <h3>
+            {% model_icon 'application' %}
+            <a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
+        </h3>
+        {% include "partial/execution_list_inline.html" with notitle=True list=application.executions_inline %}
+    {% endfor %}
 
 {% endblock %}

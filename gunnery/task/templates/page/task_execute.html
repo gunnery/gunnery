@@ -2,65 +2,76 @@
 {% load core_extras %}
 
 {% block content %}
-<h1>{% model_icon 'execution' %} Execute <em>{{task.name}}</em>
-  <div class=" pull-right">
-    <a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-default"><i class="fa fa-edit"></i></a> 
-  </div>
-</h1>
-<div class="clearfix"></div>
+    <h1>{% model_icon 'execution' %} Execute <em>{{ task.name }}</em>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="{% url 'application_page' application_id=task.application.id %}">{% model_icon 'application' %} {{task.application.name}}</a></li>
-  {%if environment %}
-	<li><a href="{{ environment.get_absolute_url }}">{% model_icon 'environment' %} {{environment.name}}</a></li>
-  {% endif %}
-	<li><a href="{{ task.get_absolute_url }}">{% model_icon 'task' %} {{task.name}}</a></li>
-	<li class="active">{% model_icon 'execution' %} Execution</li>
-</ol>
+        <div class=" pull-right">
+            <a href="{% url 'task_form_page' task_id=task.id %}" type="submit" class="btn btn-default"><i
+                    class="fa fa-edit"></i></a>
+        </div>
+    </h1>
+    <div class="clearfix"></div>
 
-{% if duplicate_error %}
-<div class="alert alert-block alert-danger"><ul>
-<li>Task <i>{{task.name}}</i> is already running on <i>{{environment.name}}</i> environment.</li>
-</ul></div>
-{% endif %}
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li>
+            <a href="{% url 'application_page' application_id=task.application.id %}">{% model_icon 'application' %} {{ task.application.name }}</a>
+        </li>
+        {% if environment %}
+            <li><a href="{{ environment.get_absolute_url }}">{% model_icon 'environment' %} {{ environment.name }}</a>
+            </li>
+        {% endif %}
+        <li><a href="{{ task.get_absolute_url }}">{% model_icon 'task' %} {{ task.name }}</a></li>
+        <li class="active">{% model_icon 'execution' %} Execution</li>
+    </ol>
 
-<form class="form-horizontal" role="form" method="post" action="{{request.path}}">
-{% csrf_token %}
-  <div class="form-group">
-    <label for="server-form-host" class="col-sm-3 control-label">Environment</label>
-    <div class="col-sm-7">
-      <select class="form-control" id="server-form-host" name="parameter-environment"
-      {%if task.application.environments.count == 1%}readonly="readonly"{%endif%}>
-        <option></option>
-        {% for option in task.application.environments.all %}
-          <option value="{{option.id}}" {%if option.id == environment.id or task.application.environments.count == 1 %}selected{% endif %}>{{option.name}}</option>
-        {% endfor %}
-      </select>
-    </div>
-  </div>
-{% if task.parameters.count %}
-  <hr/>
+    {% if duplicate_error %}
+        <div class="alert alert-block alert-danger">
+            <ul>
+                <li>Task <i>{{ task.name }}</i> is already running on <i>{{ environment.name }}</i> environment.</li>
+            </ul>
+        </div>
+    {% endif %}
 
-  <div class="form-group">
-    <label class="col-sm-3 control-label">Custom parameters:</label>
-  </div>
-  {% for parameter in task.parameters.all %}
-  <div class="form-group">
-    <label for="server-form-name" class="col-sm-3 control-label">{{parameter.name}}</label>
-    <div class="col-sm-7">
-      <input type="text" class="form-control" id="server-form-name" name="parameter-{{parameter.name}}">
-      <span class="help-block">{{parameter.description}}</span>
-    </div>
-  </div>
-  {% endfor %}
-{% endif %}
-  <div class="form-group">
-    <div class="col-sm-3"></div>
-    <div class="col-sm-7">
-	  <button type="submit" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</button>
-    </div>
-  </div>
-</form>
+    <form class="form-horizontal" role="form" method="post" action="{{ request.path }}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="server-form-host" class="col-sm-3 control-label">Environment</label>
+
+            <div class="col-sm-7">
+                <select class="form-control" id="server-form-host" name="parameter-environment"
+                        {% if task.application.environments.count == 1 %}readonly="readonly"{% endif %}>
+                    <option></option>
+                    {% for option in task.application.environments.all %}
+                        <option value="{{ option.id }}"
+                                {% if option.id == environment.id or task.application.environments.count == 1 %}selected{% endif %}>{{ option.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        {% if task.parameters.count %}
+            <hr/>
+
+            <div class="form-group">
+                <label class="col-sm-3 control-label">Custom parameters:</label>
+            </div>
+            {% for parameter in task.parameters.all %}
+                <div class="form-group">
+                    <label for="server-form-name" class="col-sm-3 control-label">{{ parameter.name }}</label>
+
+                    <div class="col-sm-7">
+                        <input type="text" class="form-control" id="server-form-name"
+                               name="parameter-{{ parameter.name }}">
+                        <span class="help-block">{{ parameter.description }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="form-group">
+            <div class="col-sm-3"></div>
+            <div class="col-sm-7">
+                <button type="submit" class="btn btn-primary"><i class="fa fa-bolt"></i> Execute</button>
+            </div>
+        </div>
+    </form>
 
 {% endblock %}

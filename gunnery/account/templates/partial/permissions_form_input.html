@@ -1,0 +1,6 @@
+<td><input class="r" type="checkbox" name="view_{{ model }}_{{ id }}"
+           {% with "view_"|add:model as perm_name %}{% if perm_name in perms %}checked{% endif %}{% endwith %}></td>
+{#<td><input class="w" type="checkbox" name="edit_{{ model }}_{{ id }}"#}
+{#           {% with "edit_"|add:model as perm_name %}{% if perm_name in perms %}checked{% endif %}{% endwith %}></td>#}
+{#<td><input class="x" type="checkbox" name="execute_{{ model }}_{{ id }}"#}
+{#           {% with "execute_"|add:model as perm_name %}{% if perm_name in perms %}checked{% endif %}{% endwith %}></td>#}

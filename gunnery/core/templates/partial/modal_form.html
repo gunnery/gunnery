@@ -1,31 +1,31 @@
-
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
+<div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">
-              {% if is_new %}
-                Add
-              {% else %}
-                Edit
-              {% endif %}
-              {{ model_name }}
+                {% if is_new %}
+                    Add
+                {% else %}
+                    Edit
+                {% endif %}
+                {{ model_name }}
             </h4>
-          </div>
-          <div class="modal-body">
-            {% include form_template %}
-          </div>
-          <div class="modal-footer">
-            <div class="pull-right">
-              <button type="button" class="btn btn-primary save"><i class="fa fa-check"></i> Save</button>
-              <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
-            </div>
-            {% if not is_new %}
-            <p>
-              <button type="button" class="btn btn-default delete">
-                <i class="fa fa-times"></i> Delete</button>
-            </p>
-            {% endif %}
-          </div>
         </div>
-      </div>
+        <div class="modal-body">
+            {% include form_template %}
+        </div>
+        <div class="modal-footer">
+            <div class="pull-right">
+                <button type="button" class="btn btn-primary save"><i class="fa fa-check"></i> Save</button>
+                <button type="button" class="btn btn-default cancel" data-dismiss="modal">Cancel</button>
+            </div>
+            {% if not is_new and not no_delete %}
+                <p>
+                    <button type="button" class="btn btn-default delete">
+                        <i class="fa fa-times"></i> Delete
+                    </button>
+                </p>
+            {% endif %}
+        </div>
+    </div>
+</div>

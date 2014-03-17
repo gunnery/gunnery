@@ -1,31 +1,33 @@
 {% load crispy_forms_tags %}
 <form class="form-horizontal" role="form" method="POST" action="{{ request_path }}">
-	{% csrf_token %}
-	{% crispy form form.helper %}
+    {% csrf_token %}
+    {% crispy form form.helper %}
 
-	<div class="form-group">
-		<label for="pubkey" class="control-label col-sm-3 requiredField">Public key</label>
-		<div class="controls col-sm-7">
-			<textarea id="pubkey" class="form-control" rows="2" cols="30" style="font-family: monospace;" readonly="on">{{pubkey}}</textarea>
-			<span class="help-block">Copy this SSH public key to the servers authorized_keys file.</span>
-		</div>
-	</div>
+    <div class="form-group">
+        <label for="pubkey" class="control-label col-sm-3 requiredField">Public key</label>
+
+        <div class="controls col-sm-7">
+            <textarea id="pubkey" class="form-control" rows="2" cols="30" style="font-family: monospace;"
+                      readonly="on">{{ pubkey }}</textarea>
+            <span class="help-block">Copy this SSH public key to the servers authorized_keys file.</span>
+        </div>
+    </div>
 </form>
 <script>
-	$(".chosen-select").chosen({width: '100%'});
-	$("#pubkey").focus(function() {
-		var $this = $(this);
-		$this.select();
-		$this.mouseup(function() {
-			$this.unbind("mouseup");
-			return false;
-		});
-	});
-	$("#id_name").focus();
+    $(".chosen-select").chosen({width: '100%'});
+    $("#pubkey").focus(function () {
+        var $this = $(this);
+        $this.select();
+        $this.mouseup(function () {
+            $this.unbind("mouseup");
+            return false;
+        });
+    });
+    $("#id_name").focus();
 </script>
 
 {% if not is_new %}
-<form role="delete" method="POST" action="{% url 'modal_delete' 'server' instance.id %}">
-  {% csrf_token %}
-</form>
+    <form role="delete" method="POST" action="{% url 'modal_delete' 'server' instance.id %}">
+        {% csrf_token %}
+    </form>
 {% endif %}

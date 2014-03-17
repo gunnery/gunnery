@@ -1,22 +1,49 @@
 from django.test import TestCase
+from guardian.shortcuts import assign_perm
+from account.tests.fixtures import UserFactory
+from core.tests.fixtures import DepartmentFactory
+
 
 class LoggedTestCase(TestCase):
-    fixtures = ['test_user.json']
+    logged_is_staff = True
+
+    @classmethod
+    def setUpClass(cls):
+        cls.user = UserFactory(is_staff=cls.logged_is_staff)
+        cls.setup_department()
+
+    @classmethod
+    def setup_department(cls):
+        cls.department = DepartmentFactory()
+        assign_perm('core.view_department', cls.user, cls.department)
 
     def setUp(self):
-        result = self.client.login(username='admin@test.com', password='testtest')
+        result = self.client.login(username=self.user.email, password=self.user.email)
         self.assertTrue(result, 'Login failed')
 
 
-class BaseModalTestCase(object):
+class BaseModalTestCase(LoggedTestCase):
+    url = None
+    object_factory = None
+
+    @classmethod
+    def setUpClass(cls):
+        super(BaseModalTestCase, cls).setUpClass()
+        cls.object = cls.object_factory()
+
+
+class BaseModalTests(object):
     def test_create_form(self):
         response = self.client.get(self.url)
         self.assertEquals(response.status_code, 200)
 
     def test_edit_form(self):
-        response = self.client.get('%s1/' % self.url)
+        response = self.client.get(self.get_url_with_id())
         self.assertEquals(response.status_code, 200)
 
     def test_delete(self):
-        response = self.client.post('%s1/' % self.url)
+        response = self.client.post(self.get_url_with_id())
         self.assertEquals(response.status_code, 200)
+
+    def get_url_with_id(self):
+        return self.url + str(self.object.id) + '/'

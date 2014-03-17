@@ -8,126 +8,134 @@
 {% endblock %}
 
 {% block content %}
-<h1>
-{% model_icon 'task' %} 
-{% if is_new %}Add task{% else %}<span class="long-title">Task</span> <em>{{task.name}}</em>{% endif %}
-{% if not is_new %}
-	<div class=" pull-right">
-		<a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i class="fa fa-bolt"></i> Execute</a>
-	</div>
-{% endif %}
-</h1>
-<div class="clearfix"></div>
+    <h1>
+        {% model_icon 'task' %}
+        {% if is_new %}Add task{% else %}<span class="long-title">Task</span> <em>{{ task.name }}</em>{% endif %}
+        {% if not is_new %}
+            <div class=" pull-right">
+                <a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i
+                        class="fa fa-bolt"></i> Execute</a>
+            </div>
+        {% endif %}
+    </h1>
+    <div class="clearfix"></div>
 
-<ol class="breadcrumb">
-	<li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
-	<li><a href="{{ application.get_absolute_url }}">{% model_icon 'application' %} {{application.name}}</a></li>
-	<li class="active">
-		{% if not is_new %}<a href="{{ task.get_absolute_url }}">{% endif %}
-		{% model_icon 'task' %} 
-		{% if is_new %}Add task{% else %}{{task.name}}</a>{% endif %}
-	</li>
-</ol>
+    <ol class="breadcrumb">
+        <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
+        <li><a href="{{ application.get_absolute_url }}">{% model_icon 'application' %} {{ application.name }}</a></li>
+        <li class="active">
+            {% if not is_new %}<a href="{{ task.get_absolute_url }}">{% endif %}
+            {% model_icon 'task' %}
+            {% if is_new %}Add task{% else %}{{ task.name }}</a>{% endif %}
+        </li>
+    </ol>
 
-<form class="form-horizontal" role="form" method="post" action="{{ request.path }}">
-{% csrf_token %}
-{% crispy form form.helper %}
+    <form class="form-horizontal" role="form" method="post" action="{{ request.path }}">
+        {% csrf_token %}
+        {% crispy form form.helper %}
 
-<p>&nbsp;</p>
+        <p>&nbsp;</p>
 
-<div class="row">
-	<div class="col-sm-offset-1">
-		<label>Parameters</label>
-	</div>
-</div>
+        <div class="row">
+            <div class="col-sm-offset-1">
+                <label>Parameters</label>
+            </div>
+        </div>
 
-<div class="subform-multiple" data-model="TaskParameter">
-{{ form_parameters.non_field_errors }}
-{{ form_parameters.management_form }}
-{% for form in form_parameters %}
-	{% if not form.DELETE.value %}
-	<div class="form-group">
-		{% include 'partial/form/formset_form_managment.html' %}
-		{% include 'partial/form/text.html' with field=form.name class='col-sm-offset-1 col-xs-12 col-sm-3 col-md-3' %}
-		{% include 'partial/form/text.html' with field=form.description class='col-xs-12 col-sm-6 col-md-6' %}
-		{% include 'partial/form/formset_actions.html' %}
-	</div>
-	{% endif %}
-{% endfor %}
-	<div class="form-group actions">
-		<div class="col-sm-offset-10 col-sm-2">
-		  <a class="button-add"><i class="fa fa-plus"></i></a>
-		</div>
-	</div>
-</div>
+        <div class="subform-multiple" data-model="TaskParameter">
+            {{ form_parameters.non_field_errors }}
+            {{ form_parameters.management_form }}
+            {% for form in form_parameters %}
+                {% if not form.DELETE.value %}
+                    <div class="form-group">
+                        {% include 'partial/form/formset_form_managment.html' %}
+                        {% include 'partial/form/text.html' with field=form.name class='col-sm-offset-1 col-xs-12 col-sm-3 col-md-3' %}
+                        {% include 'partial/form/text.html' with field=form.description class='col-xs-12 col-sm-6 col-md-6' %}
+                        {% include 'partial/form/formset_actions.html' %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="form-group actions">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <a class="button-add"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
 
-<p>&nbsp;</p>
+        <p>&nbsp;</p>
 
-<div class="row">
-	<div class="col-sm-offset-1">
-		<label>Commands* </label> <a href="#" data-toggle="element" data-target="#command-help"><i class="fa fa-question"></i></a>
-	</div>
-</div>
-  {{ form_commands.non_field_errors }}
-<div class="row {% if application.tasks.count %}hide{%endif%}" id="command-help">
-	<div class="col-sm-offset-1 col-md-9 well">
-		It's allowed to use stream redirection and pipes in commands. To use custom parameters in commands include <code>${parameter_name}</code>.
-		Available global parameters:
-		<ul>
-{% for name, value in global_parameters %}
-			<li><b>${% templatetag openbrace  %}{{name}}{% templatetag closebrace  %}</b> {{value}}</li>
-{% endfor %}
-		</ul>
-	</div>
-</div>
-<div class="subform-multiple" data-model="TaskCommand">
-{{ form_commands.management_form }}
+        <div class="row">
+            <div class="col-sm-offset-1">
+                <label>Commands* </label> <a href="#" data-toggle="element" data-target="#command-help"><i
+                    class="fa fa-question"></i></a>
+            </div>
+        </div>
+        {{ form_commands.non_field_errors }}
+        <div class="row {% if application.tasks.count %}hide{% endif %}" id="command-help">
+            <div class="col-sm-offset-1 col-md-9 well">
+                It's allowed to use stream redirection and pipes in commands. To use custom parameters in commands
+                include <code>${parameter_name}</code>.
+                Available global parameters:
+                <ul>
+                    {% for name, value in global_parameters %}
+                        <li><b>${% templatetag openbrace %}{{ name }}{% templatetag closebrace %}</b> {{ value }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        <div class="subform-multiple" data-model="TaskCommand">
+            {{ form_commands.management_form }}
 
-{% if form_commands.non_form_errors %}
-<div class="alert alert-block alert-danger"><ul>
-{% for error in form_commands.non_form_errors %}
-<li>{{error}}</li>
-{% endfor %}
-</ul></div>
-{% endif %}
+            {% if form_commands.non_form_errors %}
+                <div class="alert alert-block alert-danger">
+                    <ul>
+                        {% for error in form_commands.non_form_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
 
-{% for form in form_commands %}
-	{% if not form.DELETE.value %}
-	<div class="form-group">
-		{% include 'partial/form/formset_form_managment.html' %}
-		{% include 'partial/form/text.html' with field=form.command class='col-sm-offset-1 col-sm-7' %}
+            {% for form in form_commands %}
+                {% if not form.DELETE.value %}
+                    <div class="form-group">
+                        {% include 'partial/form/formset_form_managment.html' %}
+                        {% include 'partial/form/text.html' with field=form.command class='col-sm-offset-1 col-sm-7' %}
 
-		<div class="col-sm-2 {% if form.roles.errors %}has-error{% endif %}">
-			{{ form.roles }}
-			{% if form.roles.errors %}<p class="text-danger">{{ form.roles.errors|first }}</p>{% endif %}
-		</div>
-		{% include 'partial/form/formset_actions.html' %}
-	</div>
-	{% endif %}
-{% endfor %}
-	<div class="form-group actions">
-		<div class="col-sm-offset-10 col-sm-2">
-		  <a class="button-add"><i class="fa fa-plus"></i></a>
-		</div>
-	</div>
-</div>
+                        <div class="col-sm-2 {% if form.roles.errors %}has-error{% endif %}">
+                            {{ form.roles }}
+                            {% if form.roles.errors %}<p class="text-danger">{{ form.roles.errors|first }}
+                                </p>{% endif %}
+                        </div>
+                        {% include 'partial/form/formset_actions.html' %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <div class="form-group actions">
+                <div class="col-sm-offset-10 col-sm-2">
+                    <a class="button-add"><i class="fa fa-plus"></i></a>
+                </div>
+            </div>
+        </div>
 
-	<div class="form-group">
-		<div class="col-xs-offset-1 col-xs-3">
-			<button type="button" class="btn btn-default delete" tabindex="-1">
-				<i class="fa fa-times"></i> Delete</button>
-		</div>
-		<div class="col-xs-6">
-			<button type="submit" class="btn btn-primary">
-				<i class="fa fa-check"></i> Save</button>
-		</div>
-	</div>
-</form>
+        <div class="form-group">
+            <div class="col-xs-offset-1 col-xs-3">
+                <button type="button" class="btn btn-default delete" tabindex="-1">
+                    <i class="fa fa-times"></i> Delete
+                </button>
+            </div>
+            <div class="col-xs-6">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa fa-check"></i> Save
+                </button>
+            </div>
+        </div>
+    </form>
 
-{% if not is_new %}
-<form role="delete" method="POST" action="{% url 'task_delete' task.id %}">
-  {% csrf_token %}
-</form>
-{% endif %}
+    {% if not is_new %}
+        <form role="delete" method="POST" action="{% url 'task_delete' task.id %}">
+            {% csrf_token %}
+        </form>
+    {% endif %}
 
 {% endblock %}

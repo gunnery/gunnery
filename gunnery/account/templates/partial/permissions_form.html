@@ -1,0 +1,74 @@
+{% load crispy_forms_tags %}
+{% load core_extras %}
+{% load guardian_tags %}
+
+<form class="form-horizontal" role="form" method="POST" action="{{ request_path }}">
+    {% csrf_token %}
+
+{#    <p class="visible-xs">M - manage, R - read, W - write, X - execute</p>#}
+
+    <table id="permissions" class="table table-condensed table-striped">
+        <thead>
+        <tr>
+            <td></td>
+{#            <td width="1"><span class="hidden-xs">manage</span><span class="visible-xs">M</span></td>#}
+{#            <td width="1"><span class="hidden-xs">read</span><span class="visible-xs">R</span></td>#}
+{#            <td width="1"><span class="hidden-xs">write</span><span class="visible-xs">W</span></td>#}
+{#            <td width="1"><span class="hidden-xs">execute</span><span class="visible-xs">X</span></td>#}
+        </tr>
+        </thead>
+        <tbody>
+        {% for department in departments %}
+            {% get_obj_perms user for department as "department_perms" %}
+            <tr data-scope=".department-{{ department.id }}">
+                <td>{% model_icon 'department' %} {{ department.name }}</td>
+                {% include "partial/permissions_form_input.html" with model="department" id=department.id perms=department_perms %}
+            </tr>
+{#            {% for application in department.applications.all %}#}
+{#                {% get_obj_perms user for application as "application_perms" %}#}
+{#                <tr data-scope=".application-{{ application.id }}" class="department-{{ department.id }}">#}
+{#                    <td class="dependent1" colspan="2">{% model_icon 'application' %} {{ application.name }}</td>#}
+{#                    {% include "partial/permissions_form_input.html" with model="application" id=application.id perms=application_perms %}#}
+{#                </tr>#}
+{#                {% for environment in application.environments.all %}#}
+{#                    {% get_obj_perms user for environment as "environment_perms" %}#}
+{#                    <tr class="department-{{ department.id }} application-{{ application.id }}">#}
+{#                        <td class="dependent2" colspan="2">{% model_icon 'environment' %} {{ environment.name }}</td>#}
+{#                        {% include "partial/permissions_form_input.html" with model="environment" id=environment.id perms=environment_perms %}#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#                {% for task in application.tasks.all %}#}
+{#                    {% get_obj_perms user for task as "task_perms" %}#}
+{#                    <tr class="department-{{ department.id }} application-{{ application.id }}">#}
+{#                        <td class="dependent2" colspan="2">{% model_icon 'task' %} {{ task.name }}</td>#}
+{#                        {% include "partial/permissions_form_input.html" with model="task" id=task.id perms=task_perms %}#}
+{#                    </tr>#}
+{#                {% endfor %}#}
+{#            {% endfor %}#}
+        {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        (function () {
+            var permissions = $('#permissions');
+            permissions.find('input').click(function (event) {
+                var input = $(this),
+                        row = input.parents('tr'),
+                        rowScope = row.data('scope'),
+                        inputClass = input.attr('class'),
+                        toggle;
+                if (rowScope) {
+                    rowScope += ' input.' + inputClass;
+                    toggle = input.prop('checked');
+                    permissions.find(rowScope).prop('disabled', toggle).prop('checked', toggle);
+                }
+                // if (inputClass!='r') {
+                // 	inputClass = inputClass == 'w' ? '.r' : '.w';
+                // 	toggle = input.prop('checked');
+                // 	input.parents('tr').find(inputClass).prop('checked', !toggle).click().prop('disabled', toggle);
+                // }
+            });
+            permissions.find('input:checked').prop('checked', false).click();
+        })();
+    </script>
+</form>

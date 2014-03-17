@@ -1,10 +1,11 @@
-<div class="{{class}} {% if field.errors %}has-error{% endif %}">
-	<input 
-		type="text" 
-		class="form-control"
-		name="{{field.html_name}}" 
-		id="{{field.id_for_label}}" 
-		placeholder="{{field.label}}" 
-		value="{{ field.value|default_if_none:"" }}">
-	{% if field.errors %}<p class="text-danger">{{ field.errors|first }}</p>{% endif %}
+<div class="{{ class }} {% if field.errors %}has-error{% endif %}">
+    <input
+            type="text"
+            class="form-control"
+            name="{{ field.html_name }}"
+            id="{{ field.id_for_label }}"
+            placeholder="{{ field.label }}"
+            value="{{ field.value|default_if_none:"" }}">
+
+    {% if field.errors %}<p class="text-danger">{{ field.errors|first }}</p>{% endif %}
 </div>

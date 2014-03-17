@@ -1,18 +1,17 @@
-
 {% load core_extras %}
 {% if application_list_sidebar %}
-  <ul class="nav-applications">
-    {% for application in application_list_sidebar %}
-    <li>
-      <a href="{{ application.get_absolute_url }}">
-        {% model_icon 'application' %} {{application.name}}
-      </a>
-      <ul class="nav-environments">
-      {% for environment in application.environments.all %}
-        <li><a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></li>
-      {% endfor %}
-      </ul>
-    </li>
-    {% endfor %}
-  </ul>
+    <ul class="nav-applications">
+        {% for application in application_list_sidebar %}
+            <li>
+                <a href="{{ application.get_absolute_url }}">
+                    {% model_icon 'application' %} {{ application.name }}
+                </a>
+                <ul class="nav-environments">
+                    {% for environment in application.environments.all %}
+                        <li><a href="{{ environment.get_absolute_url }}">{{ environment.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endfor %}
+    </ul>
 {% endif %}
