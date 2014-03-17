@@ -13,3 +13,4 @@ django-celery==3.1.1
 django-extensions==1.2.5
 psycopg2==2.5.2
 factory_boy==2.3.1
+django-guardian==1.2.0
