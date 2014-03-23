@@ -2,13 +2,13 @@
 {% load core_extras %}
 
 {% block content %}
-    <h1>{% model_icon 'settings' %} Settings</h1>
+    <h1>{% model_icon 'settings' %} Settings - {{ subsection|capfirst }}</h1>
 
     <ol class="breadcrumb">
         <li><a href="/">{% model_icon 'dashboard' %} Dashboard</a></li>
         <li class="active">{% model_icon 'settings' %} Settings</li>
-        <li class="active">{% model_icon 'settings' %} {{ section }}</li>
-        <li class="active">{% model_icon 'settings' %} {{ subsection }}</li>
+        <li class="active">{% model_icon 'settings' %} {{ section|capfirst }}</li>
+        <li class="active">{% model_icon 'settings' %} {{ subsection|capfirst }}</li>
     </ol>
 
     <ul id="settings" class="nav nav-pills">
