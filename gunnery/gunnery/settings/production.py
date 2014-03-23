@@ -1,4 +1,4 @@
-
+from .common import *
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'localhost'
