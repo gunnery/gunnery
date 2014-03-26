@@ -30,7 +30,6 @@ class ApplicationTest(LoggedTestCase):
 
 
 class EnvironmentTest(LoggedTestCase):
-    @skip("Temporary disabled because Environment post_save signal tries to execute celery task")
     def test_environment(self):
         environment = EnvironmentFactory()
         response = self.client.get('/environment/%d/' % environment.id)
