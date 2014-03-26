@@ -11,7 +11,7 @@ $(document.body).on('shown.bs.modal', function () {
 });
 
 (function ($) {
-    $('[data-toggle="element"').click(function (event) {
+    $('[data-toggle="element"]').click(function (event) {
         $($(this).data('target')).toggleClass('hide');
     });
     $(".chosen-select").chosen({width: '100%'});
