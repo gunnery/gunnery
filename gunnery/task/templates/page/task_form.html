@@ -73,8 +73,16 @@
         {{ form_commands.non_field_errors }}
         <div class="row {% if application.tasks.count %}hide{% endif %}" id="command-help">
             <div class="col-sm-offset-1 col-md-9 well">
-                It's allowed to use stream redirection and pipes in commands. To use custom parameters in commands
-                include <code>${parameter_name}</code>.
+                <p>
+                    Commands are executed in non-login, non-interactive shell.
+                    It's allowed to use stream redirection and pipes in commands. Examples:
+                </p>
+                <p>
+                    <code>tar -cpzf /home/backup/backup-${gun_time}.tar.gz /var/www/ # timestamped backup</code>
+                </p>
+                <p>
+                    To use custom parameters in commands include <code>${parameter_name}</code>.
+                </p>
                 Available global parameters:
                 <ul>
                     {% for name, value in global_parameters %}
