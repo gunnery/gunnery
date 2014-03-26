@@ -77,9 +77,9 @@
                     Commands are executed in non-login, non-interactive shell.
                     It's allowed to use stream redirection and pipes in commands. Examples:
                 </p>
-                <p>
-                    <code>tar -cpzf /home/backup/backup-${gun_time}.tar.gz /var/www/ # timestamped backup</code>
-                </p>
+<p><pre>tar -cpzf /home/backup/backup-${gun_time}.tar.gz /var/www/ # timestamped backup
+( sleep 3 ; echo 'flush_all' ; sleep 2 ; echo q; echo q; ) | telnet 127.0.0.1 11211 -eq # clear memcached
+cd /var/www/your_project; make all</pre></p>
                 <p>
                     To use custom parameters in commands include <code>${parameter_name}</code>.
                 </p>
