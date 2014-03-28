@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'guardian',
     'crispy_forms',
     'djcelery',
+    'south',
     'core',
     'task',
     'backend',

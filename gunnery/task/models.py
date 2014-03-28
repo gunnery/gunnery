@@ -144,10 +144,10 @@ class ExecutionCommandServer(models.Model):
     SUCCESS = 1
     FAILED = 2
     STATUS_CHOICES = (
-    (PENDING, 'pending'),
-    (RUNNING, 'running'),
-    (SUCCESS, 'success'),
-    (FAILED, 'failed'),
+        (PENDING, 'pending'),
+        (RUNNING, 'running'),
+        (SUCCESS, 'success'),
+        (FAILED, 'failed'),
     )
     execution_command = models.ForeignKey(ExecutionCommand, related_name="servers")
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
@@ -158,11 +158,11 @@ class ExecutionCommandServer(models.Model):
     server = models.ForeignKey(Server)
     # @todo store host, and ip here instead of relation to Server model
     output = models.TextField(blank=True)
+    celery_task_id = models.CharField(blank=True, max_length=36)
 
     def get_live_log_output(self):
         live_logs = self.live_logs.values_list('output', flat=True)
         return ''.join(live_logs)
-
 
 class ExecutionLiveLog(models.Model):
     execution = models.ForeignKey(Execution, related_name="live_logs")
