@@ -15,8 +15,10 @@ class component::postgresql {
     postgres_password          => 'postgres',
   }
 
+  $user = hiera('postgresql::user')
+  $password = hiera('postgresql::password')
   postgresql::server::db { 'gunnery':
-    user     => 'gunnery',
-    password => postgresql_password('gunnery', 'gunnery'),
+    user     => $user,
+    password => postgresql_password($user, $password),
   }
 }

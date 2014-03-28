@@ -14,7 +14,7 @@ class component::nginx {
     enable => true,
     hasrestart => true,
     hasstatus  => true,
-    require => [ Package['nginx'], File['django enable config'], File['/var/gunnery/log'] ],
+    require => [ Package['nginx'], File['django enable config'], File[$log_path] ],
   }
 
   file { '/etc/nginx/sites-enabled/default':

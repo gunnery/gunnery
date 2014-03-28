@@ -11,3 +11,6 @@ application::log_path : "%{hiera('application::root_path')}/log"
 application::run_path : "%{hiera('application::root_path')}/run"
 application::virtualenv_path : "%{hiera('application::root_path')}/virtualenv/%{::environment}"
 application::requirements_path : "%{hiera('application::root_path')}/requirements/%{::environment}.txt"
+
+postgresql::user : gunnery
+postgresql::password : gunnery
