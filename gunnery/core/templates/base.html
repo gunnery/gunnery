@@ -16,7 +16,6 @@
     <link href="{% static "task/css/base.css" %}" rel="stylesheet">
     <link href="{% static "font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
 </head>
-
 <body>
 <div id="wrapper">
     <nav class="nav navbar-inverse navbar-nav side-nav">
@@ -50,6 +49,13 @@
     </nav>
 
     <div id="page-wrapper">
+        {% if messages %}
+        <div class="sessionMessageWrap">
+            {% for message in messages %}
+            <div {% if message.tags %} class=" {{ message.tags }}"{% endif %}>{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
         {% block content %}{% endblock %}
     </div>
 </div>

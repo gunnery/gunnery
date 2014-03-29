@@ -58,4 +58,10 @@ $(document.body).on('shown.bs.modal', function () {
     $('#department-select').change(function () {
         window.location = window.location.origin + '/department/switch/' + this.value;
     });
+
+    $('.sessionMessageWrap div').addClass('show').each(function(i, e){
+        setTimeout(function(){$(e).removeClass('show')}, $(e).text().length*256);
+    }).click(function(){
+        $(this).removeClass('show');
+    });
 })(jQuery);

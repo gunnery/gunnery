@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.db import IntegrityError
 from django.conf import settings
 from .views import *
@@ -67,8 +68,10 @@ class BaseModal(object):
 
                     if is_new:
                         self.trigger_event('create')
+                        self.message('Created')
                     else:
                         self.trigger_event('update')
+                        self.message('Saved')
                     return HttpResponse(json.dumps(self.data), content_type="application/json")
                 except IntegrityError as e:
                     from django.forms.util import ErrorList
@@ -90,6 +93,8 @@ class BaseModal(object):
         self.trigger_event('view')
         return render(request, template, self.data)
 
+    def message(self, message):
+        messages.success(self.request, message)
 
     def delete(self, request):
         """ Handles delete on modal model """
@@ -98,6 +103,7 @@ class BaseModal(object):
         self.instance = get_object_or_404(self.form.Meta.model, pk=self.id)
         self.instance.delete()
         self.trigger_event('delete')
+        self.message('Deleted')
         return HttpResponse(json.dumps(self.data), content_type="application/json")
 
 
