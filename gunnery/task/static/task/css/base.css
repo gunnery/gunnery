@@ -74,4 +74,18 @@
     .subform-multiple .form-group {
         margin-bottom: 30px;
     }
+
+    .command {
+        padding: 5px 0;
+    }
+    .command + .command {
+        border-top: 6px solid #eeeeee;
+    }
+
+    #execution .server {
+        padding: 0;
+    }
+    #execution .server + .server {
+        border-top: 3px solid #eeeeee;
+    }
 }
