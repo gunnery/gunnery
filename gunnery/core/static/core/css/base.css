@@ -171,7 +171,7 @@ button > i.fa:after {
 }
 
 #department-select {
-    width: 170px;
+    width: 100%;
 }
 
 #settings li.dropdown:hover > ul.dropdown-menu {
