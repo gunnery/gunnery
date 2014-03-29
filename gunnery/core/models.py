@@ -84,8 +84,11 @@ post_delete.connect(Environment.cleanup_files, sender=Environment)
 
 
 class ServerRole(models.Model):
-    name = models.CharField(blank=False, max_length=32, validators=[gunnery_name()], unique=True)
+    name = models.CharField(blank=False, max_length=32, validators=[gunnery_name()])
     department = models.ForeignKey(Department, related_name="serverroles")
+
+    class Meta:
+        unique_together = ("department", "name")
 
     def __unicode__(self):
         return self.name
