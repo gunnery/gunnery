@@ -10,6 +10,6 @@ socket = <%= @run_path %>/uwsgi.<%= @app_name %>.sock
 pidfile = <%= @run_path %>/uwsgi.<%= @app_name %>.pid
 
 chdir = <%= @app_path %>
-module = <%= @app_name %>.wsgi:application
+module = <%= @app_name %>.uwsgiapp:application
 virtualenv = <%= @virtualenv_path %>
 env = DJANGO_SETTINGS_MODULE=<%= @app_name %>.settings.<%= @environment %>
