@@ -33,14 +33,14 @@ def index(request):
 @login_required
 def application_page(request, application_id):
     data = get_common_page_data(request)
-    data['application'] = Application.objects.get(pk=application_id)
+    data['application'] = get_object_or_404(Application, pk=application_id)
     return render(request, 'page/application.html', data)
 
 
 @login_required
 def environment_page(request, environment_id):
     data = get_common_page_data(request)
-    data['environment'] = Environment.objects.get(pk=environment_id)
+    data['environment'] = get_object_or_404(Environment, pk=environment_id)
     data['servers'] = list(Server.objects.filter(environment_id=environment_id).prefetch_related('roles'))
     return render(request, 'page/environment.html', data)
 
@@ -48,7 +48,6 @@ def environment_page(request, environment_id):
 @login_required
 def server_test(request, server_id):
     data = {}
-    server = get_object_or_404(Server, pk=server_id)
     data['server'] = get_object_or_404(Server, pk=server_id)
     data['task_id'] = TestConnectionTask().delay(server_id).id
     return render(request, 'partial/server_test.html', data)
