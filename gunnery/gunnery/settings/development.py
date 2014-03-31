@@ -1,4 +1,5 @@
 from .common import *
+ENVIRONMENT = 'development'
 
 DEBUG = True
 

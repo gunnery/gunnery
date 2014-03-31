@@ -1,4 +1,5 @@
 from .common import *
+ENVIRONMENT = 'production'
 
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'localhost'

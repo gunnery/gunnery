@@ -1,4 +1,5 @@
 from .common import *
+ENVIRONMENT = 'test'
 
 TEST_DISCOVER_TOP_LEVEL = BASE_DIR
 TEST_DISCOVER_ROOT = BASE_DIR
