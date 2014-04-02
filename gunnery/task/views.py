@@ -191,3 +191,25 @@ def live_log(request, execution_id, last_id):
                                                                                                             'event',
                                                                                                             'data')
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")
+
+@login_required
+def execution_abort(request, execution_id):
+    # if request.method != 'POST':
+    #     return Http404
+    execution = get_object_or_404(Execution, pk=execution_id)
+    execution.status = execution.ABORTED
+    execution.save_end()
+
+    ExecutionLiveLog.add(execution_id, 'execution_completed', status=Execution.ABORTED,
+                         time=execution.time,
+                         time_end=execution.time_end)
+
+    from celery.result import AsyncResult
+    if execution.celery_task_id:
+        AsyncResult(execution.celery_task_id).revoke(terminate=True)
+        for commands in execution.commands.all():
+            for server in commands.servers.all():
+                if server.celery_task_id:
+                    AsyncResult(server.celery_task_id).revoke(terminate=True)
+    data = {}
+    return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")

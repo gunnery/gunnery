@@ -24,6 +24,7 @@ status_mapping = {
     Execution.RUNNING: ["warning", "spinner fa-spin", "Running"],
     Execution.SUCCESS: ["success", "check", "Success"],
     Execution.FAILED: ["danger", "exclamation-triangle", "Failed"],
+    Execution.ABORTED: ["warning", "exclamation-triangle", "Aborted"],
 }
 
 

@@ -13,6 +13,10 @@
            role="button" class="btn btn-default pull-right" id="execute-button"
            {% if execution.status == execution.PENDING or execution.status == execution.RUNNING %}style="display:none"{% endif %}><i
                 class="fa fa-bolt"></i> Execute</a>
+
+        <a href="#" role="button" class="btn btn-default pull-right" id="abort-button"
+           {% if execution.status != execution.PENDING and execution.status != execution.RUNNING %}style="display:none"{% endif %}><i
+                class="fa fa-ban"></i> Abort</a>
     </h1>
     <div class="clearfix"></div>
 

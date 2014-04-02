@@ -33,6 +33,7 @@
             $('.execution-time-end').html(data.time_end).prev().show();
             $('.execution-time').html(data.time + ' s');
             $('#execute-button').show();
+            $('#abort-button').hide();
         }
     };
 
@@ -63,4 +64,14 @@
             clearInterval(interval);
         }
     }, 1000);
+
+    $('#abort-button').click(function(event) {
+        event.preventDefault();
+        var csrftoken = $.cookie('csrftoken');
+        $.ajax({
+            type: 'POST',
+            url: '/execution/' + executionId + '/abort/',
+            headers: {"X-CSRFToken": csrftoken}
+        });
+    });
 })(jQuery);

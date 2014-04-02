@@ -5,6 +5,7 @@ from django.db.models.signals import post_delete
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
+from django.utils.timezone import now
 
 from backend.tasks import *
 from backend.securefile import SecureFileStorage
@@ -51,16 +52,33 @@ class TaskCommand(models.Model):
     order = models.IntegerField()
 
 
-class Execution(models.Model):
+class StateMixin(object):
+    def save_start(self):
+        self.time_start = now()
+        self.status = self.RUNNING
+        self.save()
+
+    def save_end(self, status=None):
+        self.time_end = now()
+        if self.time_start:
+            self.time = (self.time_end - self.time_start).seconds
+        if status:
+            self.status = status
+        self.save()
+
+
+class Execution(models.Model, StateMixin):
     PENDING = 3
     RUNNING = 0
     SUCCESS = 1
     FAILED = 2
+    ABORTED = 4
     STATUS_CHOICES = (
-    (PENDING, 'pending'),
-    (RUNNING, 'running'),
-    (SUCCESS, 'success'),
-    (FAILED, 'failed'),
+        (PENDING, 'pending'),
+        (RUNNING, 'running'),
+        (SUCCESS, 'success'),
+        (FAILED, 'failed'),
+        (ABORTED, 'aborted'),
     )
     task = models.ForeignKey(Task, related_name="executions")
     time_created = models.DateTimeField(auto_now_add=True)
@@ -70,6 +88,7 @@ class Execution(models.Model):
     environment = models.ForeignKey(Environment, related_name="executions")
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="executions")
     status = models.IntegerField(choices=STATUS_CHOICES, default=PENDING)
+    celery_task_id = models.CharField(blank=True, max_length=36)
 
     def get_absolute_url(self):
         return reverse('execution_page', args=[str(self.id)])
@@ -138,7 +157,7 @@ class ExecutionCommand(models.Model):
     roles = models.ManyToManyField(ServerRole)
 
 
-class ExecutionCommandServer(models.Model):
+class ExecutionCommandServer(models.Model, StateMixin):
     PENDING = 3
     RUNNING = 0
     SUCCESS = 1
@@ -164,20 +183,31 @@ class ExecutionCommandServer(models.Model):
         live_logs = self.live_logs.values_list('output', flat=True)
         return ''.join(live_logs)
 
+
 class ExecutionLiveLog(models.Model):
     execution = models.ForeignKey(Execution, related_name="live_logs")
     event = models.CharField(max_length=128)
     data = models.TextField(blank=True)
 
+    @staticmethod
+    def add(execution_id, name, data={}, **kwargs):
+        """ Triggers execution event """
+        data = dict(data.items() + kwargs.items())
+        for key, value in data.items():
+            if key.startswith('time_'):
+                data[key] = value.strftime('%Y-%m-%d %H:%I')
+        data = json.dumps(data, cls=DjangoJSONEncoder)
+        ExecutionLiveLog(execution_id=execution_id, event=name, data=data).save()
+
 
 class ParameterParser(object):
     parameter_format = '${%s}'
     global_parameters = {
-    'gun_application': 'application name',
-    'gun_environment': 'environment name',
-    'gun_task': 'task name',
-    'gun_user': 'user email',
-    'gun_time': 'execution start timestamp'
+        'gun_application': 'application name',
+        'gun_environment': 'environment name',
+        'gun_task': 'task name',
+        'gun_user': 'user email',
+        'gun_time': 'execution start timestamp'
     }
 
     def __init__(self, execution):
@@ -185,11 +215,11 @@ class ParameterParser(object):
         import calendar
 
         self.global_parameter_values = {
-        'gun_application': self.execution.task.application.name,
-        'gun_environment': self.execution.environment.name,
-        'gun_task': self.execution.task.name,
-        'gun_user': self.execution.user.email,
-        'gun_time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
+            'gun_application': self.execution.task.application.name,
+            'gun_environment': self.execution.environment.name,
+            'gun_task': self.execution.task.name,
+            'gun_user': self.execution.user.email,
+            'gun_time': str(calendar.timegm(self.execution.time_created.utctimetuple()))
         }
 
     def process(self, cmd):

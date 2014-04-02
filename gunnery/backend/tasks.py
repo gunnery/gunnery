@@ -41,29 +41,18 @@ def cleanup_files(environment_id):
     SecureFileStorage(environment_id).remove()
 
 
-def _trigger_event(execution_id, name, data={}, **kwargs):
-    """ Triggers execution event """
-    data = dict(data.items() + kwargs.items())
-    for key, value in data.items():
-        if key.startswith('time_'):
-            data[key] = value.strftime('%Y-%m-%d %H:%I')
-    data = json.dumps(data, cls=DjangoJSONEncoder)
-    ExecutionLiveLog(execution_id=execution_id, event=name, data=data).save()
-
-
 class ExecutionTask(app.Task):
     def __init__(self):
         pass
 
     def run(self, execution_id):
         execution = self._get_execution(execution_id)
-        execution.time_start = now()
-        execution.status = Execution.RUNNING
-        execution.save()
+        if execution.status == Execution.ABORTED:
+            return
+        execution.celery_task_id = self.request.id
+        execution.save_start()
 
-        _trigger_event(execution_id, 'execution_started',
-                       status=execution.status,
-                       time_start=execution.time_start)
+        ExecutionLiveLog.add(execution_id, 'execution_started', status=execution.status, time_start=execution.time_start)
 
         chord_chain = []
         for command in execution.commands.all():
@@ -89,13 +78,11 @@ class ExecutionTaskFinish(app.Task):
             execution.status = execution.FAILED
         else:
             execution.status = execution.SUCCESS
-        execution.time_end = now()
-        execution.time = (execution.time_end - execution.time_start).seconds
-        execution.save()
-        _trigger_event(execution_id, 'execution_completed',
-                       status=execution.status,
-                       time_end=execution.time_end,
-                       time=execution.time)
+        execution.save_end()
+        ExecutionLiveLog.add(execution_id, 'execution_completed',
+                             status=execution.status,
+                             time_end=execution.time_end,
+                             time=execution.time)
 
     def _get_execution(self, execution_id):
         return Execution.objects.get(pk=execution_id)
@@ -107,48 +94,48 @@ class CommandTask(app.Task):
 
     def run(self, execution_command_server_id):
         command_server = ExecutionCommandServer.objects.get(pk=execution_command_server_id)
-        command_server.time_start = now()
-        command_server.status = command_server.RUNNING
-        command_server.save()
-        server = command_server.server
+        if command_server.execution_command.execution.status == Execution.ABORTED:
+            return
+        command_server.celery_task_id = self.request.id
+        command_server.save_start()
         environment_id = command_server.execution_command.execution.environment.id
         execution_id = command_server.execution_command.execution.id
 
-        _trigger_event(execution_id, 'command_started',
-                       command_server_id=command_server.id)
+        ExecutionLiveLog.add(execution_id, 'command_started', command_server_id=command_server.id)
 
-        ssh_server = self._get_ssh_server(environment_id, server)
+        ssh_server = self._get_ssh_server(environment_id, command_server.server)
+        self.execute_ssh_command_on_server(command_server, execution_id, ssh_server)
+
+        if command_server.return_code == 0:
+            command_server.status = command_server.SUCCESS
+        else:
+            command_server.status = command_server.FAILED
+        command_server.save_end()
+
+        ExecutionLiveLog.add(execution_id, 'command_completed',
+                       command_server_id=command_server.id,
+                       return_code=command_server.return_code,
+                       status=command_server.status,
+                       time=command_server.time)
+
+        if command_server.status == command_server.FAILED:
+            raise Exception('command exit code != 0')
+
+    def execute_ssh_command_on_server(self, command_server, execution_id, ssh_server):
         stdout = ssh_server.run(command_server.execution_command.command)
-
         try:
             while True:
                 lines = stdout.readline()
                 if lines == '':
                     break
                 command_server.output += lines
-                _trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
+                ExecutionLiveLog.add(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
             command_server.return_code = ssh_server.get_status()
         except Exception as e:
             line = 'Command failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
             command_server.output += line
-            _trigger_event(execution_id, 'command_output', command_server_id=command_server.id, output=line)
+            ExecutionLiveLog.add(execution_id, 'command_output', command_server_id=command_server.id, output=line)
             command_server.return_code = 1024
-
-        if command_server.return_code == 0:
-            command_server.status = command_server.SUCCESS
-        else:
-            command_server.status = command_server.FAILED
-        command_server.time_end = now()
-        command_server.time = (command_server.time_end - command_server.time_start).seconds
-        command_server.save()
-
-        _trigger_event(execution_id, 'command_completed',
-                       command_server_id=command_server.id,
-                       return_code=command_server.return_code,
-                       status=command_server.status,
-                       time=command_server.time)
-        if command_server.status == command_server.FAILED:
-            raise Exception('command exit code != 0')
 
     def _get_ssh_server(self, environment_id, server):
         ssh_private_key = PrivateKey(environment_id)
