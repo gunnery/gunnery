@@ -1,55 +1,76 @@
-from subprocess import Popen, PIPE, STDOUT
+import select
+from paramiko import RSAKey, SSHClient, AutoAddPolicy
+from .securefile import SecureFileStorage
+
+
+class Transport(object):
+    def __init__(self, server):
+        self.server = server
+        self.callback = lambda out: None
+
+    def set_stdout_callback(self, callback):
+        self.callback = callback
+
+
+class SSHTransport(Transport):
+    output_timeout = 0.5
+    output_buffer = 1024
+
+    def __init__(self, server):
+        super(SSHTransport, self).__init__(server)
+        self.secure_files = SecureFileStorage(self.server.environment_id)
+        self.client = self.create_client()
+        self.channel = None
+
+    def run(self, command):
+        self.channel = self.client.get_transport().open_session()
+        self.channel.get_pty()
+        self.channel.exec_command(command)
+        while True:
+            rl, _, _ = select.select([self.channel], [], [], self.output_timeout)
+            if len(rl) > 0:
+                output = self.channel.recv(self.output_buffer)
+                if output:
+                    self.callback(output)
+                else:
+                    break
+        return self.channel.recv_exit_status()
+
+    def create_client(self):
+        private = RSAKey(filename=self.get_private_key_file())
+        client = SSHClient()
+        client.set_missing_host_key_policy(AutoAddPolicy())
+        client.load_host_keys(self.get_host_keys_file())
+        client.connect(self.server.host, pkey=private, look_for_keys=False, port=self.server.port)
+        return client
+
+    def close_client(self):
+        self.client.save_host_keys(self.get_host_keys_file())
+        self.channel.close()
+        self.client.close()
+
+    def kill(self):
+        self.close_client()
+
+    def get_host_keys_file(self):
+        return self.secure_files.known_hosts.get_file_name()
+
+    def get_private_key_file(self):
+        return self.secure_files.private_key.get_file_name()
 
 
 class Server(object):
-    """ Creates SSH connection process and streams output """
+    def __init__(self):
+        self.environment_id = None
+        self.host = None
+        self.port = 22
+        self.user = None
+        self.authentication_method = 'key'
 
-    def __init__(self, host, user, private_key, known_hosts):
-        self.host = host
-        self.user = user
-        self.private_key = private_key
-        self.known_hosts = known_hosts
-        self.verbose = False
-        self.command = None
-        self.process = None
-
-    def run(self, command):
-        """ Run command and return output stream """
-        self.command = command
-        self.format_command()
-        self.process = Popen(self.command_array,
-                             bufsize=1,
-                             stdout=PIPE,
-                             stderr=STDOUT)
-        return self.process.stdout
-
-    def kill(self):
-        self.process.kill()
-
-    def get_status(self):
-        """ Get return code of command """
-        self.process.wait()
-        return self.process.returncode
-
-    def format_command(self):
-        """ Prepare ssh command """
-        self.command_array = [
-            '/usr/bin/ssh',
-
-            '-o ConnectTimeout=30',
-            '-o ConnectionAttempts=1',
-            '-o StrictHostKeyChecking=no',
-            '-o BatchMode=yes',
-            '-o UserKnownHostsFile=%s' % self.known_hosts.get_file_name(),  #'-o ControlMaster=auto',
-            #'-o ControlPath=/home/celery/.ssh/sockets/%s@%s' % (self.user, self.host),  #'-o ControlPersist=60',
-
-            '-i%s' % self.private_key.get_file_name(),
-            '-T',  # Disable pseudo-tty allocation.
-
-            '%s@%s' % (self.user, self.host),
-            self.command
-        ]
-        if self.verbose:
-            self.command_array.insert(1, '-v')
-        print ' '.join(self.command_array)
-
+    @staticmethod
+    def from_model(model):
+        instance = Server()
+        instance.environment_id = model.environment_id
+        instance.host = model.host
+        instance.user = model.user
+        return instance

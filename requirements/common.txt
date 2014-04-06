@@ -15,3 +15,4 @@ psycopg2==2.5.2
 factory_boy==2.3.1
 django-guardian==1.2.0
 South==0.8.4
+paramiko==1.13.0
