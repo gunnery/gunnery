@@ -1,5 +1,7 @@
+from billiard.exceptions import Terminated
 import logging
 import json
+from paramiko import PKey
 from time import sleep
 from celery import group, chain, chord, Task
 from django.conf import settings
@@ -12,6 +14,7 @@ from task.models import *
 from .securefile import *
 import ssh
 
+from celery.exceptions import SoftTimeLimitExceeded
 
 logger = logging.getLogger(__name__)
 
@@ -69,6 +72,8 @@ class ExecutionTask(app.Task):
 class ExecutionTaskFinish(app.Task):
     def run(self, execution_id):
         execution = self._get_execution(execution_id)
+        if execution.status == Execution.ABORTED:
+            return
         failed = False
         for command in execution.commands.all():
             for server in command.servers.all():
@@ -88,11 +93,31 @@ class ExecutionTaskFinish(app.Task):
         return Execution.objects.get(pk=execution_id)
 
 
+class SoftAbort(Exception):
+    pass
+
+
+def _sigalrm_handler(signum, frame):
+    raise SoftAbort
+
+
+# from celery.signals import after_task_publish
+# @after_task_publish.connect()
+# def task_sent_handler(sender=None, body=None, **kwargs):
+#     if sender == 'backend.tasks.CommandTask':
+#         id = body['kwargs']['execution_command_server_id']
+#         execution = Execution.objects.get(pk=id)
+#         execution.celery_task_id = body['id']
+#         execution.save()
+
+
 class CommandTask(app.Task):
     def __init__(self):
         pass
 
     def run(self, execution_command_server_id):
+        import signal
+        signal.signal(signal.SIGALRM, _sigalrm_handler)
         command_server = ExecutionCommandServer.objects.get(pk=execution_command_server_id)
         if command_server.execution_command.execution.status == Execution.ABORTED:
             return
@@ -131,11 +156,17 @@ class CommandTask(app.Task):
                 command_server.output += lines
                 ExecutionLiveLog.add(execution_id, 'command_output', command_server_id=command_server.id, output=lines)
             command_server.return_code = ssh_server.get_status()
-        except Exception as e:
+        except SoftTimeLimitExceeded:
             line = 'Command failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
             command_server.output += line
             ExecutionLiveLog.add(execution_id, 'command_output', command_server_id=command_server.id, output=line)
             command_server.return_code = 1024
+        except SoftAbort:
+            ssh_server.kill()
+            line = 'Command execution interrupted by user.'
+            command_server.output += line
+            ExecutionLiveLog.add(execution_id, 'command_output', command_server_id=command_server.id, output=line)
+            command_server.return_code = 1025
 
     def _get_ssh_server(self, environment_id, server):
         ssh_private_key = PrivateKey(environment_id)

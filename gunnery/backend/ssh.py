@@ -10,6 +10,8 @@ class Server(object):
         self.private_key = private_key
         self.known_hosts = known_hosts
         self.verbose = False
+        self.command = None
+        self.process = None
 
     def run(self, command):
         """ Run command and return output stream """
@@ -21,9 +23,12 @@ class Server(object):
                              stderr=STDOUT)
         return self.process.stdout
 
+    def kill(self):
+        self.process.kill()
+
     def get_status(self):
         """ Get return code of command """
-        self.process.communicate()
+        self.process.wait()
         return self.process.returncode
 
     def format_command(self):

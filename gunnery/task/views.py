@@ -204,12 +204,13 @@ def execution_abort(request, execution_id):
                          time=execution.time,
                          time_end=execution.time_end)
 
+    import signal
     from celery.result import AsyncResult
     if execution.celery_task_id:
-        AsyncResult(execution.celery_task_id).revoke(terminate=True)
+        AsyncResult(execution.celery_task_id).revoke()
         for commands in execution.commands.all():
             for server in commands.servers.all():
                 if server.celery_task_id:
-                    AsyncResult(server.celery_task_id).revoke(terminate=True)
+                    AsyncResult(server.celery_task_id).revoke(terminate=True, signal=signal.SIGALRM)
     data = {}
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")
