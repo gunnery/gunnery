@@ -1,4 +1,4 @@
-from _socket import gaierror
+from _socket import gaierror, error as socket_error
 from billiard.exceptions import Terminated
 import logging
 import json
@@ -140,10 +140,13 @@ class CommandTask(app.Task):
         except gaierror:
             self._output_callback('Name or service not known')
             self.ecs.return_code = 1027
+        except socket_error:
+            self._output_callback('Socket error')
+            self.ecs.return_code = 1028
         except SoftTimeLimitExceeded:
             line = 'Command failed to finish within time limit (%ds)' % settings.CELERYD_TASK_SOFT_TIME_LIMIT
             self._output_callback(line)
-            self.ecs.return_code = 1024
+            self.ecs.return_code = 1029
         except SoftAbort:
             if transport:
                 logger.info(transport)
@@ -151,7 +154,7 @@ class CommandTask(app.Task):
             self._output_callback('Command execution interrupted by user.')
             self.ecs.return_code = 1025
         except Exception as e:
-            logger.error(e)
+            logger.error(str(type(e)) + str(e))
             self._output_callback('Unknown error')
             self.ecs.return_code = 1024
 
@@ -200,7 +203,11 @@ class TestConnectionTask(app.Task):
         except gaierror:
             output = 'Name or service not known'
             status = -1
+        except socket_error:
+            output = 'Socket error'
+            status = -1
         except Exception as e:
+            logger.error(type(e) + str(e))
             output = 'Unknown error'
             status = -1
         return status == 0, output

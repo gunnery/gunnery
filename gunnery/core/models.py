@@ -97,6 +97,7 @@ class ServerRole(models.Model):
 class Server(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
     host = models.CharField(blank=False, max_length=128)
+    port = models.IntegerField(blank=False, default=22)
     user = models.CharField(blank=False, max_length=128)
     roles = models.ManyToManyField(ServerRole, related_name="servers")
     environment = models.ForeignKey(Environment, related_name="servers")

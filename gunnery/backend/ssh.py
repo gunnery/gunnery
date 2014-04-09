@@ -63,7 +63,7 @@ class Server(object):
     def __init__(self):
         self.environment_id = None
         self.host = None
-        self.port = 22
+        self.port = None
         self.user = None
         self.authentication_method = 'key'
 
@@ -72,5 +72,6 @@ class Server(object):
         instance = Server()
         instance.environment_id = model.environment_id
         instance.host = model.host
+        instance.port = model.port
         instance.user = model.user
         return instance

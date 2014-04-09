@@ -64,7 +64,7 @@ class ServerForm(ModalForm):
 
     class Meta:
         model = Server
-        fields = ['name', 'host', 'user', 'roles', 'environment']
+        fields = ['name', 'host', 'port', 'user', 'roles', 'environment']
         widgets = {'roles': TagSelect(),
                    'environment': HiddenInput()}
 
