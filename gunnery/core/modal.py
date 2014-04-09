@@ -171,3 +171,7 @@ class Modal(BaseModal):
 
     def on_form_create_server(self):
         self.form.fields['roles'].queryset = ServerRole.objects.filter(department_id=self.request.current_department_id)
+
+    def on_create_department(self):
+        for serverrole in ['app', 'db', 'cache']:
+            ServerRole(name=serverrole, department=self.instance).save()
