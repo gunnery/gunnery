@@ -14,3 +14,6 @@ application::requirements_path : "%{hiera('application::root_path')}/requirement
 
 postgresql::user : gunnery
 postgresql::password : gunnery
+
+celery::workers : 1
+celery::concurrency : 8

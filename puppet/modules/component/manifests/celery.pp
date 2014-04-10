@@ -6,6 +6,8 @@ class component::celery {
   $run_path = hiera('application::run_path')
   $secure_path = hiera('application::secure_path')
   $virtualenv_path = hiera('application::virtualenv_path')
+  $workers = hiera('celery::workers')
+  $concurrency = hiera('celery::concurrency')
   $environment = $::environment
 
   package {'celery':

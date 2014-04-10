@@ -1,6 +1,6 @@
 #   but you can also start multiple and configure settings
 #   for each in CELERYD_OPTS (see `celery multi --help` for examples).
-CELERYD_NODES="worker1 worker2 worker3"
+CELERYD_NODES="<% Array(1..@workers).each do |w| -%>worker<%= w %> <% end -%>"
 
 # Absolute or relative path to the 'celery' command:
 #CELERY_BIN="/usr/local/bin/celery"
@@ -9,14 +9,12 @@ CELERY_BIN="<%= @virtualenv_path %>/bin/celery"
 # App instance to use
 # comment out this line if you don't use an app
 CELERY_APP="<%= @app_name %>"
-# or fully qualified:
-#CELERY_APP="gunnery.tasks:app"
 
 # Where to chdir at start.
 CELERYD_CHDIR="<%= @app_path %>"
 
 # Extra command-line arguments to the worker
-CELERYD_OPTS="--time-limit=300 --concurrency=8"
+CELERYD_OPTS="--concurrency=<%= @concurrency %>"
 
 # %N will be replaced with the first part of the nodename.
 CELERYD_LOG_FILE="<%= @log_path %>/celery.%N.log"
