@@ -56,14 +56,16 @@
 
         {% for command in execution.commands.all %}
             <div class="command {% if command.servers.first.time_start == None %}text-muted{% endif %}">
+                <div>
                 {{ command.command }}
                 {% for role in command.roles.all %}
                     <span class="label label-default">{{ role.name }}</span>
                 {% endfor %}
+                </div>
                 {% for server in command.servers.all %}
                     <div class="server {% if server.time_start == None %}text-muted{% endif %}"
                          data-command-server-id="{{ server.id }}">
-                        <div><b>{{ server.server.name }}</b> ({{ server.server.host }})</div>
+                        <div><b>{{ server.server.name }}</b> ({{ server.server.host }}) </div>
                         <pre>{{ server.output }}</pre>
                         <div class="server-status">
                             {% if server.time != None %}

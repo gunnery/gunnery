@@ -18,7 +18,8 @@
         command_started: function (data) {
             $('.server[data-command-server-id="' + data.command_server_id + '"]')
                 .removeClass('text-muted')
-                .parent().removeClass('text-muted');
+                .parent().removeClass('text-muted')
+             $('.server[data-command-server-id="' + data.command_server_id + '"] .server-status').html('<div class="loader"></div>');
         },
         execution_status: function (data) {
             executionStatus = statusDict[data.status].name;
@@ -26,7 +27,7 @@
         },
         execution_started: function (data) {
             handlers.execution_status(data);
-            $('.execution-time-start').html(data.time_start)
+            $('.execution-time-start').html(data.time_start);
         },
         execution_completed: function (data) {
             handlers.execution_status(data);
@@ -51,7 +52,6 @@
                     var item;
                     for (var i = 0, n = data.length; i < n; i++) {
                         item = data[i]
-                        console.log(item.event, item.data);
                         if (item.event in handlers) {
                             handlers[item.event](JSON.parse(item.data));
                         }
