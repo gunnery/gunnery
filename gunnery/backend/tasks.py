@@ -60,7 +60,7 @@ class ExecutionTask(app.Task):
         ExecutionLiveLog.add(execution_id, 'execution_started', status=execution.status, time_start=execution.time_start)
 
         chord_chain = []
-        for command in execution.commands.all():
+        for command in execution.commands_ordered():
             tasks = [CommandTask().si(execution_command_server_id=server.id) for server in command.servers.all()]
             if len(tasks):
                 chord_chain.append(chord(tasks, _dummy_callback.s()))

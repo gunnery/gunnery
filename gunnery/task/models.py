@@ -108,7 +108,7 @@ class Execution(models.Model, StateMixin):
 
     def _create_execution_commands(self, command):
         parsed_command = command.command
-        execution_command = ExecutionCommand(execution=self, command=parsed_command)
+        execution_command = ExecutionCommand(execution=self, command=parsed_command, order=command.order)
         execution_command.save()
         for role in command.roles.all():
             execution_command.roles.add(role)
@@ -144,6 +144,9 @@ class Execution(models.Model, StateMixin):
     def get_inline_by_user(id):
         return Execution.get_inline_by_query(user_id=id)
 
+    def commands_ordered(self):
+        return self.commands.order_by('order')
+
 
 class ExecutionParameter(models.Model):
     execution = models.ForeignKey(Execution, related_name="parameters")
@@ -155,6 +158,7 @@ class ExecutionCommand(models.Model):
     execution = models.ForeignKey(Execution, related_name="commands")
     command = models.TextField()
     roles = models.ManyToManyField(ServerRole)
+    order = models.IntegerField()
 
 
 class ExecutionCommandServer(models.Model, StateMixin):
