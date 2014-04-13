@@ -264,3 +264,17 @@ button > i.fa:after {
     width: 200px;
     margin-left: -100px;
 }
+
+.panel-body {
+    padding-bottom: 0;
+}
+
+div.dashboard-application + div {
+    border-top: 3px solid #eee;
+    padding-top: 18px;
+}
+
+.dashboard-application .list-group-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}

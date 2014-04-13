@@ -1,13 +1,41 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load staticfiles %}
 
+{% block page_scripts %}
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script src="{% static "core/js/dashboard.js" %}"></script>
+{% endblock %}
 {% block content %}
     {% for application in application_list %}
-        <h3>
-            {% model_icon 'application' %}
-            <a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
-        </h3>
-        {% include "partial/execution_list_inline.html" with notitle=True list=application.executions_inline %}
+        <div class="dashboard-application">
+            <h3>
+                {% model_icon 'application' %}
+                <a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
+            </h3>
+            {% include "partial/execution_list_inline.html" with notitle=True list=application.executions_inline %}
+
+            <div class="row">
+            {% for environment in application.environments.all %}
+                <div class="col-md-3 col-sm-6">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">{% model_icon 'environment' %} {{environment.name}}</div>
+                        {# <div class="panel-body"></div> #}
+                        <ul class="list-group">
+                            {% for task in environment.stats_count %}
+                                <li class="list-group-item">
+                                    <span class="badge" title="execution count">x{{task.count}}</span>
+                                    <span class="badge" title="average time">{{task.avg|floatformat}}s</span>
+                                    <a href="{{task.get_absolute_url}}">{{task.name}}</a>
+                                    <a href="{% url 'task_execute_page' task_id=task.id environment_id=environment.id %}" class="text-muted"><i class="fa fa-bolt"></i></a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
     {% endfor %}
 
 {% endblock %}

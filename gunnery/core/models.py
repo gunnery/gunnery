@@ -3,9 +3,8 @@ from django.db.models.signals import post_delete, post_save
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-
 from backend.securefile import SecureFileStorage
-
+from datetime import datetime, timedelta
 
 def gunnery_name():
     return RegexValidator(regex='^[a-zA-Z0-9_\.\-]+$', message='Invalid characters')
@@ -77,6 +76,17 @@ class Environment(models.Model):
     def cleanup_files(sender, instance, **kwargs):
         from backend.tasks import cleanup_files
         cleanup_files.delay(instance.id)
+
+    def stats_count(self):
+        return self.application.tasks.\
+            filter(executions__environment=self).\
+            annotate(avg=models.Avg('executions__time'), count=models.Count('executions'))
+
+    def stats_statues(self):
+        return self.executions.\
+            filter(time_start__gte=datetime.now()-timedelta(days=30)).\
+            values('status').\
+            annotate(count=models.Count('status'))
 
 
 post_save.connect(Environment.generate_keys, sender=Environment)
