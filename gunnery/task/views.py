@@ -1,11 +1,17 @@
+import json
+
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib.auth.decorators import login_required
-from django.db import transaction
 
-from .forms import *
 from core.views import get_common_page_data
-from .models import *
+from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
+from .models import (
+    Application, Environment, Execution, ExecutionLiveLog, ExecutionParameter,
+    ParameterParser, ServerRole, Task)
 
 
 @login_required

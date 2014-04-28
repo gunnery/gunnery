@@ -1,6 +1,8 @@
 from django.conf.urls import patterns, url
 
-from .views import *
+from .views import (
+    execution_abort, execution_page, live_log, log_page, task_delete,
+    task_execute_page, task_form_page, task_page)
 
 
 urlpatterns = patterns('',
