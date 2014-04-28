@@ -1,7 +1,7 @@
 from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, render
 
 from core.views import get_common_page_data
 from task.models import Execution
