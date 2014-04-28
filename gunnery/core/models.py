@@ -1,10 +1,9 @@
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
-from backend.securefile import SecureFileStorage
 from datetime import datetime, timedelta
+
 
 def gunnery_name():
     return RegexValidator(regex='^[a-zA-Z0-9_\.\-]+$', message='Invalid characters')

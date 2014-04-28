@@ -1,9 +1,11 @@
-from django.forms import *
+from django.forms import ModelForm, ModelMultipleChoiceField
 from django.forms.widgets import Textarea, SelectMultiple, HiddenInput
-from crispy_forms.helper import FormHelper
 from django.http import Http404
 
-from .models import *
+from crispy_forms.helper import FormHelper
+
+from .models import (
+    Application, Department, Environment, Server, ServerRole)
 
 
 class ModalForm(ModelForm):
@@ -104,4 +106,3 @@ def core_create_form(name, request, id, args={}):
         'department': DepartmentForm
     }
     return create_form(form_objects, name, request, id, args)
-

@@ -1,7 +1,9 @@
 from django.conf.urls import patterns, url
 
-from .modal import *
-
+from .modal import modal_delete, modal_form
+from .views import (
+    application_page, department_switch, environment_page, help_page, index,
+    settings_page, server_test, server_test_ajax)
 
 urlpatterns = patterns('',
     url(r'^$', index, name='index'),
