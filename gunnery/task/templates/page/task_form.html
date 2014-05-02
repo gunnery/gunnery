@@ -77,16 +77,18 @@
                     Commands are executed in non-login, non-interactive shell.
                     It's allowed to use stream redirection and pipes in commands. Examples:
                 </p>
-<p><pre>tar -cpzf /home/backup/backup-${gun_time}.tar.gz /var/www/ # timestamped backup
-( sleep 3 ; echo 'flush_all' ; sleep 2 ; echo q; echo q; ) | telnet 127.0.0.1 11211 -eq # clear memcached
-cd /var/www/your_project; make all</pre></p>
+                <ul>
+                    <li>timestamped backup - <code>tar -cpzf /home/backup/backup-${gun_time}.tar.gz /var/www/</code></li>
+                    <li>clear memcached - <code>( sleep 3 ; echo 'flush_all' ; sleep 2 ; echo q; echo q; ) | telnet 127.0.0.1 11211 -eq</code></li>
+                    <li><code>cd /var/www/your_project; make all</code></li>
+                </ul>
                 <p>
                     To use custom parameters in commands include <code>${parameter_name}</code>.
                 </p>
                 Available global parameters:
                 <ul>
                     {% for name, value in global_parameters %}
-                        <li><b>${% templatetag openbrace %}{{ name }}{% templatetag closebrace %}</b> {{ value }}</li>
+                        <li><code>${% templatetag openbrace %}{{ name }}{% templatetag closebrace %}</code> {{ value }}</li>
                     {% endfor %}
                 </ul>
             </div>
