@@ -19,7 +19,7 @@
             {% for environment in application.environments.all %}
                 <div class="col-md-3 col-sm-6">
                     <div class="panel panel-default">
-                        <div class="panel-heading">{% model_icon 'environment' %} {{environment.name}}</div>
+                        <div class="panel-heading">{% model_icon 'environment' %} <a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></div>
                         {# <div class="panel-body"></div> #}
                         <ul class="list-group">
                             {% for task in environment.stats_count %}
