@@ -41,7 +41,7 @@ class SSHTransport(Transport):
         client = SSHClient()
         client.set_missing_host_key_policy(AutoAddPolicy())
         client.load_host_keys(self.get_host_keys_file())
-        client.connect(self.server.host, pkey=private, look_for_keys=False, port=self.server.port)
+        client.connect(self.server.host, pkey=private, look_for_keys=False, port=self.server.port, username=self.server.user)
         return client
 
     def close_client(self):
