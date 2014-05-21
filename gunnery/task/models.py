@@ -1,15 +1,13 @@
+import json
+
 from django.db import models
 from django.conf import settings
-from django.contrib.auth import get_user_model
-from django.db.models.signals import post_delete
 from django.core.urlresolvers import reverse
-from django.core.exceptions import ValidationError
-from django.core.validators import RegexValidator
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.timezone import now
 
-from backend.tasks import *
-from backend.securefile import SecureFileStorage
-from core.models import *
+from core.models import (
+    Application, Environment, gunnery_name, Server, ServerRole)
 
 
 class Task(models.Model):

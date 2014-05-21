@@ -1,4 +1,4 @@
-from django.forms import *
+from django.forms import BooleanField, CharField, PasswordInput
 from django.contrib.auth import get_user_model
 
 from core.forms import ModalForm, create_form

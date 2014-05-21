@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 
-from views import *
+from views import modal_permissions, profile_page
 
 
 urlpatterns = patterns('',

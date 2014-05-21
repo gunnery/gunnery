@@ -1,12 +1,15 @@
 import json
+
 from django.http import Http404, HttpResponse
-from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
+from django.shortcuts import get_object_or_404, redirect, render
+
 from guardian.shortcuts import get_objects_for_user
 
-from .forms import *
 from backend.tasks import TestConnectionTask
+from .models import Application, Department, Environment, Server, ServerRole
 
 
 def get_common_page_data(request):

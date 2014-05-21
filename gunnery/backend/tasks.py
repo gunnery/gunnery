@@ -1,21 +1,18 @@
 from _socket import gaierror, error as socket_error
-from billiard.exceptions import Terminated
 import logging
-import json
-from paramiko import AuthenticationException
-from time import sleep
-from celery import group, chain, chord, Task
+
 from django.conf import settings
-from django.utils.timezone import now
-from django.core.serializers.json import DjangoJSONEncoder
+
+
+from celery import chain, chord
+from celery.exceptions import SoftTimeLimitExceeded
+from paramiko import AuthenticationException
 
 from gunnery.celery import app
-from core.models import *
-from task.models import *
-from .securefile import *
+from core.models import Environment, Server
+from task.models import Execution, ExecutionLiveLog, ExecutionCommandServer
+from .securefile import PrivateKey, PublicKey, KnownHosts, SecureFileStorage
 import ssh
-
-from celery.exceptions import SoftTimeLimitExceeded
 
 logger = logging.getLogger(__name__)
 

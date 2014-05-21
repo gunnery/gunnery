@@ -1,8 +1,9 @@
-from django.forms import *
+from django.forms import ModelForm, TextInput, ValidationError
 from django.forms.widgets import Textarea, HiddenInput
 from django.forms.models import modelformset_factory, BaseModelFormSet
 
-from .models import *
+from .models import (
+    Execution, ExecutionParameter, Task, TaskCommand, TaskParameter)
 from core.forms import PageForm, TagSelect, create_form
 
 
