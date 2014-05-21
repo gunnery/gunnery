@@ -57,7 +57,7 @@ class PrivateKey(SecureFile):
     def generate(self, comment, remove=True):
         """ Generates private and public key files """
         if remove:
-            Popen(['/bin/rm', self.get_file_name()]).communicate()
+            Popen(['/bin/rm', '-f', self.get_file_name()]).communicate()
 
         command = 'ssh-keygen -f %s -C %s -N \'\'' % (self.get_file_name(), comment)
         process = Popen(command,
