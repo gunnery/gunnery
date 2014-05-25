@@ -6,6 +6,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from account.decorators import has_permissions
 
 from core.views import get_common_page_data
 from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
@@ -14,15 +15,15 @@ from .models import (
     ParameterParser, ServerRole, Task)
 
 
-@login_required
+@has_permissions('task.Task')
 def task_page(request, task_id=None):
     data = get_common_page_data(request)
     data['task'] = get_object_or_404(Task, pk=task_id)
     return render(request, 'page/task.html', data)
 
 
-@login_required
 @transaction.atomic
+@has_permissions('task.Task', 'task_id')
 def task_execute_page(request, task_id, environment_id=None):
     data = get_common_page_data(request)
     task = get_object_or_404(Task, pk=task_id)
@@ -71,7 +72,7 @@ def task_execute_page(request, task_id, environment_id=None):
     return render(request, 'page/task_execute.html', data)
 
 
-@login_required
+@has_permissions('core.Application', 'application_id')
 def task_form_page(request, application_id=None, task_id=None):
     data = get_common_page_data(request)
     if task_id:
@@ -145,6 +146,7 @@ def create_formset(request, formset, parent_id):
 
 @login_required
 def log_page(request, model_name, id):
+    #todo add custom permission check
     data = get_common_page_data(request)
     executions = Execution.objects
     if model_name == 'application':
@@ -169,7 +171,7 @@ def log_page(request, model_name, id):
     return render(request, 'page/log.html', data)
 
 
-@login_required
+@has_permissions('task.Execution')
 def execution_page(request, execution_id):
     data = get_common_page_data(request)
     execution = get_object_or_404(Execution, pk=execution_id)
@@ -177,7 +179,7 @@ def execution_page(request, execution_id):
     return render(request, 'page/execution.html', data)
 
 
-@login_required
+@has_permissions('task.Task')
 def task_delete(request, task_id):
     if request.method != 'POST':
         return Http404
@@ -191,14 +193,15 @@ def task_delete(request, task_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-@login_required
+@has_permissions('task.Execution', 'execution_id')
 def live_log(request, execution_id, last_id):
     data = ExecutionLiveLog.objects.filter(execution_id=execution_id, id__gt=last_id).order_by('id').values('id',
                                                                                                             'event',
                                                                                                             'data')
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")
 
-@login_required
+
+@has_permissions('task.Execution', 'execution_id')
 def execution_abort(request, execution_id):
     # if request.method != 'POST':
     #     return Http404

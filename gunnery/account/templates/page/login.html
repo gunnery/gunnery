@@ -2,7 +2,7 @@
 {% load core_extras %}
 
 {% block content %}
-    <div class="row">
+    <div class="row" id="login_form">
         <div class="col-xs-12 col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
             <h1 class="text-center">GUNNERY</h1>
 
@@ -27,13 +27,12 @@
                                        value="">
                             </div>
                             <div class="checkbox">
-                                <label>
-                                    <input name="remember" type="checkbox" value="Remember Me">Remember Me
-                                </label>
-
                                 <div class="pull-right">
                                     <a href="{% url 'password_reset' %}">Reset password</a>
                                 </div>
+                                <label>
+                                    <input name="remember" type="checkbox" value="Remember Me">Remember Me
+                                </label>
                             </div>
                             <button type="submit" href="index.html" class="btn btn-lg btn-success btn-block">Login
                             </button>

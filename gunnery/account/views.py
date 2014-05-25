@@ -1,5 +1,5 @@
 from django.contrib.auth import views
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, render
 
@@ -30,9 +30,9 @@ def on_before_save_user(instance):
     else:
         instance.password = get_user_model().objects.get(pk=instance.id).password
 
-
-def modal_permissions(request, id):
-    user = get_object_or_404(get_user_model(), pk=id)
+@user_passes_test(lambda u: u.is_superuser)
+def modal_permissions(request, user_id):
+    user = get_object_or_404(get_user_model(), pk=user_id)
     data = get_common_page_data(request)
     data['user'] = user
     data['form_template'] = 'partial/permissions_form.html'

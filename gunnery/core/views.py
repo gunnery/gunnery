@@ -2,12 +2,13 @@ import json
 
 from django.http import Http404, HttpResponse
 from django.contrib.auth import get_user_model
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from guardian.shortcuts import get_objects_for_user
 
+from account.decorators import has_permissions
 from backend.tasks import TestConnectionTask
 from .models import Application, Department, Environment, Server, ServerRole
 
@@ -33,14 +34,14 @@ def index(request):
     return render(request, 'page/index.html', data)
 
 
-@login_required
+@has_permissions('core.Application')
 def application_page(request, application_id):
     data = get_common_page_data(request)
     data['application'] = get_object_or_404(Application, pk=application_id)
     return render(request, 'page/application.html', data)
 
 
-@login_required
+@has_permissions('core.Environment')
 def environment_page(request, environment_id):
     data = get_common_page_data(request)
     data['environment'] = get_object_or_404(Environment, pk=environment_id)
@@ -48,7 +49,7 @@ def environment_page(request, environment_id):
     return render(request, 'page/environment.html', data)
 
 
-@login_required
+@has_permissions('core.Server')
 def server_test(request, server_id):
     data = {}
     data['server'] = get_object_or_404(Server, pk=server_id)
@@ -141,18 +142,21 @@ def _settings_department_serverroles(request, data):
     return data
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def _settings_system_departments(request, data):
     data['subsection_template'] = 'partial/department_list.html'
     data['departments'] = Department.objects.all()
     return data
 
 
+@user_passes_test(lambda u: u.is_superuser)
 def _settings_system_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
     data['users'] = get_user_model().objects.order_by('name')
     return data
 
 
+@has_permissions('core.Department')
 def department_switch(request, id):
     department = get_object_or_404(Department, pk=id)
     if request.user.has_perm('core.view_department', department):

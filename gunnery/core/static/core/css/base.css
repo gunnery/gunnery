@@ -189,6 +189,7 @@ button > i.fa:after {
     -moz-perspective: 600px;
     -o-perspective: 600px;
     perspective: 600px;
+    z-index: 1000;
 }
 .sessionMessageWrap > div {
     width: 400px;
@@ -277,4 +278,12 @@ div.dashboard-application + div {
 .dashboard-application .list-group-item {
     padding-top: 5px;
     padding-bottom: 5px;
+}
+
+#login_form h1 {
+    margin: 50px 0 50px;
+}
+
+#login_form .panel-body {
+    padding-bottom: 15px;
 }

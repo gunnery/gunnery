@@ -60,7 +60,10 @@ $(document.body).on('shown.bs.modal', function () {
     });
 
     $('.sessionMessageWrap div').addClass('show').each(function(i, e){
-        setTimeout(function(){$(e).removeClass('show')}, $(e).text().length*256);
+        e = $(e);
+        if (!e.hasClass('error')) {
+            setTimeout(function(){$(e).removeClass('show')}, e.text().length*256);
+        }
     }).click(function(){
         $(this).removeClass('show');
     });
