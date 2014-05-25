@@ -9,6 +9,7 @@ Vagrant.configure("1") do |config|
   config.vm.network :bridged
 
   config.vm.forward_port 80, 8080
+  config.vm.forward_port 5432, 5432
   config.ssh.forward_agent = true
 
   config.vm.provision :shell, :path => "puppet/install.sh"
