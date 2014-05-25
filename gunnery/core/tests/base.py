@@ -5,11 +5,11 @@ from core.tests.fixtures import DepartmentFactory
 
 
 class LoggedTestCase(TestCase):
-    logged_is_staff = True
+    logged_is_superuser = True
 
     @classmethod
     def setUpClass(cls):
-        cls.user = UserFactory(is_staff=cls.logged_is_staff)
+        cls.user = UserFactory(is_superuser=cls.logged_is_superuser)
         cls.setup_department()
 
     @classmethod
@@ -19,6 +19,9 @@ class LoggedTestCase(TestCase):
 
     def setUp(self):
         result = self.client.login(username=self.user.email, password=self.user.email)
+        session = self.client.session
+        session['current_department_id'] = self.department.id
+        session.save()
         self.assertTrue(result, 'Login failed')
 
 

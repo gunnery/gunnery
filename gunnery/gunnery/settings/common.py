@@ -113,7 +113,9 @@ LOGIN_REDIRECT_URL = '/'
 ABSOLUTE_URL_OVERRIDES = {
     'auth.user': lambda u: "/account/profile/%d/" % u.id,
 }
-AUTHENTICATION_BACKENDS = ('account.backend.EmailAuthBackend',)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',)
 AUTH_USER_MODEL = 'account.CustomUser'
 ANONYMOUS_USER_ID = None
 

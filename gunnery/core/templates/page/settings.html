@@ -46,7 +46,7 @@
             </ul>
         </li>
 
-        {% if user.is_staff %}
+        {% if user.is_superuser %}
         <li class="dropdown {% if section == 'system' %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 System <span class="caret"></span>

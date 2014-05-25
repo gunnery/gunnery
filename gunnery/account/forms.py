@@ -58,7 +58,7 @@ class UserPasswordForm(ModalForm):
 
 def account_create_form(name, request, id, args={}):
     form_objects = {
-        'user': UserForm if not request.user.is_staff else UserSystemForm,
+        'user': UserForm if not request.user.is_superuser else UserSystemForm,
         'user_profile': UserProfileForm,
         'user_password': UserPasswordForm
     }

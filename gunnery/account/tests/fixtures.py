@@ -10,4 +10,4 @@ class UserFactory(DjangoModelFactory):
     email = factory.Sequence(lambda n: 'account%s@test.com' % n)
     name = factory.Sequence(lambda n: 'John Doe %s' % n)
     password = factory.LazyAttribute(lambda o: make_password(o.email))
-    is_staff = False
+    is_superuser = False

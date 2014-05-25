@@ -83,7 +83,7 @@ def settings_page(request, section='user', subsection='profile'):
     data['section'] = section
     data['subsection'] = subsection
     handler = '_settings_%s_%s' % (section, subsection)
-    if section == 'system' and request.user.is_staff is not True:
+    if section == 'system' and request.user.is_superuser is not True:
         return redirect('index')
     if handler in globals():
         data = globals()[handler](request, data)

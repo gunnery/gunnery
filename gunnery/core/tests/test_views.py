@@ -77,7 +77,7 @@ class SettingsTest(LoggedTestCase):
 
 
 class SettingsNotStaffTest(LoggedTestCase):
-    logged_is_staff = False
+    logged_is_superuser = False
 
     def test_system_departments(self):
         response = self.client.get('/settings/system/departments/')
