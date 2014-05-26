@@ -24,16 +24,27 @@ class IndexTest(LoggedTestCase):
 
 class ApplicationTest(LoggedTestCase):
     def test_application(self):
-        application = ApplicationFactory()
+        application = ApplicationFactory(department=self.department)
         response = self.client.get('/application/%d/' % application.id)
         self.assertContains(response, application.name)
+
+    def test_application_forbidden(self):
+        application = ApplicationFactory(department=DepartmentFactory())
+        response = self.client.get('/application/%d/' % application.id)
+        self.assertEqual(response.status_code, 302)
 
 
 class EnvironmentTest(LoggedTestCase):
     def test_environment(self):
-        environment = EnvironmentFactory()
+        application = ApplicationFactory(department=self.department)
+        environment = EnvironmentFactory(application=application)
         response = self.client.get('/environment/%d/' % environment.id)
         self.assertContains(response, environment.name)
+
+    def test_environment_forbidden(self):
+        environment = EnvironmentFactory()
+        response = self.client.get('/environment/%d/' % environment.id)
+        self.assertEqual(response.status_code, 302)
 
 
 class SettingsTest(LoggedTestCase):
@@ -66,6 +77,18 @@ class SettingsTest(LoggedTestCase):
     def test_department_serverroles_empty(self):
         response = self.client.get('/settings/department/serverroles/')
         self.assertContains(response, 'No roles yet.')
+
+    def test_system_departments_forbidden(self):
+        response = self.client.get('/settings/system/departments/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_system_users_forbidden(self):
+        response = self.client.get('/settings/system/users/')
+        self.assertEqual(response.status_code, 302)
+
+
+class SettingsSuperuserTest(LoggedTestCase):
+    logged_is_superuser = True
 
     def test_system_departments(self):
         response = self.client.get('/settings/system/departments/')
@@ -110,8 +133,11 @@ class CoreModalEnvironmentTest(BaseModalTestCase):
 
 
 class DepartmentSwitcherTest(LoggedTestCase):
-    def test_switch_to_valid_department(self):
-        pass
+    # def test_switch_to_valid_department(self):
+    #     response = self.client.get('/department/switch/%d/' % self.department.id)
+    #     self.assertRedirects(response, '/')
 
     def test_switch_to_invalid_department(self):
-        pass
+        department = DepartmentFactory()
+        response = self.client.get('/department/switch/%d/' % department.id)
+        self.assertRedirects(response, '/account/login/?next=/department/switch/%d/' % department.id)

@@ -5,7 +5,7 @@ from core.tests.fixtures import DepartmentFactory
 
 
 class LoggedTestCase(TestCase):
-    logged_is_superuser = True
+    logged_is_superuser = False
 
     @classmethod
     def setUpClass(cls):
