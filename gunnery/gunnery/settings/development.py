@@ -6,7 +6,8 @@ DEBUG = True
 TEMPLATE_DEBUG = True
 
 INSTALLED_APPS += (
-'debug_toolbar',
+    'debug_toolbar',
+    'django_nose',
 )
 
 MIDDLEWARE_CLASSES += (
@@ -26,3 +27,5 @@ class glob_list(list):
 INTERNAL_IPS = glob_list(['127.0.0.1', '10.0.*.*'])
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'

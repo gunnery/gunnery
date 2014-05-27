@@ -1,6 +1,7 @@
 from django.test import TestCase
+from account.tests.fixtures import UserFactory
 
-from core.tests.base import LoggedTestCase, BaseModalTestCase
+from core.tests.base import LoggedTestCase, BaseModalTestCase, BaseModalTests
 
 
 class GuestTest(TestCase):
@@ -9,7 +10,9 @@ class GuestTest(TestCase):
         self.assertContains(response, 'Please Sign In')
 
 
-class CoreModalUserTest(BaseModalTestCase):
+class CoreModalUserTest(BaseModalTestCase, BaseModalTests):
+    object_factory = UserFactory
+
     @property
     def url(self):
         return '/modal_form/a:account/user/'

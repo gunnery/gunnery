@@ -1,7 +1,7 @@
 from django.test import TestCase
 from unittest import skip
 
-from .base import LoggedTestCase, BaseModalTestCase
+from .base import LoggedTestCase, BaseModalTestCase, BaseModalTests
 from core.tests.fixtures import *
 
 
@@ -117,17 +117,17 @@ class HelpTest(LoggedTestCase):
         self.assertContains(response, 'Help')
 
 
-class CoreModalServerroleTest(BaseModalTestCase):
+class CoreModalServerroleTest(BaseModalTestCase, BaseModalTests):
     url = '/modal_form/a:/serverrole/'
     object_factory = ServerRoleFactory
 
 
-class CoreModalApplicationTest(BaseModalTestCase):
+class CoreModalApplicationTest(BaseModalTestCase, BaseModalTests):
     url = '/modal_form/a:/application/'
     object_factory = ApplicationFactory
 
 
-class CoreModalEnvironmentTest(BaseModalTestCase):
+class CoreModalEnvironmentTest(BaseModalTestCase, BaseModalTests):
     url = '/modal_form/a:/environment/'
     object_factory = EnvironmentFactory
 
