@@ -8,6 +8,7 @@ class component::celery {
   $virtualenv_path = hiera('application::virtualenv_path')
   $workers = hiera('celery::workers')
   $concurrency = hiera('celery::concurrency')
+  $secret_key = hiera('application::secret_key')
   $environment = $::environment
 
   package {'celery':
@@ -23,6 +24,9 @@ class component::celery {
     ensure => file,
     content => template("component/celery.default.erb"),
     notify => Service["celeryd"],
+    owner => $user,
+    group => $user,
+    mode => 700,
   }
 
   file { '/etc/init.d/celeryd':

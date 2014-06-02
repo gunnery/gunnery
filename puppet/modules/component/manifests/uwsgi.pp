@@ -6,6 +6,7 @@ class component::uwsgi {
   $log_path = hiera('application::log_path')
   $run_path = hiera('application::run_path')
   $virtualenv_path = hiera('application::virtualenv_path')
+  $secret_key = hiera('application::secret_key')
   $environment = $::environment
   
   service { 'uwsgi':
@@ -37,6 +38,9 @@ class component::uwsgi {
   file { 'sites-available config':
     path => "/etc/uwsgi/sites-available/${domain_name}.ini",
     ensure => file,
+    mode => 0700,
+    owner => $user,
+    group => $user,
     content => template("component/uwsgi.ini.erb"),
     notify => Service['uwsgi']
   }

@@ -1,3 +1,4 @@
 source <%= @virtualenv_path %>/bin/activate
 
 export DJANGO_SETTINGS_MODULE="<%= @app_name %>.settings.<%= @environment %>"
+export SECRET_KEY="<%= @secret_key %>"

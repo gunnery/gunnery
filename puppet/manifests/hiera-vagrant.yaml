@@ -1,5 +1,6 @@
 ---
 :hierarchy:
+    - local
     - vagrant
     - "%{::environment}"
     - common

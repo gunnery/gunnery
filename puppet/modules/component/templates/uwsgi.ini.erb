@@ -13,3 +13,4 @@ chdir = <%= @app_path %>
 module = <%= @app_name %>.uwsgiapp:application
 virtualenv = <%= @virtualenv_path %>
 env = DJANGO_SETTINGS_MODULE=<%= @app_name %>.settings.<%= @environment %>
+env = SECRET_KEY="<%= @secret_key %>"

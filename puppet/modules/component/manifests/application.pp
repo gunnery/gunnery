@@ -9,21 +9,9 @@ class component::application {
   package {'bpython':
     ensure => 'latest'}
 
-  file { "/home/${user}/.bash_profile":
-    ensure => file,
-    content => template("component/bash_profile.erb"),
-    owner => $user,
-    group => $user,
-    mode => 700,
-  }
-
-  if $environment == 'development' {
-
-  }
-
   file { [
       hiera('application::root_path'),
-      hiera('application::run_path'),
+      hiera('application::run_path')
     ]:
     ensure => directory,
     owner => $user,

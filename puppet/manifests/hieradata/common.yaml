@@ -13,7 +13,6 @@ application::virtualenv_path : "%{hiera('application::root_path')}/virtualenv/%{
 application::requirements_path : "%{hiera('application::root_path')}/requirements/%{::environment}.txt"
 
 postgresql::user : gunnery
-postgresql::password : gunnery
 
 celery::workers : 1
 celery::concurrency : 8

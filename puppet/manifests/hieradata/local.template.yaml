@@ -1,0 +1,3 @@
+---
+application::secret_key : development
+postgresql::password : gunnery
