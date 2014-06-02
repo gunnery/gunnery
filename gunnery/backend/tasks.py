@@ -204,7 +204,7 @@ class TestConnectionTask(app.Task):
             output = 'Socket error'
             status = -1
         except Exception as e:
-            logger.error(type(e) + str(e))
+            logger.exception('TestConnectionTask server_id=%s: %s %s', server_id, str(type(e)), str(e))
             output = 'Unknown error'
             status = -1
         return status == 0, output

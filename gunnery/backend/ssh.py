@@ -1,5 +1,6 @@
 import select
 from paramiko import RSAKey, SSHClient, AutoAddPolicy
+from os.path import exists
 from .securefile import SecureFileStorage
 
 
@@ -53,10 +54,16 @@ class SSHTransport(Transport):
         self.close_client()
 
     def get_host_keys_file(self):
-        return self.secure_files.known_hosts.get_file_name()
+        filename = self.secure_files.known_hosts.get_file_name()
+        if not exists(filename):
+            raise RuntimeError('Known hosts file not found')
+        return filename
 
     def get_private_key_file(self):
-        return self.secure_files.private_key.get_file_name()
+        filename = self.secure_files.private_key.get_file_name()
+        if not exists(filename):
+            raise RuntimeError('Private key file not found')
+        return filename
 
 
 class Server(object):
