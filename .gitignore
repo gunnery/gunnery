@@ -1,6 +1,7 @@
 development.txt
 *.pyc
 gunnery/gunnery/static
+puppet/manifests/hieradata/local.yaml
 .coverage
 .vagrant
 .idea
