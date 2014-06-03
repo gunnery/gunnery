@@ -5,3 +5,5 @@ install:
   - pip install -r requirements/production.txt
 script:
   - (cd gunnery; python manage.py test --settings=gunnery.settings.test -v2)
+env:
+  - SECRET_KEY=test
