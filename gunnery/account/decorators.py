@@ -10,6 +10,8 @@ from django.utils.decorators import available_attrs
 
 
 def _has_permissions(user, model_name, model_id):
+    if model_id is None:
+        return True
     model = get_model(*model_name.split('.'))
     model.id = model_id
     if model_name == 'core.Department':
@@ -45,7 +47,7 @@ def has_permissions(model, id_parameter=None):
                 id_parameter_name = _auto_resolve_parameter_name(kwargs)
             else:
                 id_parameter_name = id_parameter
-            if _has_permissions(request.user, model, kwargs[id_parameter_name]):
+            if not id_parameter_name in kwargs or _has_permissions(request.user, model, kwargs[id_parameter_name]):
                 return view_func(request, *args, **kwargs)
             path = request.build_absolute_uri()
             # urlparse chokes on lazy objects in Python 3, force to str

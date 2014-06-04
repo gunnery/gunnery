@@ -13,22 +13,10 @@ from backend.tasks import TestConnectionTask
 from .models import Application, Department, Environment, Server, ServerRole
 
 
-def get_common_page_data(request):
-    data = {}
-    data['departments'] = get_objects_for_user(request.user, 'core.view_department')
-    # data['application_list_sidebar'] = get_objects_for_user(request.user, 'core.view_application'). \
-    #     filter(department_id=request.current_department_id).prefetch_related('environments')
-    data['application_list_sidebar'] = Application.objects.filter(department_id=request.current_department_id).\
-        prefetch_related('environments').order_by('name')
-    data['current_department_id'] = request.current_department_id
-    data['user'] = request.user
-    return data
-
-
 @login_required
 def index(request):
-    data = get_common_page_data(request)
-    data['application_list'] = data['application_list_sidebar']
+    data = {}
+    data['application_list'] = Application.objects.filter(department_id=request.current_department_id).prefetch_related('environments')
     if not data['application_list']:
         return redirect(reverse('help_page'))
     return render(request, 'page/index.html', data)
@@ -36,14 +24,14 @@ def index(request):
 
 @has_permissions('core.Application')
 def application_page(request, application_id):
-    data = get_common_page_data(request)
+    data = {}
     data['application'] = get_object_or_404(Application, pk=application_id)
     return render(request, 'page/application.html', data)
 
 
 @has_permissions('core.Environment')
 def environment_page(request, environment_id):
-    data = get_common_page_data(request)
+    data = {}
     data['environment'] = get_object_or_404(Environment, pk=environment_id)
     data['servers'] = list(Server.objects.filter(environment_id=environment_id).prefetch_related('roles'))
     return render(request, 'page/environment.html', data)
@@ -74,13 +62,13 @@ def server_test_ajax(request, task_id):
 
 @login_required
 def help_page(request):
-    data = get_common_page_data(request)
+    data = {}
     return render(request, 'page/help.html', data)
 
 
 @login_required
 def settings_page(request, section='user', subsection='profile'):
-    data = get_common_page_data(request)
+    data = {}
     data['section'] = section
     data['subsection'] = subsection
     handler = '_settings_%s_%s' % (section, subsection)
@@ -152,7 +140,7 @@ def _settings_system_departments(request, data):
 @user_passes_test(lambda u: u.is_superuser)
 def _settings_system_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
-    data['users'] = get_user_model().objects.order_by('name')
+    data['users'] = get_user_model().objects.exclude(id=-1).order_by('name')
     return data
 
 

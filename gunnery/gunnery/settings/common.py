@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/1.6/ref/settings/
 """
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+from django.conf import global_settings
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -61,8 +62,6 @@ ROOT_URLCONF = 'gunnery.urls'
 
 WSGI_APPLICATION = 'gunnery.wsgi.application'
 
-
-
 # Database
 # https://docs.djangoproject.com/en/1.6/ref/settings/#databases
 
@@ -100,6 +99,9 @@ STATICFILES_DIRS = (
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+    "core.context_processors.sidebar",
+)
 
 CELERY_RESULT_BACKEND = 'djcelery.backends.database:DatabaseBackend'
 CELERY_RESULT_SERIALIZER = "json"
@@ -117,7 +119,7 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',)
 AUTH_USER_MODEL = 'account.CustomUser'
-ANONYMOUS_USER_ID = None
+ANONYMOUS_USER_ID = -1
 
 PRIVATE_DIR = '/var/gunnery/secure'
 

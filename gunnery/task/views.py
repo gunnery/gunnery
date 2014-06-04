@@ -8,7 +8,6 @@ from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from account.decorators import has_permissions
 
-from core.views import get_common_page_data
 from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
 from .models import (
     Application, Environment, Execution, ExecutionLiveLog, ExecutionParameter,
@@ -17,7 +16,7 @@ from .models import (
 
 @has_permissions('task.Task')
 def task_page(request, task_id=None):
-    data = get_common_page_data(request)
+    data = {}
     data['task'] = get_object_or_404(Task, pk=task_id)
     return render(request, 'page/task.html', data)
 
@@ -25,7 +24,7 @@ def task_page(request, task_id=None):
 @transaction.atomic
 @has_permissions('task.Task', 'task_id')
 def task_execute_page(request, task_id, environment_id=None):
-    data = get_common_page_data(request)
+    data = {}
     task = get_object_or_404(Task, pk=task_id)
     data['task'] = task
     if environment_id:
@@ -73,8 +72,9 @@ def task_execute_page(request, task_id, environment_id=None):
 
 
 @has_permissions('core.Application', 'application_id')
+@has_permissions('task.Task', 'task_id')
 def task_form_page(request, application_id=None, task_id=None):
-    data = get_common_page_data(request)
+    data = {}
     if task_id:
         task = get_object_or_404(Task, pk=task_id)
         application = task.application
@@ -147,7 +147,7 @@ def create_formset(request, formset, parent_id):
 @login_required
 def log_page(request, model_name, id):
     #todo add custom permission check
-    data = get_common_page_data(request)
+    data = {}
     executions = Execution.objects
     if model_name == 'application':
         executions = executions.filter(environment__application_id=id)
@@ -173,7 +173,7 @@ def log_page(request, model_name, id):
 
 @has_permissions('task.Execution')
 def execution_page(request, execution_id):
-    data = get_common_page_data(request)
+    data = {}
     execution = get_object_or_404(Execution, pk=execution_id)
     data['execution'] = execution
     return render(request, 'page/execution.html', data)

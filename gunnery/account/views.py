@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, render
 
-from core.views import get_common_page_data
 from task.models import Execution
 from core.models import Department
 
@@ -17,7 +16,7 @@ def login(request, *args, **kwargs):
 
 @login_required
 def profile_page(request, user_id):
-    data = get_common_page_data(request)
+    data = {}
     user = get_object_or_404(get_user_model(), pk=user_id)
     data['user_profile'] = user
     data['user_executions'] = Execution.get_inline_by_user(user.id)
@@ -33,7 +32,7 @@ def on_before_save_user(instance):
 @user_passes_test(lambda u: u.is_superuser)
 def modal_permissions(request, user_id):
     user = get_object_or_404(get_user_model(), pk=user_id)
-    data = get_common_page_data(request)
+    data = {}
     data['user'] = user
     data['form_template'] = 'partial/permissions_form.html'
     data['model_name'] = '%s permissions' % user.name

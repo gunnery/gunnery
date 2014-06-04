@@ -1,4 +1,5 @@
 from django.test import TestCase
+from guardian.shortcuts import get_objects_for_user
 from unittest import skip
 
 from .base import LoggedTestCase, BaseModalTestCase, BaseModalTests
