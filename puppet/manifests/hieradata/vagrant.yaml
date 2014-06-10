@@ -2,3 +2,6 @@
 application::user : vagrant
 application::path : "/vagrant/gunnery"
 application::requirements_path : "/vagrant/requirements/%{::environment}.txt"
+
+application::secret_key : development
+postgresql::password : gunnery
