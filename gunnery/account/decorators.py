@@ -9,7 +9,7 @@ from django.shortcuts import resolve_url
 from django.utils.decorators import available_attrs
 
 
-def _has_permissions(user, model_name, model_id):
+def _has_permissions(user, model_name, model_id, action):
     if model_id is None:
         return True
     model = get_model(*model_name.split('.'))
@@ -28,7 +28,7 @@ def _has_permissions(user, model_name, model_id):
         department = model.objects.get(pk=model_id).application.department
     else:
         raise RuntimeError('Unknown model')
-    return user.has_perm('core.view_department', department)
+    return user.has_perm('core.%s_department' % action, department)
 
 
 def _auto_resolve_parameter_name(parameters):
@@ -39,7 +39,7 @@ def _auto_resolve_parameter_name(parameters):
     return parameters.keys()[0]
 
 
-def has_permissions(model, id_parameter=None):
+def has_permissions(model, id_parameter=None, action='view'):
     def decorator(view_func):
         @wraps(view_func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
@@ -47,7 +47,8 @@ def has_permissions(model, id_parameter=None):
                 id_parameter_name = _auto_resolve_parameter_name(kwargs)
             else:
                 id_parameter_name = id_parameter
-            if not id_parameter_name in kwargs or _has_permissions(request.user, model, kwargs[id_parameter_name]):
+            if not id_parameter_name in kwargs or \
+                    _has_permissions(request.user, model, kwargs[id_parameter_name], action):
                 return view_func(request, *args, **kwargs)
             path = request.build_absolute_uri()
             # urlparse chokes on lazy objects in Python 3, force to str

@@ -71,8 +71,11 @@ def settings_page(request, section='user', subsection='profile'):
     data = {}
     data['section'] = section
     data['subsection'] = subsection
+    data['department'] = Department(pk=request.current_department_id)
     handler = '_settings_%s_%s' % (section, subsection)
     if section == 'system' and request.user.is_superuser is not True:
+        return redirect('index')
+    if section == 'department' and not request.user.has_perm('core.edit_department', obj=data['department']):
         return redirect('index')
     if handler in globals():
         data = globals()[handler](request, data)

@@ -6,6 +6,7 @@ from core.tests.fixtures import DepartmentFactory
 
 class LoggedTestCase(TestCase):
     logged_is_superuser = False
+    logged_is_manager = False
 
     @classmethod
     def setUpClass(cls):
@@ -15,7 +16,10 @@ class LoggedTestCase(TestCase):
     @classmethod
     def setup_department(cls):
         cls.department = DepartmentFactory()
-        assign_perm('core.view_department', cls.user, cls.department)
+        if cls.logged_is_manager:
+            assign_perm('core.edit_department', cls.user, cls.department)
+        else:
+            assign_perm('core.view_department', cls.user, cls.department)
 
     def setUp(self):
         result = self.client.login(username=self.user.email, password=self.user.email)

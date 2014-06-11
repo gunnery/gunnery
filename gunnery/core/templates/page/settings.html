@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load guardian_tags %}
 
 {% block content %}
     <h1>{% model_icon 'settings' %} Settings - {{ subsection|capfirst }}</h1>
@@ -26,6 +27,8 @@
             </ul>
         </li>
 
+        {% get_obj_perms user for department as "department_perms" %}
+        {% if 'edit_department' in department_perms %}
         <li class="dropdown {% if section == 'department' %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                 Department <span class="caret"></span>
@@ -45,6 +48,7 @@
                         Server Roles</a></li>
             </ul>
         </li>
+        {% endif %}
 
         {% if user.is_superuser %}
         <li class="dropdown {% if section == 'system' %}active{% endif %}">

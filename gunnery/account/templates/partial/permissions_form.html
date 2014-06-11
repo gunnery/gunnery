@@ -5,14 +5,14 @@
 <form class="form-horizontal" role="form" method="POST" action="{{ request_path }}">
     {% csrf_token %}
 
-{#    <p class="visible-xs">M - manage, R - read, W - write, X - execute</p>#}
+    <p class="visible-xs">U - user, M - manager</p>
 
     <table id="permissions" class="table table-condensed table-striped">
         <thead>
         <tr>
             <td></td>
-{#            <td width="1"><span class="hidden-xs">manage</span><span class="visible-xs">M</span></td>#}
-{#            <td width="1"><span class="hidden-xs">read</span><span class="visible-xs">R</span></td>#}
+            <td width="1"><span class="hidden-xs">user</span><span class="visible-xs">U</span></td>
+            <td width="1"><span class="hidden-xs">manager</span><span class="visible-xs">M</span></td>
 {#            <td width="1"><span class="hidden-xs">write</span><span class="visible-xs">W</span></td>#}
 {#            <td width="1"><span class="hidden-xs">execute</span><span class="visible-xs">X</span></td>#}
         </tr>

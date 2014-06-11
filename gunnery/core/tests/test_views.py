@@ -58,37 +58,51 @@ class SettingsTest(LoggedTestCase):
         self.assertContains(response, 'Save')
 
     def test_department_applications(self):
+        response = self.client.get('/settings/department/applications/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_department_users(self):
+        response = self.client.get('/settings/department/users/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_department_serverroles(self):
+        response = self.client.get('/settings/department/serverroles/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_system_departments(self):
+        response = self.client.get('/settings/system/departments/')
+        self.assertEqual(response.status_code, 302)
+
+    def test_system_users(self):
+        response = self.client.get('/settings/system/users/')
+        self.assertEqual(response.status_code, 302)
+
+
+class SettingsManagerTest(SettingsTest):
+    logged_is_manager = True
+
+    def test_department_applications(self):
+        response = self.client.get('/settings/department/applications/')
+        self.assertContains(response, 'No applications yet.')
+
         application = ApplicationFactory(department=self.department)
         response = self.client.get('/settings/department/applications/')
         self.assertContains(response, application.name)
-
-    def test_department_applications_empty(self):
-        response = self.client.get('/settings/department/applications/')
-        self.assertContains(response, 'No applications yet.')
 
     def test_department_users(self):
         response = self.client.get('/settings/department/users/')
         self.assertContains(response, 'Create')
 
     def test_department_serverroles(self):
+        response = self.client.get('/settings/department/serverroles/')
+        self.assertContains(response, 'No roles yet.')
+
         server_role = ServerRoleFactory(department=self.department)
         response = self.client.get('/settings/department/serverroles/')
         self.assertContains(response, server_role.name)
 
-    def test_department_serverroles_empty(self):
-        response = self.client.get('/settings/department/serverroles/')
-        self.assertContains(response, 'No roles yet.')
 
-    def test_system_departments_forbidden(self):
-        response = self.client.get('/settings/system/departments/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_system_users_forbidden(self):
-        response = self.client.get('/settings/system/users/')
-        self.assertEqual(response.status_code, 302)
-
-
-class SettingsSuperuserTest(LoggedTestCase):
+class SettingsSuperuserTest(SettingsManagerTest):
     logged_is_superuser = True
 
     def test_system_departments(self):
