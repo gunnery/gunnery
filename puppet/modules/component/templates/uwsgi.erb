@@ -165,7 +165,13 @@ case "$OP" in
         echo "$NAME."
         ;;
     status)
-        pgrep --pidfile $PIDFILE >/dev/null 2>&1 && echo Running || echo Stopped
+        if pgrep --pidfile $PIDFILE >/dev/null 2>&1; then
+            echo Running
+            exit 0
+        else
+            echo Stopped
+            exit 3
+        fi
         ;;
     enable)
         shift
