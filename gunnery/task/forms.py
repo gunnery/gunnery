@@ -3,7 +3,7 @@ from django.forms.widgets import Textarea, HiddenInput
 from django.forms.models import modelformset_factory, BaseModelFormSet
 
 from .models import (
-    Execution, ExecutionParameter, Task, TaskCommand, TaskParameter)
+    Execution, ExecutionParameter, Task, TaskCommand, TaskParameter, ParameterParser)
 from core.forms import PageForm, TagSelect, create_form
 
 
@@ -20,6 +20,14 @@ class TaskParameterForm(ModelForm):
         model = TaskParameter
         fields = ['name', 'description']
         widgets = {'description': TextInput()}
+
+    def clean_name(self):
+        data = self.cleaned_data['name']
+        reserved_names = ParameterParser.global_parameters.keys()
+        reserved_names.append('environment')
+        if data in reserved_names:
+            raise ValidationError("This name is reserved.")
+        return data
 
 
 class TaskCommandForm(ModelForm):

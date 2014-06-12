@@ -86,7 +86,10 @@ def task_form_page(request, application_id=None, task_id=None):
     form, form_parameters, form_commands = create_forms(request, task_id, args)
 
     if request.method == 'POST':
-        if form.is_valid() and form_parameters.is_valid() and form_commands.is_valid():
+        form_is_valid = form.is_valid()
+        form_parameters_is_valid = form_parameters.is_valid()
+        form_commands_is_valid = form_commands.is_valid()
+        if form_is_valid and form_parameters_is_valid and form_commands_is_valid:
             task = form.save(commit=False)
             task.save()
             data['task'] = task
@@ -116,7 +119,7 @@ def create_forms(request, task_id, args):
 
     for form_command in form_commands.forms:
         form_command.fields['roles'].queryset = ServerRole.objects.filter(department_id=request.current_department_id)
-    return (form, form_parameters, form_commands)
+    return form, form_parameters, form_commands
 
 
 def task_save_formset(formset, task):
