@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 from _socket import gaierror, error as socket_error
 import logging
+import re
 
 from django.conf import settings
-
 
 from celery import chain, chord
 from celery.exceptions import SoftTimeLimitExceeded
@@ -165,7 +165,9 @@ class CommandTask(app.Task):
         return transport
 
     def _output_callback(self, output):
-        self.ecs.output += output.decode("utf8").encode("utf8")
+        output = output.decode("utf8").encode("utf8")
+        output = re.sub(r"\x1b\[(\d;)?\d?\dm", "".encode("utf8"), output)
+        self.ecs.output += output
         ExecutionLiveLog.add(self.execution_id, 'command_output', command_server_id=self.ecs.id, output=output)
 
     def finalize(self):
