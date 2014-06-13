@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 from _socket import gaierror, error as socket_error
 import logging
 
@@ -117,6 +118,7 @@ class CommandTask(app.Task):
 
     def setup(self, execution_command_server_id):
         self.ecs = ExecutionCommandServer.objects.get(pk=execution_command_server_id)
+        self.ecs.output = "".encode("utf8")
         if self.ecs.execution_command.execution.status == Execution.ABORTED:
             return
         self.ecs.celery_task_id = self.request.id
@@ -151,7 +153,8 @@ class CommandTask(app.Task):
             self._output_callback('Command execution interrupted by user.')
             self.ecs.return_code = 1025
         except Exception as e:
-            logger.error(str(type(e)) + str(e))
+            import traceback
+            logger.error(str(type(e)) + str(e) + "\n" + traceback.format_exc())
             self._output_callback('Unknown error')
             self.ecs.return_code = 1024
 
@@ -162,7 +165,7 @@ class CommandTask(app.Task):
         return transport
 
     def _output_callback(self, output):
-        self.ecs.output += output
+        self.ecs.output += output.decode("utf8").encode("utf8")
         ExecutionLiveLog.add(self.execution_id, 'command_output', command_server_id=self.ecs.id, output=output)
 
     def finalize(self):
