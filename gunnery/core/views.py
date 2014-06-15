@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 import json
 
 from django.http import Http404, HttpResponse
@@ -10,6 +11,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from account.decorators import has_permissions
 from backend.tasks import TestConnectionTask
+from event.models import NotificationPreferences
 from .models import Application, Department, Environment, Server, ServerRole
 
 
@@ -108,6 +110,30 @@ def _settings_user_password(request, data):
             user.set_password(user.password)
             user.save()
             data['user'] = form.instance
+    return data
+
+
+def _settings_user_notifications(request, data):
+    data['subsection_template'] = 'partial/account_notifications.html'
+    content_type = ContentType.objects.get_for_model(Application)
+    if request.method == 'POST':
+        departments = get_objects_for_user(request.user, 'core.view_department')
+        for department in departments:
+            for application in department.applications.all():
+                key = 'notification[%s]' % application.id
+                notification, created = NotificationPreferences.objects.get_or_create(
+                    user=request.user,
+                    event_type='ExecutionFinish',
+                    content_type=content_type,
+                    object_id=application.id)
+                if notification.is_active != (key in request.POST):
+                    notification.is_active = key in request.POST
+                    notification.save()
+    data['notifications'] = NotificationPreferences.objects.filter(
+        user=request.user,
+        event_type='ExecutionFinish',
+        content_type=content_type.id).values_list('object_id', 'is_active')
+    data['notifications'] = dict(data['notifications'])
     return data
 
 

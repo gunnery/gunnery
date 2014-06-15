@@ -1,0 +1,42 @@
+<h3>
+    {% if execution.status == execution.SUCCESS %}SUCCESSFUL{% else %}FAILED{% endif %} execution of
+    task {{ execution.task.name }} on {{ execution.environment.name }}
+</h3>
+
+<p>Started by {{ execution.user.get_full_name }} at {{ execution.time_start }}.</p>
+
+{% if execution.parameters.count > 1 %}
+    <p>Parameters</p>
+    <ul class="parameters">
+        {% for parameter in execution.parameters.all %}
+            <li>{{ parameter.name }} = {{ parameter.value }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% for command in execution.commands.all %}
+        <div>
+            {{ command.command }}
+            {% for role in command.roles.all %}
+                <span class="label label-default">{{ role.name }}</span>
+            {% endfor %}
+        </div>
+        {% for server in command.servers.all %}
+            <div>
+                <div><b>{{ server.server.name }}</b> ({{ server.server.host }})</div>
+                <pre>{{ server.output }}</pre>
+                <div class="server-status">
+                    {% if server.status == server.SUCCESS %}
+                        <span class="text-success">finished in {{ server.time }} s</span>
+                    {% else %}
+                        <span class="text-danger">failed with code {{ server.return_code }} after {{ server.time }} s</span>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endfor %}
+
+<div class="text-muted">
+    Finished at {{ execution.time_end }} after {{ execution.time }} s
+</div>

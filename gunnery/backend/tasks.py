@@ -11,6 +11,8 @@ from paramiko import AuthenticationException
 
 from gunnery.celery import app
 from core.models import Environment, Server
+from event.dispatcher import EventDispatcher
+from task.events import ExecutionFinish
 from task.models import Execution, ExecutionLiveLog, ExecutionCommandServer
 from .securefile import PrivateKey, PublicKey, KnownHosts, SecureFileStorage
 import ssh
@@ -84,6 +86,8 @@ class ExecutionTaskFinish(app.Task):
         else:
             execution.status = execution.SUCCESS
         execution.save_end()
+        department_id = execution.environment.application.department.id
+        EventDispatcher.trigger(ExecutionFinish(department_id, execution=execution))
         ExecutionLiveLog.add(execution_id, 'execution_completed',
                              status=execution.status,
                              time_end=execution.time_end,

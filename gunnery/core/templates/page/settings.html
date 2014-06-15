@@ -22,8 +22,11 @@
                     <a href="{% url 'settings_page' section='user' subsection='profile' %}">{% model_icon 'user' %}
                         Profile</a></li>
                 <li {% if subsection == 'password' %}class="active"{% endif %}>
-                    <a href="{% url 'settings_page' section='user' subsection='password' %}">{% model_icon 'user' %} Change
+                    <a href="{% url 'settings_page' section='user' subsection='password' %}">{% model_icon 'user' %}
                         Password</a></li>
+                <li {% if subsection == 'notifications' %}class="active"{% endif %}>
+                    <a href="{% url 'settings_page' section='user' subsection='notifications' %}">{% model_icon 'user' %}
+                        Notifications</a></li>
             </ul>
         </li>
 

@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'task',
     'backend',
     'account',
+    'event',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -54,7 +55,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.auth.backends.ModelBackend',
     'guardian.backends.ObjectPermissionBackend',
-    'core.middleware.CurrentDepartment'
+    'core.middleware.CurrentDepartment',
 
 )
 
@@ -164,3 +165,5 @@ LOGGING = {
         },
     },
 }
+
+EMAIL_NOTIFICATION = 'notification@gunnery'

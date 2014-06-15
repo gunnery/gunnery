@@ -287,3 +287,7 @@ div.dashboard-application + div {
 #login_form .panel-body {
     padding-bottom: 15px;
 }
+
+#notifications .application {
+    padding-left: 20px;
+}

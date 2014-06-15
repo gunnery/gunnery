@@ -39,3 +39,11 @@ def model_icon(model):
 def execution_status(status):
     template = '<span class="label label-%s"><i class="fa fa-%s"></i> %s</span>' % tuple(status_mapping[status])
     return template
+
+
+@register.filter
+def lookup(h, key):
+    try:
+        return h[key]
+    except KeyError:
+        return ''
