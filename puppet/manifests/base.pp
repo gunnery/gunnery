@@ -27,6 +27,8 @@ if $environment == 'development' {
   $user = hiera('application::user')
   $secret_key = hiera('application::secret_key')
   $virtualenv_path = hiera('application::virtualenv_path')
+  $application_path = hiera('application::path')
+  $log_path = hiera('application::log_path')
   file { "/home/${user}/.bash_profile":
     ensure => file,
     content => template("component/bash_profile.erb"),
