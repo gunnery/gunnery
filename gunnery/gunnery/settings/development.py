@@ -29,3 +29,5 @@ INTERNAL_IPS = glob_list(['127.0.0.1', '10.0.*.*'])
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+DEBUG_TOOLBAR_PATCH_SETTINGS = False
