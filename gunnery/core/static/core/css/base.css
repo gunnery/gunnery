@@ -40,6 +40,29 @@ pre {
     border-top: 1px solid #333;
 }
 
+#settings-submenu {
+    background-color: #26323d;
+    display:none
+}
+
+#settings-submenu li a {
+    padding: 0 0 0 49px;
+}
+
+#settings-submenu li.section {
+    padding: 0 0 0 30px;
+    color: #a0a0a0;
+}
+
+#settings-submenu li + li.section{
+    margin-top: 4px;
+}
+
+#settings-opener .caret {
+    border-top-color: #a0a0a0;
+    border-bottom-color: #a0a0a0;
+}
+
 .nav ul {
     list-style: none;
     margin: 0;

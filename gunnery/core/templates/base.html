@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load core_extras %}
+{% load guardian_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -41,7 +42,27 @@
             {% include 'partial/application_list_sidebar.html' %}
             <ul class="nav-user">
                 <li><a href="{% url 'settings_page' section='user' %}"><i class="fa fa-user"></i> {{ user.get_full_name }}</a></li>
-                <li><a href="{% url 'settings_page' section='department' subsection='applications' %}"><i class="fa fa-gear"></i> Settings</a></li>
+                <li>
+                    <a href="#" id="settings-opener"><i class="fa fa-gear"></i> Settings <b class="caret"></b></a>
+                    <ul id="settings-submenu">
+                        <li class="section">{% model_icon 'user' %} Account</li>
+                        <li><a href="{% url 'settings_page' section='user' subsection='profile' %}">Profile</a></li>
+                        <li><a href="{% url 'settings_page' section='user' subsection='password' %}">Password</a></li>
+                        <li><a href="{% url 'settings_page' section='user' subsection='notifications' %}">Notifications</a></li>
+                        {% get_obj_perms user for department as "department_perms" %}
+                        {% if 'edit_department' in department_perms %}
+                            <li class="section">{% model_icon 'department' %} Department</li>
+                            <li><a href="{% url 'settings_page' section='department' subsection='applications' %}">Applications</a></li>
+                            <li><a href="{% url 'settings_page' section='department' subsection='users' %}">Users</a></li>
+                            <li><a href="{% url 'settings_page' section='department' subsection='serverroles' %}">Server Roles</a></li>
+                        {% endif %}
+                        {% if user.is_superuser %}
+                            <li class="section"><i class="fa fa-gear"></i> System</li>
+                            <li><a href="{% url 'settings_page' section='system' subsection='departments' %}">Departments</a></li>
+                            <li><a href="{% url 'settings_page' section='system' subsection='users' %}">Users</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
                 <li><a href="{% url 'help_page' %}"><i class="fa fa-question-circle"></i> Help</a></li>
                 <li><a href="{% url 'logout' %}"><i class="fa fa-power-off"></i> Log Out</a></li>
             </ul>
