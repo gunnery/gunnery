@@ -18,8 +18,7 @@ class LoggedTestCase(TestCase):
         cls.department = DepartmentFactory()
         if cls.logged_is_manager:
             assign_perm('core.edit_department', cls.user, cls.department)
-        else:
-            assign_perm('core.view_department', cls.user, cls.department)
+        assign_perm('core.view_department', cls.user, cls.department)
 
     def setUp(self):
         result = self.client.login(username=self.user.email, password=self.user.email)

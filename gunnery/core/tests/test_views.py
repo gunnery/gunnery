@@ -57,6 +57,20 @@ class SettingsTest(LoggedTestCase):
         response = self.client.get('/settings/user/password/')
         self.assertContains(response, 'Save')
 
+    def test_user_notifications(self):
+        response = self.client.get('/settings/user/notifications/')
+        self.assertContains(response, 'Save')
+
+    def test_user_notifications_save(self):
+        application = ApplicationFactory(department=self.department)
+        data = {'notification[%s]' % application.id: 1}
+        response = self.client.post('/settings/user/notifications/', data)
+        self.assertEqual(response.context['notifications'][application.id], True)
+
+        data = {}
+        response = self.client.post('/settings/user/notifications/', data)
+        self.assertEqual(response.context['notifications'][application.id], False)
+
     def test_department_applications(self):
         response = self.client.get('/settings/department/applications/')
         self.assertEqual(response.status_code, 302)
@@ -112,18 +126,6 @@ class SettingsSuperuserTest(SettingsManagerTest):
     def test_system_users(self):
         response = self.client.get('/settings/system/users/')
         self.assertContains(response, 'Create')
-
-
-class SettingsNotStaffTest(LoggedTestCase):
-    logged_is_superuser = False
-
-    def test_system_departments(self):
-        response = self.client.get('/settings/system/departments/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_system_users(self):
-        response = self.client.get('/settings/system/users/')
-        self.assertEqual(response.status_code, 302)
 
 
 class HelpTest(LoggedTestCase):
