@@ -5,6 +5,12 @@ TEST_DISCOVER_TOP_LEVEL = BASE_DIR
 TEST_DISCOVER_ROOT = BASE_DIR
 TEST_DISCOVER_PATTERN = "*"
 
+INSTALLED_APPS += (
+    'django_nose',
+)
+
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
