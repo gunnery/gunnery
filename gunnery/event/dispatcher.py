@@ -1,5 +1,7 @@
 import logging
+from itertools import chain
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.template import TemplateDoesNotExist
@@ -82,6 +84,8 @@ class UserNotificationHandler(EventHandler):
 
     def _process(self, event):
         users = get_users_with_perms(Department(id=event.department_id)).prefetch_related('notifications')
+        admins = get_user_model().objects.filter(is_superuser=True)
+        users = list(chain(users, admins))
         application_content_type = ContentType.objects.get_for_model(Application)
         messages = []
         for user in users:
