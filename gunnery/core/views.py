@@ -2,6 +2,7 @@ from django.contrib.contenttypes.models import ContentType
 import json
 
 from django.http import Http404, HttpResponse
+from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse
@@ -97,6 +98,7 @@ def _settings_account_profile(request, data):
         if form.is_valid():
             form.save()
             data['user'] = form.instance
+            messages.success(request, 'Saved')
     return data
 
 
@@ -111,6 +113,7 @@ def _settings_account_password(request, data):
             user.set_password(user.password)
             user.save()
             data['user'] = form.instance
+            messages.success(request, 'Saved')
     return data
 
 
@@ -130,6 +133,7 @@ def _settings_account_notifications(request, data):
                 if notification.is_active != (key in request.POST):
                     notification.is_active = key in request.POST
                     notification.save()
+        messages.success(request, 'Saved')
     data['notifications'] = NotificationPreferences.objects.filter(
         user=request.user,
         event_type='ExecutionFinish',
