@@ -1,9 +1,7 @@
-import logging
 from itertools import chain
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
-from django.core import mail
 from django.template import TemplateDoesNotExist
 from guardian.shortcuts import get_users_with_perms
 from core.models import Department, Application
@@ -87,21 +85,14 @@ class UserNotificationHandler(EventHandler):
         admins = get_user_model().objects.filter(is_superuser=True)
         users = list(chain(users, admins))
         application_content_type = ContentType.objects.get_for_model(Application)
-        messages = []
+        from backend.tasks import SendEmailTask
         for user in users:
             notification_preference = user.notifications.filter(content_type=application_content_type.id,
                                                                 object_id=event.execution.environment.application_id,
                                                                 event_type=event.type).first()
             if notification_preference and notification_preference.is_active:
-                logging.info('UserNotificationHandler %s' % user.email)
-                message = mail.EmailMultiAlternatives(self.get_subject(),
-                                                      self.get_full_plain(),
-                                                      settings.EMAIL_NOTIFICATION,
-                                                      [user.email])
-                message.attach_alternative(self.get_full(), "text/html")
-                messages.append(message)
-
-        if messages:
-            connection = mail.get_connection()
-            connection.send_messages(messages)
+                SendEmailTask().delay(subject=self.get_subject(),
+                                      message=self.get_full_plain(),
+                                      message_html=self.get_full(),
+                                      recipient=user.email)
 EventDispatcher.add_handler(UserNotificationHandler())

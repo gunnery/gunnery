@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 from _socket import gaierror, error as socket_error
+from django.core.mail import EmailMultiAlternatives
 import logging
 import re
 
@@ -222,3 +223,16 @@ class TestConnectionTask(app.Task):
         server = ssh.Server.from_model(Server.objects.get(pk=server_id))
         transport = ssh.SSHTransport(server)
         return transport
+
+
+class SendEmailTask(app.Task):
+    def run(self, subject='', message='', message_html=None, sender=None, recipient=''):
+        if not sender:
+            sender = settings.EMAIL_NOTIFICATION
+        if not subject or not message or not recipient:
+            raise Exception('Error sending email, not all required fields were passed')
+        message = EmailMultiAlternatives(subject, message, sender, [recipient])
+        if message_html:
+            message.attach_alternative(message_html, "text/html")
+        message.send()
+        logging.info('Sent email to %s with subject: %s' % (recipient, subject))
