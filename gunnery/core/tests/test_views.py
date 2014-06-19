@@ -1,6 +1,4 @@
 from django.test import TestCase
-from guardian.shortcuts import get_objects_for_user
-from unittest import skip
 
 from .base import LoggedTestCase, BaseModalTestCase, BaseModalTests
 from core.tests.fixtures import *
@@ -48,86 +46,6 @@ class EnvironmentTest(LoggedTestCase):
         self.assertEqual(response.status_code, 302)
 
 
-class SettingsTest(LoggedTestCase):
-    def test_user_profile(self):
-        response = self.client.get('/settings/account/profile/')
-        self.assertContains(response, 'Save')
-
-    def test_user_password(self):
-        response = self.client.get('/settings/account/password/')
-        self.assertContains(response, 'Save')
-
-    def test_user_notifications(self):
-        response = self.client.get('/settings/account/notifications/')
-        self.assertContains(response, 'Save')
-
-    def test_user_notifications_save(self):
-        application = ApplicationFactory(department=self.department)
-        data = {'notification[%s]' % application.id: 1}
-        response = self.client.post('/settings/account/notifications/', data)
-        self.assertEqual(response.context['notifications'][application.id], True)
-
-        data = {}
-        response = self.client.post('/settings/account/notifications/', data)
-        self.assertEqual(response.context['notifications'][application.id], False)
-
-    def test_department_applications(self):
-        response = self.client.get('/settings/department/applications/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_department_users(self):
-        response = self.client.get('/settings/department/users/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_department_serverroles(self):
-        response = self.client.get('/settings/department/serverroles/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_system_departments(self):
-        response = self.client.get('/settings/system/departments/')
-        self.assertEqual(response.status_code, 302)
-
-    def test_system_users(self):
-        response = self.client.get('/settings/system/users/')
-        self.assertEqual(response.status_code, 302)
-
-
-class SettingsManagerTest(SettingsTest):
-    logged_is_manager = True
-
-    def test_department_applications(self):
-        response = self.client.get('/settings/department/applications/')
-        self.assertContains(response, 'No applications yet.')
-
-        application = ApplicationFactory(department=self.department)
-        response = self.client.get('/settings/department/applications/')
-        self.assertContains(response, application.name)
-
-    def test_department_users(self):
-        response = self.client.get('/settings/department/users/')
-        self.assertContains(response, 'Create')
-
-    def test_department_serverroles(self):
-        response = self.client.get('/settings/department/serverroles/')
-        self.assertContains(response, 'No roles yet.')
-
-        server_role = ServerRoleFactory(department=self.department)
-        response = self.client.get('/settings/department/serverroles/')
-        self.assertContains(response, server_role.name)
-
-
-class SettingsSuperuserTest(SettingsManagerTest):
-    logged_is_superuser = True
-
-    def test_system_departments(self):
-        response = self.client.get('/settings/system/departments/')
-        self.assertContains(response, 'Create')
-
-    def test_system_users(self):
-        response = self.client.get('/settings/system/users/')
-        self.assertContains(response, 'Create')
-
-
 class HelpTest(LoggedTestCase):
     def test_help(self):
         response = self.client.get('/help/')
@@ -135,18 +53,65 @@ class HelpTest(LoggedTestCase):
 
 
 class CoreModalServerroleTest(BaseModalTestCase, BaseModalTests):
-    url = '/modal_form/a:/serverrole/'
+    url_name = 'modal_form'
+    url_params = {'form_name': 'serverrole'}
     object_factory = ServerRoleFactory
+
+    def test_create(self):
+        response, obj = self._test_create({'name': 'ServerRoleName'})
+        self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
+
+    def test_edit(self):
+        obj = self.object_factory(department=self.department)
+        data = {'name': 'ServerRoleName2'}
+        response, obj_updated = self._test_edit(obj, data)
+        self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
+        self.assertEqual(obj_updated.name, 'ServerRoleName2')
 
 
 class CoreModalApplicationTest(BaseModalTestCase, BaseModalTests):
-    url = '/modal_form/a:/application/'
+    url_name = 'modal_form'
+    url_params = {'form_name': 'application'}
     object_factory = ApplicationFactory
+
+    def test_create(self):
+        response, obj = self._test_create({'name': 'ApplicationName'})
+        self.assertJSONEqual(response.content,
+                             {"status": True,
+                              "action": "redirect",
+                              "target": reverse('application_page', kwargs={'application_id': obj.id})})
+
+    def test_edit(self):
+        obj = self.object_factory(department=self.department)
+        data = {'name': 'ApplicationName2'}
+        response, obj_updated = self._test_edit(obj, data)
+        self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
+        self.assertEqual(obj_updated.name, 'ApplicationName2')
 
 
 class CoreModalEnvironmentTest(BaseModalTestCase, BaseModalTests):
-    url = '/modal_form/a:/environment/'
+    url_name = 'modal_form'
+    url_params = {'form_name': 'environment', 'parent_name': 'application'}
     object_factory = EnvironmentFactory
+
+    @classmethod
+    def setUpClass(cls):
+        super(CoreModalEnvironmentTest, cls).setUpClass()
+        cls.application = ApplicationFactory(department=cls.department)
+        cls.url_params['parent_id'] = cls.application.id
+
+    def test_create(self):
+        response, obj = self._test_create({'name': 'EnvironmentName', 'description': '123',
+                                           'application': self.application.id})
+        self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
+
+    def test_edit(self):
+        application = ApplicationFactory(department=self.department)
+        obj = self.object_factory(application=application)
+        data = {'name': 'EnvironmentName2', 'application': self.application.id}
+        response, obj_updated = self._test_edit(obj, data)
+        self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
+        self.assertEqual(obj_updated.name, 'EnvironmentName2')
 
 
 class DepartmentSwitcherTest(LoggedTestCase):
