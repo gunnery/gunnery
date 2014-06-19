@@ -33,8 +33,8 @@
             handlers.execution_status(data);
             $('.execution-time-end').html(data.time_end).prev().show();
             $('.execution-time').html(data.time + ' s');
-            $('#execute-button').show();
-            $('#abort-button').hide();
+            $('.show-when-active').hide();
+            $('.hide-when-active').show();
         }
     };
 
