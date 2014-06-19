@@ -2,7 +2,7 @@ language: python
 python:
   - "2.7"
 install:
-  - pip install -r requirements/production.txt
+  - pip install -r requirements/development.txt
 script:
   - (cd gunnery; python manage.py test --settings=gunnery.settings.test -v2)
 env:
