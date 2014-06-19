@@ -41,7 +41,7 @@
             {% endif %}
             {% include 'partial/application_list_sidebar.html' %}
             <ul class="nav-user">
-                <li><a href="{% url 'settings_page' section='user' %}"><i class="fa fa-user"></i> {{ user.get_full_name }}</a></li>
+                <li><a href="{% url 'settings_page' section='account' %}"><i class="fa fa-user"></i> {{ user.get_full_name }}</a></li>
                 <li>
                     <a href="#" id="settings-opener"><i class="fa fa-gear"></i> Settings <b class="caret"></b></a>
                     <ul id="settings-submenu" class="{% if not on_settings %}hide{% endif %}">
