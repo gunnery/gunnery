@@ -1,3 +1,4 @@
+from django.contrib import messages
 import json
 
 from django.contrib.auth import get_user_model
@@ -100,6 +101,7 @@ def task_form_page(request, application_id=None, task_id=None):
             request.method = 'GET'
             form, form_parameters, form_commands = create_forms(request, task_id, args)
             request.method = 'POST'
+            messages.success(request, 'Saved')
 
     data['application'] = application
     data['is_new'] = task_id == None
