@@ -44,11 +44,11 @@
                 <li><a href="{% url 'settings_page' section='user' %}"><i class="fa fa-user"></i> {{ user.get_full_name }}</a></li>
                 <li>
                     <a href="#" id="settings-opener"><i class="fa fa-gear"></i> Settings <b class="caret"></b></a>
-                    <ul id="settings-submenu">
+                    <ul id="settings-submenu" class="{% if not on_settings %}hide{% endif %}">
                         <li class="section">{% model_icon 'user' %} Account</li>
-                        <li><a href="{% url 'settings_page' section='user' subsection='profile' %}">Profile</a></li>
-                        <li><a href="{% url 'settings_page' section='user' subsection='password' %}">Password</a></li>
-                        <li><a href="{% url 'settings_page' section='user' subsection='notifications' %}">Notifications</a></li>
+                        <li><a href="{% url 'settings_page' section='account' subsection='profile' %}">Profile</a></li>
+                        <li><a href="{% url 'settings_page' section='account' subsection='password' %}">Password</a></li>
+                        <li><a href="{% url 'settings_page' section='account' subsection='notifications' %}">Notifications</a></li>
                         {% get_obj_perms user for department as "department_perms" %}
                         {% if 'edit_department' in department_perms %}
                             <li class="section">{% model_icon 'department' %} Department</li>

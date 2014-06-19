@@ -74,6 +74,7 @@ def settings_page(request, section='user', subsection='profile'):
     data['section'] = section
     data['subsection'] = subsection
     data['department'] = Department(pk=request.current_department_id)
+    data['on_settings'] = True
     handler = '_settings_%s_%s' % (section, subsection)
     if section == 'system' and request.user.is_superuser is not True:
         return redirect('index')
@@ -86,7 +87,7 @@ def settings_page(request, section='user', subsection='profile'):
     return render(request, 'page/settings.html', data)
 
 
-def _settings_user_profile(request, data):
+def _settings_account_profile(request, data):
     data['subsection_template'] = 'partial/account_profile.html'
     from account.forms import account_create_form
     form = account_create_form('user_profile', request, request.user.id)
@@ -99,7 +100,7 @@ def _settings_user_profile(request, data):
     return data
 
 
-def _settings_user_password(request, data):
+def _settings_account_password(request, data):
     data['subsection_template'] = 'partial/account_password.html'
     from account.forms import account_create_form
     form = account_create_form('user_password', request, request.user.id)
@@ -113,7 +114,7 @@ def _settings_user_password(request, data):
     return data
 
 
-def _settings_user_notifications(request, data):
+def _settings_account_notifications(request, data):
     data['subsection_template'] = 'partial/account_notifications.html'
     content_type = ContentType.objects.get_for_model(Application)
     if request.method == 'POST':

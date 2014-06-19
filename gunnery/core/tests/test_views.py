@@ -50,25 +50,25 @@ class EnvironmentTest(LoggedTestCase):
 
 class SettingsTest(LoggedTestCase):
     def test_user_profile(self):
-        response = self.client.get('/settings/user/profile/')
+        response = self.client.get('/settings/account/profile/')
         self.assertContains(response, 'Save')
 
     def test_user_password(self):
-        response = self.client.get('/settings/user/password/')
+        response = self.client.get('/settings/account/password/')
         self.assertContains(response, 'Save')
 
     def test_user_notifications(self):
-        response = self.client.get('/settings/user/notifications/')
+        response = self.client.get('/settings/account/notifications/')
         self.assertContains(response, 'Save')
 
     def test_user_notifications_save(self):
         application = ApplicationFactory(department=self.department)
         data = {'notification[%s]' % application.id: 1}
-        response = self.client.post('/settings/user/notifications/', data)
+        response = self.client.post('/settings/account/notifications/', data)
         self.assertEqual(response.context['notifications'][application.id], True)
 
         data = {}
-        response = self.client.post('/settings/user/notifications/', data)
+        response = self.client.post('/settings/account/notifications/', data)
         self.assertEqual(response.context['notifications'][application.id], False)
 
     def test_department_applications(self):

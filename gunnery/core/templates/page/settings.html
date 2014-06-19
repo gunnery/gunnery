@@ -11,7 +11,7 @@
         <li class="active">{% model_icon 'settings' %} {{ section|capfirst }}</li>
         <li class="active">{{ subsection|capfirst }}</li>
     </ol>
-
+{% comment %}
     <ul id="settings" class="nav nav-pills">
         <li class="dropdown {% if section == 'user' %}active{% endif %}">
             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
@@ -72,7 +72,7 @@
 
     <p>&nbsp;</p>
     <p>&nbsp;</p>
-
+{% endcomment %}
     {% block subsection_content %}
         {% include subsection_template %}
     {% endblock subsection_content %}

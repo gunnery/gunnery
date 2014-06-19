@@ -60,7 +60,7 @@ $(document.body).on('shown.bs.modal', function () {
     });
 
     $('#settings-opener').click(function(e){
-        $('#settings-submenu').toggle();
+        $('#settings-submenu').toggleClass('hide');
     })
 
     $('.sessionMessageWrap div').addClass('show').each(function(i, e){
