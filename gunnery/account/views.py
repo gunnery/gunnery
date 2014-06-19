@@ -1,7 +1,9 @@
 from django.contrib.auth import views
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib.auth import get_user_model
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+import json
 
 from task.models import Execution
 from core.models import Department
@@ -61,6 +63,6 @@ def modal_permissions(request, user_id):
             if len(key) == 3 and value == 'on':
                 action, model, pk = key
                 assign_perm('%s_%s' % (action, model), user, models[model].objects.get(pk=pk))
-        return render(request, data['form_template'], data)
+        return HttpResponse(json.dumps({'status': True}), content_type="application/json")
     else:
         return render(request, 'partial/modal_form.html', data)
