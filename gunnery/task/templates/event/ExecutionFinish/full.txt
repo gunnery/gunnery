@@ -1,0 +1,23 @@
+{% if execution.status == execution.SUCCESS %}SUCCESSFUL{% else %}FAILED{% endif %} execution of task {{ execution.task.name }} on {{ execution.environment.name }}
+
+Started by {{ execution.user.get_full_name }} at {{ execution.time_start }}.
+{% if execution.parameters.count > 1 %}
+
+Parameters:
+{% for parameter in execution.parameters.all %}
+* {{ parameter.name }} = {{ parameter.value }}
+{% endfor %}
+{% endif %}
+
+{% for command in execution.commands.all %}
+Execute: {{ command.command }} on servers tagged with: {% for role in command.roles.all %}{{ role.name }}{% endfor %}
+
+{% for server in command.servers.all %}{{ server.server.name }} ({{ server.server.host }})
+{{ server.output }}
+{% if server.status == server.SUCCESS %}finished in {{ server.time }} s{% else %}failed with code {{ server.return_code }} after {{ server.time }} s{% endif %}
+
+
+{% endfor %}
+{% endfor %}
+
+Execution finished at {{ execution.time_end }} after {{ execution.time }} s

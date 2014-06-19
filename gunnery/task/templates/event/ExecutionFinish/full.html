@@ -16,15 +16,15 @@
 
 {% for command in execution.commands.all %}
         <div>
-            {{ command.command }}
+            Execute: <code>{{ command.command }}</code> on servers tagged with:
             {% for role in command.roles.all %}
                 <span class="label label-default">{{ role.name }}</span>
             {% endfor %}
         </div>
         {% for server in command.servers.all %}
-            <div>
+            <div style="margin-bottom: 1em">
                 <div><b>{{ server.server.name }}</b> ({{ server.server.host }})</div>
-                <pre>{{ server.output }}</pre>
+                <pre style="margin:0">{{ server.output }}</pre>
                 <div class="server-status">
                     {% if server.status == server.SUCCESS %}
                         <span class="text-success">finished in {{ server.time }} s</span>
@@ -37,6 +37,7 @@
     </div>
 {% endfor %}
 
-<div class="text-muted">
-    Finished at {{ execution.time_end }} after {{ execution.time }} s
+<br>
+<div>
+    Execution finished at {{ execution.time_end }} after {{ execution.time }} s
 </div>

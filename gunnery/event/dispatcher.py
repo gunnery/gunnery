@@ -1,3 +1,4 @@
+import logging
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
@@ -66,6 +67,9 @@ class EventHandler(object):
     def get_full(self):
         return self._render('full.html')
 
+    def get_full_plain(self):
+        return self._render('full.txt')
+
 
 class LogHandler(EventHandler):
     def _process(self, event):
@@ -85,8 +89,12 @@ class UserNotificationHandler(EventHandler):
                                                                 object_id=event.execution.environment.application_id,
                                                                 event_type=event.type).first()
             if notification_preference and notification_preference.is_active:
-                message = mail.EmailMessage(self.get_subject(), self.get_full(), settings.EMAIL_NOTIFICATION,
-                                            [user.email])
+                logging.info('UserNotificationHandler %s' % user.email)
+                message = mail.EmailMultiAlternatives(self.get_subject(),
+                                                      self.get_full_plain(),
+                                                      settings.EMAIL_NOTIFICATION,
+                                                      [user.email])
+                message.attach_alternative(self.get_full(), "text/html")
                 messages.append(message)
 
         if messages:
