@@ -75,18 +75,19 @@ class ExecutionTask(app.Task):
 class ExecutionTaskFinish(app.Task):
     def run(self, execution_id):
         execution = self._get_execution(execution_id)
-        if execution.status == Execution.ABORTED:
-            return
-        failed = False
-        for command in execution.commands.all():
-            for server in command.servers.all():
-                if server.status in [None, server.FAILED]:
-                    failed = True
-        if failed:
-            execution.status = execution.FAILED
-        else:
-            execution.status = execution.SUCCESS
-        execution.save_end()
+
+        if execution.status != Execution.ABORTED:
+            failed = False
+            for command in execution.commands.all():
+                for server in command.servers.all():
+                    if server.status in [None, server.FAILED]:
+                        failed = True
+            if failed:
+                execution.status = execution.FAILED
+            else:
+                execution.status = execution.SUCCESS
+            execution.save_end()
+
         department_id = execution.environment.application.department.id
         EventDispatcher.trigger(ExecutionFinish(department_id, execution=execution))
         ExecutionLiveLog.add(execution_id, 'execution_completed',

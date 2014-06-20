@@ -211,20 +211,24 @@ def execution_abort(request, execution_id):
     # if request.method != 'POST':
     #     return Http404
     execution = get_object_or_404(Execution, pk=execution_id)
-    execution.status = execution.ABORTED
-    execution.save_end()
-
-    ExecutionLiveLog.add(execution_id, 'execution_completed', status=Execution.ABORTED,
-                         time=execution.time,
-                         time_end=execution.time_end)
-
-    import signal
-    from celery.result import AsyncResult
-    if execution.celery_task_id:
-        AsyncResult(execution.celery_task_id).revoke()
-        for commands in execution.commands.all():
-            for server in commands.servers.all():
-                if server.celery_task_id:
-                    AsyncResult(server.celery_task_id).revoke(terminate=True, signal=signal.SIGALRM)
     data = {}
+    if execution.status in [Execution.PENDING, Execution.RUNNING]:
+        execution.status = execution.ABORTED
+        execution.save_end()
+
+        ExecutionLiveLog.add(execution_id, 'execution_completed', status=Execution.ABORTED,
+                             time=execution.time,
+                             time_end=execution.time_end)
+
+        import signal
+        from celery.result import AsyncResult
+        if execution.celery_task_id:
+            AsyncResult(execution.celery_task_id).revoke()
+            for commands in execution.commands.all():
+                for server in commands.servers.all():
+                    if server.celery_task_id:
+                        AsyncResult(server.celery_task_id).revoke(terminate=True, signal=signal.SIGALRM)
+        data['status'] = True
+    else:
+        data['status'] = False
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")

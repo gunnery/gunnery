@@ -1,1 +1,1 @@
-[{{ execution.task.application.name }}] {% if execution.status == execution.SUCCESS %}SUCCESSFUL{% else %}FAILED{% endif %} execution of task {{ execution.task.name }} on {{ execution.environment.name }}
+[{{ execution.task.application.name }}] {% if execution.status == execution.SUCCESS %}SUCCESSFUL{% elif execution.status == execution.ABORTED %}ABORTED{% else %}FAILED{% endif %} execution of task {{ execution.task.name }} on {{ execution.environment.name }}

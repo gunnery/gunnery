@@ -1,6 +1,5 @@
 <h3>
-    {% if execution.status == execution.SUCCESS %}SUCCESSFUL{% else %}FAILED{% endif %} execution of
-    task {{ execution.task.name }} on {{ execution.environment.name }}
+    {% include "event/ExecutionFinish/subject.txt" %}
 </h3>
 
 <p>Started by {{ execution.user.get_full_name }} at {{ execution.time_start }}.</p>

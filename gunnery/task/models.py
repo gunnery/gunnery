@@ -199,7 +199,7 @@ class ExecutionLiveLog(models.Model):
         """ Triggers execution event """
         data = dict(data.items() + kwargs.items())
         for key, value in data.items():
-            if key.startswith('time_'):
+            if key.startswith('time_') and value:
                 data[key] = value.strftime('%Y-%m-%d %H:%I')
         data = json.dumps(data, cls=DjangoJSONEncoder)
         ExecutionLiveLog(execution_id=execution_id, event=name, data=data).save()

@@ -47,7 +47,8 @@ class SSHTransport(Transport):
 
     def close_client(self):
         self.client.save_host_keys(self.get_host_keys_file())
-        self.channel.close()
+        if self.channel:
+            self.channel.close()
         self.client.close()
 
     def kill(self):
