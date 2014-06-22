@@ -38,9 +38,9 @@
         }
     };
 
-    var lastId = 0,
-        execution = $('#execution');
+    var execution = $('#execution'),
         executionId = execution.data('execution-id'),
+        lastId = execution.data('log-id'),
         executionStatus = statusDict[execution.data('execution-status')].name,
         request = false,
         interval = false;

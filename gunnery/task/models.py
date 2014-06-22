@@ -167,6 +167,13 @@ class Execution(models.Model, StateMixin):
     def duration(self):
         return _duration(self.time)
 
+    def get_last_log_id(self):
+        log = self.live_logs.order_by('id')
+        if log.last():
+            return log.last().id
+        else:
+            return None
+
 
 class ExecutionParameter(models.Model):
     execution = models.ForeignKey(Execution, related_name="parameters")
