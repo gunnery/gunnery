@@ -24,28 +24,43 @@
     </ol>
 
 
-    <div class="row execution-list">
-        {% for execution in executions %}
-            <div class="col-md-12">
-                <a href="{{ execution.get_absolute_url }}">{{ execution.task.application.name }}
-                    / {{ execution.environment.name }} / {{ execution.task.name }}</a>
-                {% execution_status execution.status %}
-                <br/>
-                <ul class="list-inline">
-                    <li>{% model_icon 'user' %} {{ execution.user.get_full_name }}</li>
-                    <li><i class="fa fa-clock-o"></i> {{ execution.time_created }}</li>
-                </ul>
+<div class="table-responsive">
+    <table class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th class="text-center col-sm-1"><span class="hidden-xs">Status</span></th>
+                <th><span class="hidden-xs">Environment</span><span class="visible-xs">Env</span></th>
+                <th>Task</th>
+                <th>User</th>
+                <th>Time started</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+    {% for execution in executions %}
+            <tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
+                <td class="text-center" rowspan="2">
+                    <span class="hidden-xs">{% execution_status execution.status %}</span>
+                    <span class="visible-xs">{% execution_status execution.status caption=False %}</span>
+                </td>
+                <td>{{ execution.environment.name }}</td>
+                <td><a href="{{ execution.get_absolute_url }}">{{ execution.task.name }}</a></td>
+                <td>{{ execution.user.get_full_name }}</td>
+                <td>{{ execution.time_created }}</td>
+                <td>{{ execution.duration }}</td>
+            </tr>
+            <tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
                 {% if execution.parameters.count %}
-                    with parameters:
-                    <br/>
-                    <ul>
-                        {% for parameter in execution.parameters.all %}
-                            <li><b>{{ parameter.name }}</b>: {{ parameter.value }}</li>
-                        {% endfor %}
-                    </ul>
+                <td colspan="5" class="small">
+                    {% for parameter in execution.parameters.all %}
+                        {{ parameter.name }} = {{ parameter.value }}<br/>
+                    {% endfor %}
+                </td>
                 {% endif %}
-            </div>
-        {% endfor %}
-    </div>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+</div>
 
 {% endblock %}

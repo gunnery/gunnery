@@ -12,6 +12,21 @@ from event.dispatcher import EventDispatcher
 from task.events import ExecutionStart
 
 
+def _duration(time):
+    if time is None:
+        return '0s'
+    hours, remainder = divmod(time, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    s = ''
+    if hours:
+        s += '%dh ' % hours
+    if minutes:
+        s += '%dm ' % minutes
+    if seconds:
+        s += '%ds ' % seconds
+    return s
+
+
 class Task(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
     description = models.TextField(blank=True)
@@ -148,6 +163,10 @@ class Execution(models.Model, StateMixin):
     def commands_ordered(self):
         return self.commands.order_by('order')
 
+    @property
+    def duration(self):
+        return _duration(self.time)
+
 
 class ExecutionParameter(models.Model):
     execution = models.ForeignKey(Execution, related_name="parameters")
@@ -187,6 +206,10 @@ class ExecutionCommandServer(models.Model, StateMixin):
     def get_live_log_output(self):
         live_logs = self.live_logs.values_list('output', flat=True)
         return ''.join(live_logs)
+
+    @property
+    def duration(self):
+        return _duration(self.time)
 
 
 class ExecutionLiveLog(models.Model):
