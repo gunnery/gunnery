@@ -27,7 +27,7 @@
 
     {% if task.parameters.count %}
         <ul class="parameters">
-            {% for parameter in task.parameters_ordered %}
+            {% for parameter in task.parameters.all %}
                 <li>{{ parameter.name }}</li>
             {% endfor %}
         </ul>
@@ -35,7 +35,7 @@
     <p>&nbsp;</p>
 
     <div id="execution">
-        {% for command in task.commands_ordered %}
+        {% for command in task.commands.all %}
             <div class="command">{{ command.command }}
                 {% for role in command.roles.all %}
                     <span class="label label-default">{{ role.name }}</span>

@@ -45,9 +45,6 @@ class Task(models.Model):
     def executions_inline(self):
         return Execution.get_inline_by_task(self.id)
 
-    def parameters_ordered(self):
-        return self.parameters.order_by('order')
-
     def commands_ordered(self):
         return self.commands.order_by('order')
 
@@ -59,12 +56,18 @@ class TaskParameter(models.Model):
     description = models.TextField(blank=True)
     order = models.IntegerField()
 
+    class Meta:
+        ordering = ['order']
+
 
 class TaskCommand(models.Model):
     task = models.ForeignKey(Task, related_name="commands")
     command = models.TextField(blank=False)
     roles = models.ManyToManyField(ServerRole, related_name="commands")
     order = models.IntegerField()
+
+    class Meta:
+        ordering = ['order']
 
 
 class StateMixin(object):
@@ -113,7 +116,7 @@ class Execution(models.Model, StateMixin):
         super(Execution, self).save(*args, **kwargs)
         if not is_new:
             return
-        for command in self.task.commands_ordered():
+        for command in self.task.commands.all():
             self._create_execution_commands(command)
 
     def start(self):
@@ -160,9 +163,6 @@ class Execution(models.Model, StateMixin):
     def get_inline_by_user(id):
         return Execution.get_inline_by_query(user_id=id)
 
-    def commands_ordered(self):
-        return self.commands.order_by('order')
-
     @property
     def duration(self):
         return _duration(self.time)
@@ -186,6 +186,9 @@ class ExecutionCommand(models.Model):
     command = models.TextField()
     roles = models.ManyToManyField(ServerRole)
     order = models.IntegerField()
+
+    class Meta:
+        ordering = ['order']
 
 
 class ExecutionCommandServer(models.Model, StateMixin):
