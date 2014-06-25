@@ -47,7 +47,7 @@
 
     <div id="execution"
          data-execution-id="{{ execution.id }}"
-         data-log-id="{{ execution.get_last_log_id }}"
+         data-log-id="{{ execution.get_last_log_id|default_if_none:0 }}"
          data-execution-status="{{ execution.status }}">
 
         <div>
