@@ -30,7 +30,11 @@
         function onRowChange(el) {
             el.find('.button-up').css('visibility', 'visible').first().css('visibility', 'hidden');
             el.find('.button-down').css('visibility', 'visible').last().css('visibility', 'hidden');
-
+            if (el.find('.form-group:visible').length<=2) {
+                el.find('.button-remove').hide();
+            } else {
+                el.find('.button-remove').show();
+            }
         }
 
         function setOrderFields(subform) {
@@ -59,7 +63,7 @@
             });
             el.find('.button-add').click(function () {
                 var sample = el.find('.form-group').first(),
-                    newRow = sample.clone(true, true).removeClass('hide');
+                    newRow = sample.clone(true, true).show();
                 newRow.find('input,select,textarea').each(function (i, input) {
                     input.name = input.name.replace('-0-', '-' + totalForms + '-');
                     input.value = '';
@@ -67,15 +71,15 @@
                 totalFormsInput.val(++totalForms);
                 el.find('.form-group.actions').before(newRow);
                 onRowChange(el);
-                newRow.find(".chosen-select")
-                    .chosen({width: '100%'});
+                newRow.find(".chosen-select").chosen({width: '100%'});
             });
             el.find('.button-remove').click(function () {
                 var subform = $(this).parents('.form-group');
                 if (!subform.find('input.input-id').val()) {
                     subform.remove();
                 } else if (confirm('Are you sure?')) {
-                    subform.hide().find('input.input-delete').val('on');
+                    subform.detach().hide().find('input.input-delete').val('on');
+                    $('.removed').append(subform);
                 }
                 onRowChange(el);
             });
