@@ -23,3 +23,5 @@ DATABASES = {
 }
 
 CELERY_ALWAYS_EAGER = True
+
+PRIVATE_DIR = '/tmp'
