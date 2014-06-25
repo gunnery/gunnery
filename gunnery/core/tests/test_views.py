@@ -101,8 +101,7 @@ class CoreModalEnvironmentTest(BaseModalTestCase, BaseModalTests):
         cls.url_params['parent_id'] = cls.application.id
 
     def test_create(self):
-        response, obj = self._test_create({'name': 'EnvironmentName', 'description': '123',
-                                           'application': self.application.id})
+        response, obj = self._test_create({'name': 'EnvironmentName', 'application': self.application.id})
         self.assertJSONEqual(response.content, {"status": True, "action": "reload"})
 
     def test_edit(self):

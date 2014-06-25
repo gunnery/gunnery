@@ -49,14 +49,14 @@ class ServerRoleField(ModelMultipleChoiceField):
 class ApplicationForm(ModalForm):
     class Meta:
         model = Application
-        fields = ['name', 'description']
+        fields = ['name']
         widgets = {'description': Textarea(attrs={'rows': 2})}
 
 
 class EnvironmentForm(ModalForm):
     class Meta:
         model = Environment
-        fields = ['name', 'description', 'application']
+        fields = ['name', 'application']
         widgets = {'description': Textarea(attrs={'rows': 2}),
                    'application': HiddenInput()}
 

@@ -25,7 +25,6 @@ class Department(models.Model):
 
 class Application(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
-    description = models.TextField(blank=True)
     department = models.ForeignKey(Department, related_name="applications")
 
     class Meta:
@@ -46,7 +45,6 @@ class Application(models.Model):
 
 class Environment(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
-    description = models.TextField(blank=True)
     application = models.ForeignKey(Application, related_name="environments")
     is_production = models.BooleanField(default=False)
 
