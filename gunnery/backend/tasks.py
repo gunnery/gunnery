@@ -69,7 +69,11 @@ class ExecutionTask(app.Task):
         chain(chord_chain)()
 
     def _get_execution(self, execution_id):
-        return Execution.objects.get(pk=execution_id)
+        try:
+            return Execution.objects.get(pk=execution_id)
+        except Execution.DoesNotExist:
+            logger.info('execution %d not found... retry' % execution_id)
+            raise self.retry(countdown=5)
 
 
 class ExecutionTaskFinish(app.Task):
