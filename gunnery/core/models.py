@@ -111,3 +111,4 @@ class Server(models.Model):
 
     class Meta:
         unique_together = ("environment", "name")
+        ordering = ['name']

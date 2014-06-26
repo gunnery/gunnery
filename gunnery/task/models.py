@@ -213,6 +213,9 @@ class ExecutionCommandServer(models.Model, StateMixin):
     output = models.TextField(blank=True)
     celery_task_id = models.CharField(blank=True, max_length=36)
 
+    class Meta:
+        ordering = ['server__name']
+
     def get_live_log_output(self):
         live_logs = self.live_logs.values_list('output', flat=True)
         return ''.join(live_logs)
