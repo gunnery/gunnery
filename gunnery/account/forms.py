@@ -1,3 +1,4 @@
+from timezone_field import TimeZoneFormField
 from django.forms import BooleanField, CharField, PasswordInput
 from django.contrib.auth import get_user_model
 
@@ -31,10 +32,11 @@ class UserSystemForm(ModalForm):
 class UserProfileForm(ModalForm):
     email = CharField(required=True)
     name = CharField(label='Name')
+    timezone = TimeZoneFormField()
 
     class Meta:
         model = _user
-        fields = ['email', 'name']
+        fields = ['email', 'name', 'timezone']
 
 
 class UserPasswordForm(ModalForm):

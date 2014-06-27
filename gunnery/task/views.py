@@ -1,8 +1,12 @@
-from django.contrib import messages
+from django.conf import settings
 import json
+from time import strptime
+from datetime import datetime
+from pytz import UTC, timezone
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.http import Http404, HttpResponse
@@ -203,6 +207,14 @@ def live_log(request, execution_id, last_id):
     data = ExecutionLiveLog.objects.filter(execution_id=execution_id, id__gt=last_id).order_by('id').values('id',
                                                                                                             'event',
                                                                                                             'data')
+    for item in data:
+        item['data'] = json.loads(item['data'])
+        for key, value in item['data'].items():
+            if key.startswith('time_'):
+                value = datetime(*strptime(value, "%Y-%m-%dT%H:%M:%S.%fZ")[:6])
+                value = value.replace(tzinfo=timezone(settings.TIME_ZONE)).astimezone(request.user.timezone)
+                value = request.user.timezone.normalize(value)
+                item['data'][key] = value.strftime("%Y-%m-%d %H:%M")
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")
 
 

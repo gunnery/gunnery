@@ -53,7 +53,7 @@
                     for (var i = 0, n = data.length; i < n; i++) {
                         item = data[i]
                         if (item.event in handlers) {
-                            handlers[item.event](JSON.parse(item.data));
+                            handlers[item.event](item.data);
                         }
                         lastId = item.id;
                     }

@@ -1,3 +1,4 @@
+from timezone_field import TimeZoneField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
@@ -43,6 +44,7 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
                                                 'active. Unselect this instead of deleting accounts.'))
     date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
     objects = CustomUserManager()
+    timezone = TimeZoneField(default='UTC')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

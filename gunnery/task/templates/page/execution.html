@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load core_extras %}
 {% load staticfiles %}
-
+{% load tz %}
 {% block page_scripts %}
     <script src="{% static "task/js/execution.js" %}"></script>
 {% endblock %}
@@ -58,7 +58,7 @@
         <div class="text-muted">
             <i class="fa fa-clock-o"></i>
 		<span class="execution-time-start">
-			{% if execution.time_start != None %}{{ execution.time_start }}{% else %}pending{% endif %}
+			{% if execution.time_start != None %}{{ execution.time_start|timezone:user.timezone }}{% else %}pending{% endif %}
 		</span>
         </div>
 
@@ -92,7 +92,7 @@
         <div class="text-muted">
             <i class="fa fa-clock-o" {% if not execution.time_end %}style="display:none"{% endif %}></i>
 		<span class="execution-time-end">
-			{% if execution.time_end %}{{ execution.time_end }}{% endif %}
+			{% if execution.time_end %}{{ execution.time_end|timezone:user.timezone }}{% endif %}
 		</span>
 		<span class="execution-time">
 			{% if execution.time %}{{ execution.time }} s{% endif %}

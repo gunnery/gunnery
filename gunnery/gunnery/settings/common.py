@@ -35,6 +35,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_extensions',
+    'timezone_field',
     'guardian',
     'crispy_forms',
     'djcelery',

@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load tz %}
 
 {% block content %}
     <h1>{% model_icon 'task' %} Execution history
@@ -46,7 +47,7 @@
                 <td>{{ execution.environment.name }}</td>
                 <td><a href="{{ execution.get_absolute_url }}">{{ execution.task.name }}</a></td>
                 <td>{{ execution.user.get_full_name }}</td>
-                <td>{{ execution.time_created }}</td>
+                <td>{{ execution.time_created|timezone:user.timezone }}</td>
                 <td>{{ execution.duration }}</td>
             </tr>
             <tr class="{% if forloop.counter|divisibleby:2 %}even{% else %}odd{% endif %}">
