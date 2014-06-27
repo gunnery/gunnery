@@ -81,26 +81,33 @@ class ExecutionTaskFinish(app.Task):
         execution = self._get_execution(execution_id)
 
         if execution.status != Execution.ABORTED:
-            failed = False
+            failed = running = False
             for command in execution.commands.all():
                 for server in command.servers.all():
-                    if server.status in [None, server.FAILED]:
+                    if server.status == server.RUNNING:
+                        running = True
+                    elif server.status in [None, server.FAILED]:
                         failed = True
-            if failed:
-                execution.status = execution.FAILED
-            else:
-                execution.status = execution.SUCCESS
-            execution.save_end()
+            if not running:
+                if failed:
+                    execution.status = execution.FAILED
+                else:
+                    execution.status = execution.SUCCESS
+                execution.save_end()
+                self.finalize(execution, execution_id)
+        else:
+            self.finalize(execution, execution_id)
 
+    def _get_execution(self, execution_id):
+        return Execution.objects.prefetch_related('commands', 'commands__servers').get(pk=execution_id)
+
+    def finalize(self, execution, execution_id):
         department_id = execution.environment.application.department.id
         EventDispatcher.trigger(ExecutionFinish(department_id, execution=execution))
         ExecutionLiveLog.add(execution_id, 'execution_completed',
                              status=execution.status,
                              time_end=execution.time_end,
                              time=execution.time)
-
-    def _get_execution(self, execution_id):
-        return Execution.objects.get(pk=execution_id)
 
 
 class SoftAbort(Exception):
@@ -192,14 +199,6 @@ class CommandTask(app.Task):
                              return_code=self.ecs.return_code,
                              status=self.ecs.status,
                              time=self.ecs.time)
-
-        if self.ecs.status == Execution.FAILED:
-            raise Exception('command exit code != 0')
-
-    def on_failure(self, exc, task_id, args, kwargs, einfo):
-        command_server = ExecutionCommandServer.objects.get(pk=kwargs['execution_command_server_id'])
-        kwargs['execution_id'] = command_server.execution_command.execution_id
-        ExecutionTaskFinish().run(execution_id=command_server.execution_command.execution_id)
 
 
 class TestConnectionTask(app.Task):
