@@ -1,9 +1,10 @@
-from django.utils.functional import SimpleLazyObject, cached_property
 from guardian.shortcuts import get_objects_for_user
 from core.models import Application
 
 
 def sidebar(request):
+    """ Returns data required by sidebar
+    """
     current_department_id = request.current_department_id if request.user.is_authenticated() else None
     departments = get_objects_for_user(request.user, 'core.view_department')
     return {

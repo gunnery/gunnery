@@ -28,7 +28,7 @@ def _dummy_callback(*args, **kwargs):
 
 @app.task
 def generate_private_key(environment_id):
-    """ Generate publi and private key pair for environment """
+    """ Generate public and private key pair for environment """
     environment = Environment.objects.get(pk=environment_id)
     PrivateKey(environment_id).generate('Gunnery-' + environment.application.name + '-' + environment.name)
     open(KnownHosts(environment_id).get_file_name(), 'w').close()
@@ -48,6 +48,10 @@ def cleanup_files(environment_id):
 
 
 class ExecutionTask(app.Task):
+    """ Main celery task responsible for handling task executions
+
+    Creates and queues CommandTask tasks to handle task on specific servers.
+    """
     def __init__(self):
         pass
 
@@ -69,6 +73,10 @@ class ExecutionTask(app.Task):
         chain(chord_chain)()
 
     def _get_execution(self, execution_id):
+        """ Returns Execution model
+
+        If model is not found task will retry.
+        """
         try:
             return Execution.objects.get(pk=execution_id)
         except Execution.DoesNotExist:
@@ -77,6 +85,8 @@ class ExecutionTask(app.Task):
 
 
 class ExecutionTaskFinish(app.Task):
+    """ Finishes Execution
+    """
     def run(self, execution_id):
         execution = self._get_execution(execution_id)
 
@@ -102,6 +112,8 @@ class ExecutionTaskFinish(app.Task):
         return Execution.objects.prefetch_related('commands', 'commands__servers').get(pk=execution_id)
 
     def finalize(self, execution, execution_id):
+        """ Trigger event, and save live log
+        """
         department_id = execution.environment.application.department.id
         EventDispatcher.trigger(ExecutionFinish(department_id, execution=execution))
         ExecutionLiveLog.add(execution_id, 'execution_completed',
@@ -115,6 +127,8 @@ class SoftAbort(Exception):
 
 
 class CommandTask(app.Task):
+    """ Execute command on specific server
+    """
     def __init__(self):
         self.ecs = None
         self.environment_id = None
@@ -134,6 +148,8 @@ class CommandTask(app.Task):
         raise SoftAbort
 
     def setup(self, execution_command_server_id):
+        """ Prepare data
+        """
         self.ecs = ExecutionCommandServer.objects.get(pk=execution_command_server_id)
         self.ecs.output = "".encode("utf8")
         if self.ecs.execution_command.execution.status == Execution.ABORTED:
@@ -146,6 +162,8 @@ class CommandTask(app.Task):
         ExecutionLiveLog.add(self.execution_id, 'command_started', command_server_id=self.ecs.id)
 
     def execute(self):
+        """ Execute command
+        """
         transport = None
         try:
             transport = self.create_transport()
@@ -176,18 +194,26 @@ class CommandTask(app.Task):
             self.ecs.return_code = 1024
 
     def create_transport(self):
+        """ Create SSH connection object
+        """
         server = ssh.Server.from_model(self.ecs.server)
         transport = ssh.SSHTransport(server)
         transport.set_stdout_callback(self._output_callback)
         return transport
 
     def _output_callback(self, output):
+        """ Handle output of command
+
+        Remove bash colors and trigger live log event
+        """
         output = output.decode("utf8").encode("utf8")
         output = re.sub(r"\x1b\[(\d;)?\d?\dm", "".encode("utf8"), output)
         self.ecs.output += output
         ExecutionLiveLog.add(self.execution_id, 'command_output', command_server_id=self.ecs.id, output=output)
 
     def finalize(self):
+        """ Set command status and trigger live log event
+        """
         if self.ecs.return_code == 0:
             self.ecs.status = Execution.SUCCESS
         else:
@@ -202,6 +228,8 @@ class CommandTask(app.Task):
 
 
 class TestConnectionTask(app.Task):
+    """ Task for testing connection with server
+    """
     def run(self, server_id):
         status = False
         output = ''
@@ -230,6 +258,8 @@ class TestConnectionTask(app.Task):
 
 
 class SendEmailTask(app.Task):
+    """ Send transactional email
+    """
     def run(self, subject='', message='', message_html=None, sender=None, recipient=''):
         if not sender:
             sender = settings.EMAIL_NOTIFICATION

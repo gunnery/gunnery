@@ -10,6 +10,15 @@ from django.template.loader import render_to_string
 
 
 class Event(object):
+    """ Event object
+
+    Example usage:
+
+      e = Event(1, parameter=2)
+      e.department_id => 1
+      e.parameter => 2
+      e.type => Event
+    """
     context = {}
 
     def __init__(self, department_id, **kwargs):
@@ -33,15 +42,26 @@ class EventDispatcher(object):
 
     @classmethod
     def add_handler(cls, handler):
+        """ Register handler
+        """
         cls.handlers.append(handler)
 
     @classmethod
     def trigger(cls, event):
+        """ Trigger event on all registered handlers
+        """
         for handler in cls.handlers:
             handler.process(event)
 
 
 class EventHandler(object):
+    """ Process events within scope
+
+    To handle only selected EventTypes use subscribe_to field, example:
+      subscribe_to = ('ExecutionFinish',)
+
+    Inheriting class should override _process(self, event) method.
+    """
     subscribe_to = list()
 
     def __init__(self):
@@ -62,22 +82,32 @@ class EventHandler(object):
             raise Exception('Template %s not found for event %s' % (filename, self.event.type))
 
     def get_subject(self):
+        """ Render event subject
+        """
         return self._render('subject.txt')
 
     def get_full(self):
+        """ Render event full text
+        """
         return self._render('full.html')
 
     def get_full_plain(self):
+        """ Render event fill plain text
+        """
         return self._render('full.txt')
 
 
 class LogHandler(EventHandler):
+    """ Saves all events in database EventLog model
+    """
     def _process(self, event):
         EventLog(department_id=event.department_id, type=event.type, message=self.get_subject()).save()
 EventDispatcher.add_handler(LogHandler())
 
 
 class UserNotificationHandler(EventHandler):
+    """ Sends notification emails
+    """
     subscribe_to = ('ExecutionFinish',)
 
     def _process(self, event):

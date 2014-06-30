@@ -65,12 +65,16 @@ class Environment(models.Model):
 
     @staticmethod
     def generate_keys(sender, instance, created, **kwargs):
+        """ Generate secure files for environment
+        """
         if created:
             from backend.tasks import generate_private_key
             generate_private_key.delay(environment_id=instance.id)
 
     @staticmethod
     def cleanup_files(sender, instance, **kwargs):
+        """ Remove secure files for environment
+        """
         from backend.tasks import cleanup_files
         cleanup_files.delay(instance.id)
 

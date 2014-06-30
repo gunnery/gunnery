@@ -239,6 +239,10 @@ class ExecutionLiveLog(models.Model):
 
 
 class ParameterParser(object):
+    """ Parse command string
+
+    Replace included global variables and task parameters with their values.
+    """
     parameter_format = '${%s}'
     global_parameters = {
         'gun_application': 'application name',

@@ -33,9 +33,10 @@ def _get_app_modal(app):
 
 
 class BaseModal(object):
-    """ Base class for modal dialog boxes """
+    """ Base class for modal dialog boxes
 
-    """ Defines associated types, their models and forms """
+    Defines associated types, their models and forms
+    """
     definitions = {}
 
     def __init__(self, form_name, id=None, parent_id=None):
@@ -103,6 +104,8 @@ class BaseModal(object):
         return render(request, template, self.data)
 
     def message(self, message):
+        """ Add session message
+        """
         messages.success(self.request, message)
 
     def delete(self, request):
@@ -114,7 +117,6 @@ class BaseModal(object):
         self.trigger_event('delete')
         self.message('Deleted')
         return HttpResponse(json.dumps(self.data), content_type="application/json")
-
 
     def trigger_event(self, event):
         """ Triggers modal event """
@@ -157,7 +159,6 @@ class Modal(BaseModal):
         instance = self.form.instance
         if not instance.id:
             instance.department_id = self.request.current_department_id
-
 
     def on_create_application(self):
         self.data['action'] = 'redirect'

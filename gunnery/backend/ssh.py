@@ -5,6 +5,8 @@ from .securefile import SecureFileStorage
 
 
 class Transport(object):
+    """ Base transport protocol class
+    """
     def __init__(self, server):
         self.server = server
         self.callback = lambda out: None
@@ -14,6 +16,8 @@ class Transport(object):
 
 
 class SSHTransport(Transport):
+    """ SSH connection
+    """
     output_timeout = 0.5
     output_buffer = 1024
 
@@ -24,6 +28,10 @@ class SSHTransport(Transport):
         self.channel = None
 
     def run(self, command):
+        """ Execute command in current connection
+
+        Handle output using attached callback function
+        """
         self.channel = self.client.get_transport().open_session()
         self.channel.get_pty()
         self.channel.exec_command(command)
@@ -38,6 +46,8 @@ class SSHTransport(Transport):
         return self.channel.recv_exit_status()
 
     def create_client(self):
+        """ Create and configure SSHClient
+        """
         private = RSAKey(filename=self.get_private_key_file())
         client = SSHClient()
         client.set_missing_host_key_policy(AutoAddPolicy())
@@ -46,21 +56,29 @@ class SSHTransport(Transport):
         return client
 
     def close_client(self):
+        """ Close SSHClient
+        """
         self.client.save_host_keys(self.get_host_keys_file())
         if self.channel:
             self.channel.close()
         self.client.close()
 
     def kill(self):
+        """ Alias for close_client method
+        """
         self.close_client()
 
     def get_host_keys_file(self):
+        """ Return path to known hosts file
+        """
         filename = self.secure_files.known_hosts.get_file_name()
         if not exists(filename):
             raise RuntimeError('Known hosts file not found')
         return filename
 
     def get_private_key_file(self):
+        """ Return path to private key file
+        """
         filename = self.secure_files.private_key.get_file_name()
         if not exists(filename):
             raise RuntimeError('Private key file not found')
@@ -68,6 +86,8 @@ class SSHTransport(Transport):
 
 
 class Server(object):
+    """ Server model
+    """
     def __init__(self):
         self.environment_id = None
         self.host = None

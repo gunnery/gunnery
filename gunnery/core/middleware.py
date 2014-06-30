@@ -2,6 +2,8 @@ from guardian.shortcuts import get_objects_for_user
 
 
 class CurrentDepartment(object):
+    """ Set current_department_id in request object
+    """
     def process_request(self, request):
         if not request.user.is_authenticated():
             return
