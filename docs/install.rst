@@ -1,6 +1,7 @@
 Installation
 ^^^^^^^^^^^^
 
+Instructions on this page will guide you through installation process. You can choose to use puppet tool or setup everything manually.
 
 Shortcut using Puppet
 ~~~~~~~~~~~~~~~~~~~~~
@@ -10,7 +11,7 @@ Puppet manifests are supported for systems:
 
 - Ubuntu 13.10 (raring)
 
-::
+Below are listed commands which will setup full-stack Gunnery instance on a bare bones server::
 
     su
     git clone --recurse-submodules https://github.com/Eyjafjallajokull/gunnery.git /var/gunnery
@@ -27,10 +28,9 @@ Puppet manifests are supported for systems:
     python manage.py createsuperuser
     python manage.py collectstatic
 
-The last step is to edit
-``/var/gunnery/gunnery/gunnery/settings/production.py`` and set the
-``ALLOWED_HOSTS`` directive to the domain (or IP address) that your
-instance will be running on.
+The last step is to edit ``/var/gunnery/gunnery/gunnery/settings/production.py`` and set the
+``ALLOWED_HOSTS`` directive to the domain (or IP address) that your instance will be running on.
+Boom, if everything went well you have working application.
 
 Installation
 ~~~~~~~~~~~~
