@@ -5,3 +5,4 @@ puppet/manifests/hieradata/local.yaml
 .coverage
 .vagrant
 .idea
+docs/_build
