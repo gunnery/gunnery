@@ -6,4 +6,4 @@
 :backends:
     - yaml
 :yaml:
-    :datadir: "/var/gunnery/puppet/manifests/hieradata"
+    :datadir: "%{settings::manifestdir}/hieradata"
