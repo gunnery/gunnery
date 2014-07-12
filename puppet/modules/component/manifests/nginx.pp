@@ -2,6 +2,7 @@ class component::nginx {
   $app_name = hiera('application::name')
   $app_path = hiera('application::path')
   $run_path = hiera('application::run_path')
+  $repository_path = hiera('application::repository_path')
   $log_path = hiera('application::log_path')
   $domain_name = hiera('application::domain_name')
    

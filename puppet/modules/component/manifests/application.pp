@@ -1,12 +1,14 @@
 class component::application {
   $user = hiera('application::user')
   $app_name = hiera('application::name')
+  $secret_key = hiera('application::secret_key')
+  $log_path = hiera('application::log_path')
   $app_path = hiera('application::path')
   $virtualenv_path = hiera('application::virtualenv_path')
   $environment = $::environment
 
   include python::dev
-  package {'bpython':
+  package {['bpython', "git-core"]:
     ensure => 'latest'}
 
   file { [
@@ -19,15 +21,21 @@ class component::application {
     mode => 755,
   } ->
   file { [
-      hiera('application::log_path'),
+      $log_path,
       hiera('application::secure_path')
     ]:
     ensure => directory,
     owner => $user,
     group => $user,
     mode => 700,
-  } ->
-  class { 'component::virtualenv':
+  } -> class { 'component::virtualenv': }
+
+  file { "/home/${user}/.bash_profile":
+    ensure => file,
+    content => template("component/bash_profile.erb"),
+    owner => $user,
+    group => $user,
+    mode => 700,
   }
 }
 

@@ -19,6 +19,10 @@ server {
 
         error_page 502 /502.html;
         location = /502.html {
-                root /var/gunnery/gunnery/core/templates/;
+                root <%= @app_path %>/core/templates/;
+        }
+
+        location /docs/ {
+                alias <%= @repository_path %>/docs/_build/html/;
         }
 }

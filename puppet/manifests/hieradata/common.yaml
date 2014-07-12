@@ -5,12 +5,13 @@ application::name : gunnery
 application::user : gunnery
 
 application::root_path : /var/gunnery
-application::path : "%{hiera('application::root_path')}/%{hiera('application::name')}"
+application::repository_path : "%{hiera('application::root_path')}/%{hiera('application::name')}"
+application::path : "%{hiera('application::repository_path')}/%{hiera('application::name')}"
+application::requirements_path : "%{hiera('application::repository_path')}/requirements/%{::environment}.txt"
 application::secure_path : "%{hiera('application::root_path')}/secure"
 application::log_path : "%{hiera('application::root_path')}/log"
 application::run_path : "%{hiera('application::root_path')}/run"
 application::virtualenv_path : "%{hiera('application::root_path')}/virtualenv/%{::environment}"
-application::requirements_path : "%{hiera('application::root_path')}/requirements/%{::environment}.txt"
 
 postgresql::user : gunnery
 

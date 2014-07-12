@@ -1,5 +1,5 @@
 class component::common {
-	package { [ "git-core", "htop" ]:
+	package { [ "htop"]:
 		ensure => "latest"
 	}
 
