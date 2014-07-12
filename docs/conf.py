@@ -14,6 +14,7 @@
 
 import sys
 import os
+IS_EMBEDDED = 'IS_EMBEDDED' in os.environ and os.environ['IS_EMBEDDED'] == '1'
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -34,6 +35,8 @@ extensions = [
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
+if IS_EMBEDDED:
+    templates_path.append('_templates_embedded')
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -46,7 +49,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Gunnery'
-copyright = u'2014, Paweł Olejniczak'
+copyright = u'2014, Apache License 2.0, Paweł Olejniczak'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -161,7 +164,7 @@ html_static_path = ['_static']
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-#html_show_sourcelink = True
+html_show_sourcelink = False
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True

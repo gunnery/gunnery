@@ -18,15 +18,16 @@ Below are listed commands which will setup full-stack Gunnery instance on a bare
     cd /var/gunnery/puppet
     cp manifests/hieradata/local.template.yaml manifests/hieradata/local.yaml
     vim manifests/hieradata/local.yaml # set secrets
-    bash ./install.sh
+    chown 700 manifests/hieradata/local.yaml
+    bash ./install.sh # ensure puppet 3 is installed
     FACTER_environment=production puppet apply manifests/base.pp --hiera_config manifests/hiera.yaml --modulepath=modules
     cd /var/gunnery/gunnery
     export DJANGO_SETTINGS_MODULE="gunnery.settings.production"
     source /var/gunnery/virtualenv/production/bin/activate
     python manage.py syncdb
     python manage.py migrate
-    python manage.py createsuperuser
     python manage.py collectstatic
+    python manage.py createsuperuser
 
 The last step is to edit ``/var/gunnery/gunnery/gunnery/settings/production.py`` and set the
 ``ALLOWED_HOSTS`` directive to the domain (or IP address) that your instance will be running on.
@@ -108,8 +109,8 @@ prepare the static files.
     export DJANGO_SETTINGS_MODULE="gunnery.settings.production"
     python manage.py syncdb # synchronize gunnery schema to postgres
     python manage.py migrate # run any necessary database schema migrations
-    python manage.py createsuperuser # create the initial user
     python manage.py collectstatic # prepare static files to be served
+    python manage.py createsuperuser # create the initial user
 
 To test that the application workins, you can use Django's built-in HTTP
 server:

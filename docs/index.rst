@@ -1,7 +1,7 @@
 Gunnery documentation
 =====================
 
-Gunnery is multipurpose task execution tool for distributed systems with an easy to use interface.
+Gunnery is multipurpose task execution tool for distributed systems with web-based interface.
 
 Contents
 ~~~~~~~~

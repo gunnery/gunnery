@@ -1,7 +1,9 @@
 Overview
 ^^^^^^^^
 
+Gunnery is multipurpose task execution tool for distributed systems with web-based interface.
 
+.. @todo project goal an philosophy
 
 Features
 ~~~~~~~~
@@ -15,16 +17,16 @@ Features
         Handles multi-environment applications with many servers
 
     Usable for deployment, service control, backups
-        Almost any command executed via command line can be turned into Gunnery task
+        Almost any command executed in shell can be turned into Gunnery task
 
-    Commands are executed using SSH protocol
-        key authorization
+    Secure remote execution
+        Certificate based authentication provides secure access to your network
 
-    Clear, responsive interface
-        Pleases eye and enables usage on mobile devices
+    Web-based interface
+        Clear, responsive interface pleases eye and enables usage on mobile devices
 
     User notifications
-        Team members will be notified when tasks are executed.
+        Team members will be notified when tasks are executed
 
 Dependencies
 ~~~~~~~~~~~~

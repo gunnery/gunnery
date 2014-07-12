@@ -3,6 +3,11 @@ Contributing
 
 Gunnery is open source project managed using Git and hosted on Github.
 
+#. `Check for open issues <https://github.com/Eyjafjallajokull/gunnery/issues>`_ or open a fresh issue to start a discussion around a feature idea or a bug.
+#. Fork the `repository on Github <https://github.com/Eyjafjallajokull/gunnery>`_ to start making your changes.
+#. Write a test which shows that the bug was fixed or that the feature works as expected.
+#. Send a pull request and bug the maintainer until it gets merged and published. :)
+
 Setup Vagrant environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -38,8 +43,8 @@ create first user.
     cd /vagrant/gunnery
     python manage.py syncdb
     python manage.py migrate
-    python manage.py createsuperuser
     python manage.py collectstatic
+    python manage.py createsuperuser
 
 Gunnery should be now accessible via address http://localhost:8080/.
 
