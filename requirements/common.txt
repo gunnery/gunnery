@@ -21,3 +21,4 @@ sqlparse==0.1.11
 uWSGI==2.0.5.1
 wsgiref==0.1.2
 git+https://github.com/Eyjafjallajokull/django-timezone-field.git@develop#egg=django-timezone-field
+sphinx

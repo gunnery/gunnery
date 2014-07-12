@@ -21,12 +21,10 @@ Below are listed commands which will setup full-stack Gunnery instance on a bare
     chown 700 manifests/hieradata/local.yaml
     bash ./install.sh # ensure puppet 3 is installed
     FACTER_environment=production puppet apply manifests/base.pp --hiera_config manifests/hiera.yaml --modulepath=modules
-    cd /var/gunnery/gunnery
+    cd /var/gunnery
     export DJANGO_SETTINGS_MODULE="gunnery.settings.production"
     source /var/gunnery/virtualenv/production/bin/activate
-    python manage.py syncdb
-    python manage.py migrate
-    python manage.py collectstatic
+    make build
     python manage.py createsuperuser
 
 The last step is to edit ``/var/gunnery/gunnery/gunnery/settings/production.py`` and set the
@@ -112,12 +110,16 @@ prepare the static files.
     python manage.py collectstatic # prepare static files to be served
     python manage.py createsuperuser # create the initial user
 
-To test that the application workins, you can use Django's built-in HTTP
-server:
+To test that the application is working, you can use Django's built-in HTTP server:
 
 ::
 
     python manage.py runserver
+
+Optionally you can build html documentation with command: ::
+
+    cd /var/gunnery/docs
+    make htmlembedded
 
 Install Messaging Queue
 ~~~~~~~~~~~~~~~~~~~~~~~

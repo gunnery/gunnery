@@ -6,7 +6,7 @@ Vagrant.configure("1") do |config|
   config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/raring/current/raring-server-cloudimg-amd64-vagrant-disk1.box"
 
   config.vm.host_name = "void"
-  config.vm.network :bridged
+#  config.vm.network :bridged
 
   config.vm.forward_port 80, 8080
   config.vm.forward_port 5432, 5432
