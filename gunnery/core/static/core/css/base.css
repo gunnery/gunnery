@@ -30,14 +30,14 @@ pre {
 
 .navbar-brand {
     width: 170px;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid #26323d;
     font-size: 19px;
     letter-spacing: 6px;
     font-weight: bold;
 }
 
 .nav-user {
-    border-top: 1px solid #333;
+    border-top: 1px solid #26323d;
 }
 
 #settings-submenu {
