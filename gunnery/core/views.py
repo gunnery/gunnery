@@ -14,14 +14,16 @@ from account.decorators import has_permissions
 from backend.tasks import TestConnectionTask
 from event.models import NotificationPreferences
 from .models import Application, Department, Environment, Server, ServerRole
+from task.models import Execution
 
 
 @login_required
 def index(request):
     data = {}
     data['application_list'] = Application.objects.filter(department_id=request.current_department_id).prefetch_related('environments')
-    if not data['application_list']:
-        return redirect(reverse('help_page'))
+    executions = Execution.objects.filter(task__application__department_id=request.current_department_id)
+    if not executions.count():
+        return redirect(reverse('first_steps_page'))
     return render(request, 'page/index.html', data)
 
 
@@ -64,9 +66,9 @@ def server_test_ajax(request, task_id):
 
 
 @login_required
-def help_page(request):
+def first_steps_page(request):
     data = {}
-    return render(request, 'page/help.html', data)
+    return render(request, 'page/first_steps.html', data)
 
 
 @login_required

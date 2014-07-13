@@ -2,7 +2,7 @@ from django.conf.urls import patterns, url
 
 from .modal import modal_delete, modal_form
 from .views import (
-    application_page, department_switch, environment_page, help_page, index,
+    application_page, department_switch, environment_page, first_steps_page, index,
     settings_page, server_test, server_test_ajax)
 
 urlpatterns = patterns('',
@@ -29,5 +29,5 @@ urlpatterns = patterns('',
 
     url(r'^department/switch/(?P<id>[\d]+)/$', department_switch, name='department_switch'),
 
-    url(r'^help/', help_page, name='help_page'),
+    url(r'^help/', first_steps_page, name='first_steps_page'),
 )
