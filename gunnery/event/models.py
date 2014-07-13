@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.contenttypes.generic import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
+from guardian.shortcuts import get_users_with_perms
 from core.models import Department
 
 
@@ -15,6 +16,17 @@ class NotificationPreferences(models.Model):
 
     class Meta:
         unique_together = ("user", "event_type", "content_type", "object_id")
+
+    @staticmethod
+    def initialize_for_all_users(department_id, event_type, obj):
+        content_type = ContentType.objects.get_for_model(type(obj))
+        users = get_users_with_perms(Department(id=department_id))
+        for user in users:
+            NotificationPreferences(user=user,
+                                    event_type=event_type,
+                                    content_type=content_type,
+                                    object_id=obj.id,
+                                    is_active=True).save()
 
 
 class EventLog(models.Model):
