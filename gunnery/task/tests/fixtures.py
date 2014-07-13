@@ -10,3 +10,7 @@ class TaskFactory(DjangoModelFactory):
     name = factory.Sequence(lambda n: 'Task_%s' % n)
     application = factory.SubFactory(ApplicationFactory)
 
+
+class ExecutionFactory(DjangoModelFactory):
+    FACTORY_FOR = Execution
+

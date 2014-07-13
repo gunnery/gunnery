@@ -2,6 +2,7 @@ from django.test import TestCase
 
 from .base import LoggedTestCase, BaseModalTestCase, BaseModalTests
 from core.tests.fixtures import *
+from task.tests.fixtures import TaskFactory, ExecutionFactory
 
 
 class GuestTest(TestCase):
@@ -17,6 +18,9 @@ class IndexTest(LoggedTestCase):
 
     def test_index_help_no_redirect(self):
         application = ApplicationFactory(department=self.department)
+        environment = EnvironmentFactory(application=application)
+        task = TaskFactory(application=application)
+        ExecutionFactory(task=task, environment=environment, user=self.user)
         response = self.client.get('/')
         self.assertContains(response, application.name)
 
