@@ -20,7 +20,7 @@ Below are listed commands which will setup full-stack Gunnery instance on a bare
     vim manifests/hieradata/local.yaml # set secrets
     chown 700 manifests/hieradata/local.yaml
     bash ./install.sh # ensure puppet 3 is installed
-    FACTER_environment=production puppet apply manifests/base.pp --hiera_config manifests/hiera.yaml --modulepath=modules
+    FACTER_environment=production puppet apply manifests/base.pp --hiera_config manifests/hiera.yaml --modulepath=modules --manifestdir=manifests
     cd /var/gunnery
     export DJANGO_SETTINGS_MODULE="gunnery.settings.production"
     source /var/gunnery/virtualenv/production/bin/activate
