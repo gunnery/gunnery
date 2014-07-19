@@ -5,7 +5,7 @@ application::name : gunnery
 application::user : gunnery
 
 application::root_path : /var/gunnery
-application::repository_path : "%{hiera('application::root_path')}/%{hiera('application::name')}"
+application::repository_path : "%{hiera('application::root_path')}"
 application::path : "%{hiera('application::repository_path')}/%{hiera('application::name')}"
 application::requirements_path : "%{hiera('application::repository_path')}/requirements/%{::environment}.txt"
 application::secure_path : "%{hiera('application::root_path')}/secure"
