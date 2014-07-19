@@ -113,7 +113,7 @@ class UserNotificationHandler(EventHandler):
     def _process(self, event):
         users = get_users_with_perms(Department(id=event.department_id)).prefetch_related('notifications')
         admins = get_user_model().objects.filter(is_superuser=True)
-        users = list(chain(users, admins))
+        users = set(chain(users, admins))
         application_content_type = ContentType.objects.get_for_model(Application)
         from backend.tasks import SendEmailTask
         for user in users:
