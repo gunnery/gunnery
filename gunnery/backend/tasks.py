@@ -8,10 +8,10 @@ from django.conf import settings
 
 from celery import chain, chord
 from celery.exceptions import SoftTimeLimitExceeded
-from paramiko import AuthenticationException
+from paramiko import AuthenticationException, BadAuthenticationType
 
 from gunnery.celery import app
-from core.models import Environment, Server
+from core.models import Environment, Server, ServerAuthentication
 from event.dispatcher import EventDispatcher
 from task.events import ExecutionFinish
 from task.models import Execution, ExecutionLiveLog, ExecutionCommandServer
@@ -168,6 +168,9 @@ class CommandTask(app.Task):
         try:
             transport = self.create_transport()
             self.ecs.return_code = transport.run(self.ecs.execution_command.command)
+        except BadAuthenticationType:
+            self._output_callback('Server does not allow supplied authentication method')
+            self.ecs.return_code = 1026
         except AuthenticationException:
             self._output_callback('Key authentication failed')
             self.ecs.return_code = 1026
@@ -270,3 +273,13 @@ class SendEmailTask(app.Task):
             message.attach_alternative(message_html, "text/html")
         message.send()
         logging.info('Sent email to %s with subject: %s' % (recipient, subject))
+
+
+class SaveServerAuthenticationData(app.Task):
+    """ In future only backend server will have access to server auth data
+    """
+    def run(self, server_id, password=''):
+        server, created = ServerAuthentication.objects.get_or_create(server_id=server_id)
+        if password:
+            server.password = password
+            server.save()

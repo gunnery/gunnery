@@ -24,6 +24,17 @@
         });
     });
     $("#id_name").focus();
+    function trigger_auth_method_fields() {
+        if ($("#id_method").val()=="{{ instance.OPENSSH_PASSWORD }}") {
+            $("#pubkey").parents(".form-group").hide();
+            $("#id_password").parents(".form-group").show();
+        } else {
+            $("#pubkey").parents(".form-group").show();
+            $("#id_password").parents(".form-group").hide();
+        }
+    }
+    trigger_auth_method_fields();
+    $("#id_method").change(trigger_auth_method_fields);
 </script>
 
 {% if not is_new %}

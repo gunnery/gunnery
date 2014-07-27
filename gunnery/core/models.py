@@ -1,3 +1,4 @@
+import pgcrypto
 from django.db import models
 from django.db.models.signals import post_delete, post_save
 from django.core.urlresolvers import reverse
@@ -115,13 +116,26 @@ class ServerRole(models.Model):
 
 
 class Server(models.Model):
+    OPENSSH_PASSWORD = 1
+    OPENSSH_CERTIFICATE = 2
+    METHOD_CHOICES = (
+        (OPENSSH_CERTIFICATE, 'SSH certificate'),
+        (OPENSSH_PASSWORD, 'SSH password'),
+    )
+
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])
     host = models.CharField(blank=False, max_length=128)
     port = models.IntegerField(blank=False, default=22)
     user = models.CharField(blank=False, max_length=128)
     roles = models.ManyToManyField(ServerRole, related_name="servers")
     environment = models.ForeignKey(Environment, related_name="servers")
+    method = models.IntegerField(choices=METHOD_CHOICES, default=OPENSSH_CERTIFICATE, verbose_name="Login method")
 
     class Meta:
         unique_together = ("environment", "name")
         ordering = ['name']
+
+
+class ServerAuthentication(models.Model):
+    server = models.OneToOneField(Server, primary_key=True)
+    password = pgcrypto.EncryptedTextField(blank=True)

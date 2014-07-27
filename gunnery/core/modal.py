@@ -179,6 +179,13 @@ class Modal(BaseModal):
         except Exception as e:
             self.data['pubkey'] = 'Couldn\'t load'
 
+    def on_create_server(self):
+        self.on_update_server()
+
+    def on_update_server(self):
+        from backend.tasks import SaveServerAuthenticationData
+        SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
+
     def on_form_create_server(self):
         self.form.fields['roles'].queryset = ServerRole.objects.filter(department_id=self.request.current_department_id)
 
