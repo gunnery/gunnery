@@ -1,5 +1,5 @@
-from django.forms import ModelForm, ModelMultipleChoiceField
-from django.forms.widgets import Textarea, SelectMultiple, HiddenInput
+from django.forms import ModelForm, ModelMultipleChoiceField, CharField
+from django.forms.widgets import Textarea, SelectMultiple, HiddenInput, TextInput, PasswordInput
 from django.http import Http404
 
 from crispy_forms.helper import FormHelper
@@ -63,12 +63,14 @@ class EnvironmentForm(ModalForm):
 
 class ServerForm(ModalForm):
     roles = ServerRoleField()
+    password = CharField(required=False, widget=PasswordInput, help_text="Leave blank if not changing")
 
     class Meta:
         model = Server
-        fields = ['name', 'host', 'port', 'user', 'roles', 'environment']
+        fields = ['environment', 'name', 'roles', 'host', 'port', 'user', 'method']
         widgets = {'roles': TagSelect(),
-                   'environment': HiddenInput()}
+                   'environment': HiddenInput(),
+                   'password': TextInput()}
 
 
 class ServerRoleForm(ModalForm):

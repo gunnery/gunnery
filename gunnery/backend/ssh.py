@@ -52,7 +52,12 @@ class SSHTransport(Transport):
         client = SSHClient()
         client.set_missing_host_key_policy(AutoAddPolicy())
         client.load_host_keys(self.get_host_keys_file())
-        client.connect(self.server.host, pkey=private, look_for_keys=False, port=self.server.port, username=self.server.user)
+        if self.server.authentication_method == self.server.OPENSSH_PASSWORD:
+            client.connect(self.server.host, password=self.server.password,
+                           look_for_keys=False, port=self.server.port, username=self.server.user)
+        elif self.server.authentication_method == self.server.OPENSSH_CERTIFICATE:
+            client.connect(self.server.host, pkey=private,
+                           look_for_keys=False, port=self.server.port, username=self.server.user)
         return client
 
     def close_client(self):
@@ -88,12 +93,16 @@ class SSHTransport(Transport):
 class Server(object):
     """ Server model
     """
+    OPENSSH_PASSWORD = 1
+    OPENSSH_CERTIFICATE = 2
+
     def __init__(self):
         self.environment_id = None
         self.host = None
         self.port = None
         self.user = None
         self.authentication_method = 'key'
+        self.password = None
 
     @staticmethod
     def from_model(model):
@@ -102,4 +111,6 @@ class Server(object):
         instance.host = model.host
         instance.port = model.port
         instance.user = model.user
+        instance.password = model.serverauthentication.password
+        instance.authentication_method = model.method
         return instance
