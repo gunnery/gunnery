@@ -1,7 +1,7 @@
 PYTHONBIN=python
 APP=gunnery
 
-.PHONY: build syncdb migrate collectstatic docs
+.PHONY: build syncdb migrate collectstatic docs tests
 
 build: syncdb migrate collectstatic docs
 
@@ -16,3 +16,6 @@ collectstatic:
 
 docs:
 	(cd docs && make htmlembedded)
+
+tests:
+	(cd $(APP) && ${PYTHONBIN} manage.py test --settings=gunnery.settings.test)
