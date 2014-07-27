@@ -2,8 +2,8 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("1") do |config|
-  config.vm.box = "ubuntu-13.10"
-  config.vm.box_url = "http://cloud-images.ubuntu.com/vagrant/raring/current/raring-server-cloudimg-amd64-vagrant-disk1.box"
+  config.vm.box = "opscode-ubuntu-13.10"
+  config.vm.box_url = "http://opscode-vm-bento.s3.amazonaws.com/vagrant/virtualbox/opscode_ubuntu-13.10_chef-provisionerless.box"
 
   config.vm.host_name = "void"
 #  config.vm.network :bridged
