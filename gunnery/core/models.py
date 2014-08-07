@@ -14,6 +14,7 @@ class Department(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()], unique=True)
 
     class Meta:
+        ordering = ['name']
         permissions = (
         ("view_department", "Can view department"),
         ("edit_department", "Can edit department"),
@@ -29,6 +30,7 @@ class Application(models.Model):
     department = models.ForeignKey(Department, related_name="applications")
 
     class Meta:
+        ordering = ['name']
         unique_together = ("department", "name")
         permissions = (
         ("view_application", "Can view application"),
@@ -59,6 +61,7 @@ class Environment(models.Model):
     is_production = models.BooleanField(default=False)
 
     class Meta:
+        ordering = ['name']
         unique_together = ("application", "name")
         permissions = (
         ("view_environment", "Can view environment"),
