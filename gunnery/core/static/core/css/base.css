@@ -180,6 +180,10 @@ button > i.fa:after {
     margin-bottom: 6px;
 }
 
+.has-error .chosen-choices {
+    border-color: #953b39;
+}
+
 /** modal **/
 .modal-footer {
     text-align: left;
