@@ -121,3 +121,11 @@
   from { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
   to { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
 }
+
+#comamnd-help-toggle {
+    cursor: pointer;
+}
+
+#command-help code {
+    white-space: normal !important;
+}
