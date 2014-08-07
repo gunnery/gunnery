@@ -86,7 +86,12 @@ pre {
 }
 
 .side-nav {
+    overflow: hidden;
     background-color: #1e2933;
+}
+
+.side-nav ul {
+    white-space: nowrap;
 }
 
 .nav-tabs {
