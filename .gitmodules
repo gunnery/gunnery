@@ -6,7 +6,7 @@
 	url = https://github.com/puppetlabs/puppetlabs-stdlib.git
 [submodule "puppet/modules/python"]
 	path = puppet/modules/python
-	url = https://github.com/puppetmodules/puppet-module-python.git
+	url = https://github.com/Eyjafjallajokull/puppet-module-python
 [submodule "puppet/modules/postgresql"]
 	path = puppet/modules/postgresql
 	url = https://github.com/puppetlabs/puppetlabs-postgresql.git
