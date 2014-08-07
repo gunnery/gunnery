@@ -32,6 +32,7 @@ def task_execute_page(request, task_id, environment_id=None):
     data = {}
     task = get_object_or_404(Task, pk=task_id)
     data['task'] = task
+    form_errors = []
     if environment_id:
         environment = get_object_or_404(Environment, pk=int(environment_id))
         data['environment'] = environment
@@ -46,33 +47,33 @@ def task_execute_page(request, task_id, environment_id=None):
                 name = name[len(parameter_prefix):]
                 parameters[name] = value
 
-        # @todo validate parameter names
+        if 'environment' in parameters and parameters['environment']:
+            environment = get_object_or_404(Environment, pk=int(parameters['environment']))
+            if task.application.id != environment.application.id:
+                raise ValueError('task.application.id did not match with environment.application.id')
 
-        environment = get_object_or_404(Environment, pk=int(parameters['environment']))
-        if task.application.id != environment.application.id:
-            raise ValueError('task.application.id did not match with environment.application.id')
+            duplicateExecution = Execution.objects.filter(task=task, environment=environment,
+                                                          status__in=[Execution.PENDING, Execution.RUNNING])
+            if duplicateExecution.count():
+                form_errors.append('Task %s is already running on %s environment.' %
+                                   (task.name, environment.name))
+            else:
+                execution = Execution(task=task, environment=environment, user=request.user)
+                execution.save()
 
-        duplicateExecution = Execution.objects.filter(task=task, environment=environment,
-                                                      status__in=[Execution.PENDING, Execution.RUNNING])
-        if duplicateExecution.count():
-            data['duplicate_error'] = True
-            data['task'] = task
-            data['environment'] = environment
+                for name, value in parameters.items():
+                    if name != 'environment':
+                        ExecutionParameter(execution=execution, name=name, value=value).save()
+
+                parameter_parser = ParameterParser(execution)
+                for command in execution.commands.all():
+                    command.command = parameter_parser.process(command.command)
+                    command.save()
+                execution.start()
+                return redirect(execution)
         else:
-            execution = Execution(task=task, environment=environment, user=request.user)
-            execution.save()
-
-            for name, value in parameters.items():
-                if name != 'environment':
-                    ExecutionParameter(execution=execution, name=name, value=value).save()
-
-            parameter_parser = ParameterParser(execution)
-            for command in execution.commands.all():
-                command.command = parameter_parser.process(command.command)
-                command.save()
-            execution.start()
-            return redirect(execution)
-
+            form_errors.append('Environment is required')
+    data['form_errors'] = form_errors
     return render(request, 'page/task_execute.html', data)
 
 

@@ -24,10 +24,12 @@
         <li class="active">{% model_icon 'execution' %} Execution</li>
     </ol>
 
-    {% if duplicate_error %}
+    {% if form_errors %}
         <div class="alert alert-block alert-danger">
             <ul>
-                <li>Task <i>{{ task.name }}</i> is already running on <i>{{ environment.name }}</i> environment.</li>
+                {% for form_error in form_errors %}
+                <li>{{ form_error }}</li>
+                {% endfor %}
             </ul>
         </div>
     {% endif %}
