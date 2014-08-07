@@ -105,6 +105,7 @@ prepare the static files.
 ::
 
     export DJANGO_SETTINGS_MODULE="gunnery.settings.production"
+    export SECRET_KEY="<insert random string here>"
     python manage.py syncdb # synchronize gunnery schema to postgres
     python manage.py migrate # run any necessary database schema migrations
     python manage.py collectstatic # prepare static files to be served
