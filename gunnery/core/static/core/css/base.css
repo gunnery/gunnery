@@ -8,8 +8,11 @@ body {
     margin-top: 0;
 }
 
+h1 {
+    word-break: break-all;
+}
 h1 .label {
-    vertical-align: 0.5em;
+    vertical-align: 0.2em;
 }
 
 pre {
@@ -129,6 +132,7 @@ button > i.fa:after {
 
     h1 {
         font-size: 2em;
+        word-break: keep-all;
     }
 
     .long-title {

@@ -2,13 +2,18 @@
 {% load core_extras %}
 
 {% block content %}
-    <h1>{% model_icon 'environment' %} <span class="long-title">Environment</span> <em>{{ environment.name }}</em>
-        <button type="submit" class="btn btn-default pull-right"
-                data-toggle="modal"
-                data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}"
-                data-target="#large-modal">
-            <i class="fa fa-edit"></i></button>
-    </h1>
+    <div class="row">
+        <h1 class="col-sm-10">
+            {% model_icon 'environment' %} <span class="long-title">Environment</span> <em>{{ environment.name }}</em>
+        </h1>
+        <h1 class="col-sm-2 text-right">
+            <button type="submit" class="btn btn-default"
+                    data-toggle="modal"
+                    data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}"
+                    data-target="#large-modal">
+                <i class="fa fa-edit"></i></button>
+        </h1>
+    </div>
     <div class="clearfix"></div>
 
     <ol class="breadcrumb">

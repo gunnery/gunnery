@@ -7,10 +7,14 @@
 {% endblock %}
 
 {% block content %}
-    <h1>{% model_icon 'execution' %} <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
-        <small class="execution-label">{% execution_status execution.status %}</small>
 
-        <div class="pull-right">
+    <div class="row">
+        <h1 class="col-md-7">
+            {% model_icon 'execution' %} <em>{{ execution.task.name }}</em> on <em>{{ execution.environment.name }}</em>
+        </h1>
+        <h1 class="col-md-5 text-right">
+            <small class="execution-label">{% execution_status execution.status %}</small>
+
             <a href="{% url 'task_execute_page' task_id=execution.task.id environment_id=execution.environment.id %}"
                role="button" class="btn btn-default hide-when-active"
                {% if execution.status == execution.PENDING or execution.status == execution.RUNNING %}style="display:none"{% endif %}><i
@@ -23,8 +27,8 @@
             <a href="#" role="button" class="btn btn-default show-when-active" id="abort-button"
                {% if execution.status != execution.PENDING and execution.status != execution.RUNNING %}style="display:none"{% endif %}><i
                     class="fa fa-ban"></i> Abort</a>
-        </div>
-    </h1>
+        </h1>
+    </div>
     <div class="clearfix"></div>
 
     <ol class="breadcrumb">
