@@ -63,7 +63,7 @@ class EnvironmentForm(ModalForm):
 
 class ServerForm(ModalForm):
     roles = ServerRoleField()
-    password = CharField(required=False, widget=PasswordInput, help_text="Leave blank if not changing")
+    password = CharField(required=False, widget=PasswordInput)
     user = CharField(widget=TextInput(attrs={'autocomplete': 'off'}))
 
     class Meta:

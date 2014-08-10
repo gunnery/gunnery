@@ -47,6 +47,7 @@ class BaseModal(object):
         self.form = None
         self.instance = None
         self.request = None
+        self.is_new = False
         if form_name in self.definitions:
             self.definition = self.definitions[form_name]
         else:
@@ -68,7 +69,7 @@ class BaseModal(object):
         self.request = request
         self.create_form()
         form_template = 'partial/' + self.form_name + '_form.html'
-        is_new = not bool(self.id)
+        self.is_new = not bool(self.id)
         if request.method == 'POST':
             template = form_template
             if self.form.is_valid():
@@ -76,7 +77,7 @@ class BaseModal(object):
                     self.trigger_event('before_save')
                     self.instance = self.form.save()
 
-                    if is_new:
+                    if self.is_new:
                         self.trigger_event('create')
                         self.message('Created')
                     else:
@@ -95,7 +96,7 @@ class BaseModal(object):
         self.data = {
             'form': self.form,
             'form_template': form_template,
-            'is_new': is_new,
+            'is_new': self.is_new,
             'instance': self.form.instance,
             'model_name': self.form.Meta.model.__name__,
             'request_path': request.path
@@ -178,6 +179,8 @@ class Modal(BaseModal):
             self.data['pubkey'] = read_public_key.delay(self.form.instance.environment_id).get()
         except Exception as e:
             self.data['pubkey'] = 'Couldn\'t load'
+        if not self.is_new:
+            self.form.fields['password'].help_text = "Leave blank if not changing"
 
     def on_create_server(self):
         self.on_update_server()
