@@ -13,10 +13,12 @@
             {% model_icon 'task' %}
             {% if is_new %}Add task{% else %}<span class="long-title">Task</span> <em>{{ task.name }}</em>{% endif %}
         </h1>
+        {% if task %}
         <h1 class="col-sm-2 text-right">
             <a href="{% url 'task_execute_page' task_id=task.id %}" role="button" class="btn btn-default"><i
                     class="fa fa-bolt"></i> Execute</a>
         </h1>
+        {% endif %}
     </div>
     <div class="clearfix"></div>
 
