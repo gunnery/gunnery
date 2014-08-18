@@ -18,6 +18,12 @@ class component::celery {
 
   user { $user:
     ensure => present,
+  } ->
+  file { "/home/$user":
+    ensure => directory,
+    owner => $user,
+    group => $user,
+    mode => 700,
   }
 
   file { '/etc/default/celeryd':
@@ -50,12 +56,5 @@ class component::celery {
       File['/etc/default/celeryd'], 
       User[$user],
       Class["component::virtualenv"] ]
-  }
-
-  file { "/home/$user":
-    ensure => directory,
-    owner => $user,
-    group => $user,
-    mode => 700,
   }
 }

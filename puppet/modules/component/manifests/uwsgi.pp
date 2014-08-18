@@ -23,7 +23,6 @@ class component::uwsgi {
     require => Class["component::virtualenv"],
     before => File['sites-available config'],
     recurse => true, 
-    purge   => true, 
   }
   
   # Upstart file
