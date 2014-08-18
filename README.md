@@ -1,6 +1,6 @@
 # Gunnery
 
-[![Build Status](https://travis-ci.org/Eyjafjallajokull/gunnery.png?branch=master)](https://travis-ci.org/Eyjafjallajokull/gunnery)
+[![Build Status](https://travis-ci.org/gunnery/gunnery.png?branch=master)](https://travis-ci.org/gunnery/gunnery)
 
 Gunnery is a multipurpose task execution tool for distributed systems with web-based interface.
 
