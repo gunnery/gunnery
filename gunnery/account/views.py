@@ -37,7 +37,7 @@ def modal_permissions(request, group_id):
     department = Department.objects.get(pk=request.current_department_id)
     if group.department_id != department.id:
         return
-    if not request.user.has_perm('core.manage_department', department):
+    if not request.user.has_perm('core.change_department', department):
         return
     data = {}
     data['group'] = group
@@ -62,6 +62,7 @@ def modal_permissions(request, group_id):
         from guardian.shortcuts import assign_perm
 
         GroupObjectPermission.objects.filter(group_id=group.id).delete()
+        assign_perm('core.view_department', group, group.department)
         for name, value in request.POST.items():
             key = name.split('_')
             if len(key) == 3 and value == 'on':

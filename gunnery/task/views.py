@@ -1,4 +1,5 @@
 from django.conf import settings
+from guardian.shortcuts import get_objects_for_user
 import json
 from time import strptime
 from datetime import datetime
@@ -74,6 +75,8 @@ def task_execute_page(request, task_id, environment_id=None):
         else:
             form_errors.append('Environment is required')
     data['form_errors'] = form_errors
+    data['environments'] = get_objects_for_user(request.user, 'core.execute_environment').filter(
+        application=task.application)
     return render(request, 'page/task_execute.html', data)
 
 

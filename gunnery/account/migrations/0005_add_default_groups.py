@@ -31,7 +31,7 @@ class Migration(DataMigration):
                 group.save()
             self.assign_perm('core.view_department', group, instance)
             if system_name == 'admin':
-                self.assign_perm('core.manage_department', group, instance)
+                self.assign_perm('core.change_department', group, instance)
 
     def on_create_application(self, instance):
         self._assign_default_perms('core', 'application', instance.department, instance)
@@ -45,8 +45,10 @@ class Migration(DataMigration):
     def _assign_default_perms(self, app, model, department, instance):
         groups = self.orm.DepartmentGroup.objects.filter(department=department, system_name__in=['user', 'admin'])
         for group in groups:
-            for action in ['view', 'change', 'execute']:
+            for action in ['view', 'execute']:
                 self.assign_perm('%s.%s_%s' % (app, action, model), group, instance)
+            if group.system_name == 'admin':
+                self.assign_perm('%s.%s_%s' % (app, 'change', model), group, instance)
 
     def assign_perm(self, perm, group, instance):
         app, perm = perm.split('.')

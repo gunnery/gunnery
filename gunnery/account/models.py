@@ -87,10 +87,7 @@ class DepartmentGroup(Group):
 
     def save(self, *args, **kwargs):
         self.name = "%s_%s" % (self.department_id, self.local_name)
-        is_new = not self.id
         super(DepartmentGroup, self).save(*args, **kwargs)
-        if is_new:
-            assign_perm('core.view_department', self, Department(pk=self.department_id))
 
     @staticmethod
     def on_create_department(sender, instance, created, **kwargs):
@@ -100,7 +97,7 @@ class DepartmentGroup(Group):
                 group.save()
                 assign_perm('core.view_department', group, instance)
                 if system_name == 'admin':
-                    assign_perm('core.manage_department', group, instance)
+                    assign_perm('core.change_department', group, instance)
 
     @staticmethod
     def on_create_application(sender, instance, created, **kwargs):
@@ -121,8 +118,10 @@ class DepartmentGroup(Group):
     def _assign_default_perms(app, model, department, instance):
         groups = DepartmentGroup.objects.filter(department=department, system_name__in=['user', 'admin'])
         for group in groups:
-            for action in ['view', 'change', 'execute']:
+            for action in ['view', 'execute']:
                 assign_perm('%s.%s_%s' % (app, action, model), group, instance)
+            if group.system_name == 'admin':
+                assign_perm('%s.%s_%s' % (app, 'change', model), group, instance)
 
     def __str__(self):
         return self.local_name

@@ -1,4 +1,3 @@
-from guardian.models import UserObjectPermissionBase, GroupObjectPermissionBase
 import pgcrypto
 from django.db import models
 from django.db.models.signals import post_delete, post_save
@@ -18,8 +17,7 @@ class Department(models.Model):
         ordering = ['name']
         permissions = (
         ("view_department", "Can view department"),
-        ("execute_department", "Can execute department"),
-        ("manage_department", "Can manage department"), )
+        ("execute_department", "Can execute department"), )
 
     def __unicode__(self):
         return self.name

@@ -16,5 +16,5 @@ def sidebar(request):
         'current_department_id': current_department_id,
         'department': department,
         'user': request.user,
-        'can_manage_department': request.user.has_perm('core.manage_department', department)
+        'can_manage_department': request.user.has_perm('core.change_department', department)
     }

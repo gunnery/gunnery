@@ -27,11 +27,13 @@
                                     data-remote="{% url 'modal_permissions' group_id=group.id %}"
                                     data-target="#large-modal">
                                 <i class="fa fa-lock"></i></button>
+                        {% if not group.system_name == 'user' %}
                             <button type="submit" class="btn btn-default btn-xs"
                                     data-toggle="modal"
                                     data-remote="{% url 'modal_form' app='account' form_name='group' id=group.id %}"
                                     data-target="#large-modal">
                                 <i class="fa fa-edit"></i></button>
+                        {% endif %}
                         {% endif %}
                         </td>
                     </tr>

@@ -82,7 +82,7 @@ def settings_page(request, section='user', subsection='profile'):
     handler = '_settings_%s_%s' % (section, subsection)
     if section == 'system' and request.user.is_superuser is not True:
         return redirect('index')
-    if section == 'department' and not request.user.has_perm('core.manage_department', obj=data['department']):
+    if section == 'department' and not request.user.has_perm('core.change_department', obj=data['department']):
         return redirect('index')
     if handler in globals():
         data = globals()[handler](request, data)
@@ -157,6 +157,7 @@ def _settings_department_users(request, data):
     from guardian.shortcuts import get_users_with_perms
     department = Department.objects.get(pk=request.current_department_id)
     data['users'] = get_users_with_perms(department).order_by('name')
+    data['department_user_list'] = True
     return data
 
 

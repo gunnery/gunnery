@@ -26,28 +26,6 @@ class IndexTest(LoggedTestCase):
 
 
 class ApplicationTest(LoggedTestCase):
-    def test_application(self):
-        application = ApplicationFactory(department=self.department)
-        response = self.client.get('/application/%d/' % application.id)
-        self.assertContains(response, application.name)
-        self.assertContains(response, '"%s"' % self.get_url_for_modal_application(application))
-        self.assertContains(response, '"%s"' % self.get_url_for_modal_environment(application))
-        self.assertContains(response, '"%s"' % self.get_url_for_modal_task(application))
-
-    def test_application_forbidden(self):
-        application = ApplicationFactory(department=DepartmentFactory())
-        response = self.client.get('/application/%d/' % application.id)
-        self.assertForbidden(response)
-
-    def test_application_edit_forbidden(self):
-        application = ApplicationFactory(department=self.department)
-        self.remove_perm_from_user_group('core.change_application', application)
-        response = self.client.get('/application/%d/' % application.id)
-        self.assertContains(response, application.name)
-        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_application(application))
-        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_environment(application))
-        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_task(application))
-
     def get_url_for_modal_application(self, application):
         return reverse('modal_form', kwargs={'form_name':'application', 'id':application.id})
 
@@ -57,34 +35,66 @@ class ApplicationTest(LoggedTestCase):
     def get_url_for_modal_task(self, application):
         return reverse('task_add_form_page', kwargs={'application_id':application.id})
 
+
+class ApplicationUserTest(ApplicationTest):
+    def test_application(self):
+        application = ApplicationFactory(department=self.department)
+        response = self.client.get('/application/%d/' % application.id)
+        self.assertContains(response, application.name)
+        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_application(application))
+        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_environment(application))
+        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_task(application))
+
+    def test_application_forbidden(self):
+        application = ApplicationFactory(department=DepartmentFactory())
+        response = self.client.get('/application/%d/' % application.id)
+        self.assertForbidden(response)
+
+
+class ApplicationManagerTest(ApplicationTest):
+    logged_is_manager = True
+
+    def test_application(self):
+        application = ApplicationFactory(department=self.department)
+        response = self.client.get('/application/%d/' % application.id)
+        self.assertContains(response, application.name)
+        self.assertContains(response, '"%s"' % self.get_url_for_modal_application(application))
+        self.assertContains(response, '"%s"' % self.get_url_for_modal_environment(application))
+        self.assertContains(response, '"%s"' % self.get_url_for_modal_task(application))
+
+
 class EnvironmentTest(LoggedTestCase):
+    def get_url_for_modal_environment(self, environment):
+        return reverse('modal_form', kwargs={'form_name':'environment', 'id':environment.id})
+
+    def get_url_for_modal_server(self, environment):
+        return reverse('modal_form', kwargs={'form_name':'server', 'parent_name':'environment', 'parent_id':environment.id})
+
+
+class EnvironmentUserTest(EnvironmentTest):
     def test_environment(self):
         application = ApplicationFactory(department=self.department)
         environment = EnvironmentFactory(application=application)
         response = self.client.get('/environment/%d/' % environment.id)
         self.assertContains(response, environment.name)
-        self.assertContains(response, '"%s"' % self.get_url_for_modal_environment(environment))
-        self.assertContains(response, '"%s"' % self.get_url_for_modal_server(environment))
+        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_environment(environment))
+        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_server(environment))
 
     def test_environment_forbidden(self):
         environment = EnvironmentFactory()
         response = self.client.get('/environment/%d/' % environment.id)
         self.assertForbidden(response)
 
-    def test_environment_edit_forbidden(self):
+
+class EnvironmentManagerTest(EnvironmentTest):
+    logged_is_manager = True
+
+    def test_environment(self):
         application = ApplicationFactory(department=self.department)
         environment = EnvironmentFactory(application=application)
-        self.remove_perm_from_user_group('core.change_environment', environment)
         response = self.client.get('/environment/%d/' % environment.id)
-        self.assertContains(response, environment.name)
-        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_environment(environment))
-        self.assertNotContains(response, '"%s"' % self.get_url_for_modal_server(environment))
-
-    def get_url_for_modal_environment(self, environment):
-        return reverse('modal_form', kwargs={'form_name':'environment', 'id':environment.id})
-
-    def get_url_for_modal_server(self, environment):
-        return reverse('modal_form', kwargs={'form_name':'server', 'parent_name':'environment', 'parent_id':environment.id})
+        self.assertContains(response, '"%s"' % self.get_url_for_modal_environment(environment))
+        self.assertContains(response, '"%s"' % self.get_url_for_modal_server(environment))
 
 
 class HelpTest(LoggedTestCase):
