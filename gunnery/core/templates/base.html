@@ -49,11 +49,11 @@
                         <li><a href="{% url 'settings_page' section='account' subsection='profile' %}">Profile</a></li>
                         <li><a href="{% url 'settings_page' section='account' subsection='password' %}">Password</a></li>
                         <li><a href="{% url 'settings_page' section='account' subsection='notifications' %}">Notifications</a></li>
-                        {% get_obj_perms user for department as "department_perms" %}
-                        {% if 'edit_department' in department_perms %}
+                        {% if can_manage_department %}
                             <li class="section">{% model_icon 'department' %} Department</li>
                             <li><a href="{% url 'settings_page' section='department' subsection='applications' %}">Applications</a></li>
                             <li><a href="{% url 'settings_page' section='department' subsection='users' %}">Users</a></li>
+                            <li><a href="{% url 'settings_page' section='department' subsection='groups' %}">Groups</a></li>
                             <li><a href="{% url 'settings_page' section='department' subsection='serverroles' %}">Server Roles</a></li>
                         {% endif %}
                         {% if user.is_superuser %}

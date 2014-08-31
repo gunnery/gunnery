@@ -4,69 +4,88 @@
 
 <form class="form-horizontal" role="form" method="POST" action="{{ request_path }}">
     {% csrf_token %}
-
-    <p class="visible-xs">U - user, M - manager</p>
+    {% if applications.count %}
+    <p class="visible-xs">V - view; E - execute; C - change</p>
 
     <table id="permissions" class="table table-condensed table-striped">
         <thead>
         <tr>
             <td></td>
-            <td width="1"><span class="hidden-xs">user</span><span class="visible-xs">U</span></td>
-            <td width="1"><span class="hidden-xs">manager</span><span class="visible-xs">M</span></td>
-{#            <td width="1"><span class="hidden-xs">write</span><span class="visible-xs">W</span></td>#}
-{#            <td width="1"><span class="hidden-xs">execute</span><span class="visible-xs">X</span></td>#}
+            <td width="1"><span class="hidden-xs">view</span><span class="visible-xs">V</span></td>
+            <td width="1"><span class="hidden-xs">execute</span><span class="visible-xs">E</span></td>
+            <td width="1"><span class="hidden-xs">change</span><span class="visible-xs">C</span></td>
         </tr>
         </thead>
         <tbody>
-        {% for department in departments %}
-            {% get_obj_perms user for department as "department_perms" %}
-            <tr data-scope=".department-{{ department.id }}">
-                <td>{% model_icon 'department' %} {{ department.name }}</td>
-                {% include "partial/permissions_form_input.html" with model="department" id=department.id perms=department_perms %}
-            </tr>
-{#            {% for application in department.applications.all %}#}
-{#                {% get_obj_perms user for application as "application_perms" %}#}
-{#                <tr data-scope=".application-{{ application.id }}" class="department-{{ department.id }}">#}
-{#                    <td class="dependent1" colspan="2">{% model_icon 'application' %} {{ application.name }}</td>#}
-{#                    {% include "partial/permissions_form_input.html" with model="application" id=application.id perms=application_perms %}#}
-{#                </tr>#}
-{#                {% for environment in application.environments.all %}#}
-{#                    {% get_obj_perms user for environment as "environment_perms" %}#}
-{#                    <tr class="department-{{ department.id }} application-{{ application.id }}">#}
-{#                        <td class="dependent2" colspan="2">{% model_icon 'environment' %} {{ environment.name }}</td>#}
-{#                        {% include "partial/permissions_form_input.html" with model="environment" id=environment.id perms=environment_perms %}#}
-{#                    </tr>#}
-{#                {% endfor %}#}
-{#                {% for task in application.tasks.all %}#}
-{#                    {% get_obj_perms user for task as "task_perms" %}#}
-{#                    <tr class="department-{{ department.id }} application-{{ application.id }}">#}
-{#                        <td class="dependent2" colspan="2">{% model_icon 'task' %} {{ task.name }}</td>#}
-{#                        {% include "partial/permissions_form_input.html" with model="task" id=task.id perms=task_perms %}#}
-{#                    </tr>#}
-{#                {% endfor %}#}
-{#            {% endfor %}#}
-        {% endfor %}
+            {% for application in applications.all %}
+                {% get_obj_perms group for application as "application_perms" %}
+                <tr id="application-{{ application.id }}" class="application">
+                    <td class="dependent1">{% model_icon 'application' %} {{ application.name }}</td>
+                    {% include "partial/permissions_form_input.html" with model="application" id=application.id perms=application_perms %}
+                </tr>
+                {% for environment in application.environments.all %}
+                    {% get_obj_perms group for environment as "environment_perms" %}
+                    <tr class="application-{{ application.id }} environment" data-application="{{ application.id }}">
+                        <td class="dependent2">{% model_icon 'environment' %} {{ environment.name }}</td>
+                        {% include "partial/permissions_form_input.html" with model="environment" id=environment.id perms=environment_perms %}
+                    </tr>
+                {% endfor %}
+                {% for task in application.tasks.all %}
+                    {% get_obj_perms group for task as "task_perms" %}
+                    <tr class="application-{{ application.id }} task" data-application="{{ application.id }}">
+                        <td class="dependent2">{% model_icon 'task' %} {{ task.name }}</td>
+                        {% include "partial/permissions_form_input.html" with model="task" id=task.id perms=task_perms %}
+                    </tr>
+                {% endfor %}
+            {% endfor %}
         </tbody>
     </table>
+    {% else %}
+        First, create applications, environments and tasks.
+    {% endif %}
     <script>
         (function () {
             var permissions = $('#permissions');
             permissions.find('input').click(function (event) {
                 var input = $(this),
-                        row = input.parents('tr'),
-                        rowScope = row.data('scope'),
-                        inputClass = input.attr('class'),
-                        toggle;
-                if (rowScope) {
-                    rowScope += ' input.' + inputClass;
-                    toggle = input.prop('checked');
-                    permissions.find(rowScope).prop('disabled', toggle).prop('checked', toggle);
+                    row = input.parents('tr'),
+                    isApplication = !!row.attr('id'),
+                    inputClass = input.attr('class'),
+                    toggle = input.prop('checked'),
+                    sibling,
+                    siblingClass,
+                    applicationViewInput
+                    ;
+
+                if (!isApplication) {
+                    applicationViewInput = permissions.find('#application-'+row.data('application')+' input.v');
+                    if (toggle) {
+                        applicationViewInput.prop('checked', toggle).prop('disabled', toggle);
+                        applicationViewInput.prev().val(input.prop('checked')?'on':'');
+                    } else if (permissions.find('.application-'+row.data('application')+' input:checked').length == 0) {
+                        applicationViewInput.prop('disabled', toggle);
+                    }
                 }
-                // if (inputClass!='r') {
-                // 	inputClass = inputClass == 'w' ? '.r' : '.w';
-                // 	toggle = input.prop('checked');
-                // 	input.parents('tr').find(inputClass).prop('checked', !toggle).click().prop('disabled', toggle);
-                // }
+
+                if (input.hasClass('c')) {
+                    siblingClass = 'e';
+                } else if (input.hasClass('e')) {
+                    siblingClass = 'v';
+                }
+                if (siblingClass) {
+                    sibling = row.find('.'+siblingClass);
+                    if (toggle) {
+                        if (sibling.prop('checked')) {
+                            sibling.first().prop('disabled', toggle);
+                        } else {
+                            sibling.first().click().prop('disabled', toggle);
+                        }
+                    } else {
+                        if (!permissions.find('#'+inputClass+' .'+siblingClass).prop('checked'))
+                            sibling.first().prop('disabled', toggle);
+                    }
+                }
+                input.prev().val(input.prop('checked')?'on':'');
             });
             permissions.find('input:checked').prop('checked', false).click();
         })();

@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, remove_perm
 from account.tests.fixtures import UserFactory
 from core.tests.fixtures import DepartmentFactory
 
@@ -19,8 +19,11 @@ class LoggedTestCase(TestCase):
     def setup_department(cls):
         cls.department = DepartmentFactory()
         if cls.logged_is_manager:
-            assign_perm('core.edit_department', cls.user, cls.department)
-        assign_perm('core.view_department', cls.user, cls.department)
+            group = cls.department.groups.filter(system_name='admin')[0]
+        else:
+            group = cls.department.groups.filter(system_name='user')[0]
+        cls.user.groups.add(group)
+        cls.user.save()
 
     def setUp(self):
         result = self.client.login(username=self.user.email, password=self.user.email)
@@ -28,6 +31,13 @@ class LoggedTestCase(TestCase):
         session['current_department_id'] = self.department.id
         session.save()
         self.assertTrue(result, 'Login failed')
+
+    def remove_perm_from_user_group(self, perm, obj):
+        group = self.department.groups.filter(system_name='user')[0]
+        remove_perm(perm, group, obj)
+
+    def assertForbidden(self, response):
+        self.assertEqual(response.status_code, 302)
 
 
 class BaseModalTestCase(LoggedTestCase):

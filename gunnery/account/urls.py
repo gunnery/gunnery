@@ -14,5 +14,5 @@ urlpatterns = patterns('',
        'django.contrib.auth.views.password_reset_confirm', name='password_reset_confirm'),
     url(r'^account/password_reset_complete$', 'django.contrib.auth.views.password_reset_complete',
        name='password_reset_complete'),
-    url(r'^modal/permissions/(?P<user_id>[\d]+)/$', modal_permissions, name='modal_permissions'),
+    url(r'^modal/permissions/(?P<group_id>[\d]+)/$', modal_permissions, name='modal_permissions'),
 )

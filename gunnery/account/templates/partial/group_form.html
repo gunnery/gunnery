@@ -1,0 +1,11 @@
+{% load crispy_forms_tags %}
+<form class="form-horizontal" role="form" method="POST" action="{{ request_path }}">
+    {% csrf_token %}
+    {% crispy form form.helper %}
+</form>
+
+{% if not is_new %}
+    <form role="delete" method="POST" action="{% url 'modal_delete' app='account' form_name='group' id=instance.id %}">
+        {% csrf_token %}
+    </form>
+{% endif %}

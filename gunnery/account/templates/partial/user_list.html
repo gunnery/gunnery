@@ -22,18 +22,11 @@
                     <tr>
                         <td><a href="{{ luser.get_absolute_url }}">{{ luser.get_full_name }}</a>
                             {% if luser.is_superuser %}<span class="label label-default">admin</span>{% endif %}
-                            {% if department and "edit_department" in department_perms %}
+                            {% if department and "change_department" in department_perms %}
                                 <span class="label label-default">manager</span>
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            {% if user.is_superuser %}
-                            <button type="submit" class="btn btn-default btn-xs"
-                                    data-toggle="modal"
-                                    data-remote="{% url 'modal_permissions' user_id=luser.id %}"
-                                    data-target="#large-modal">
-                                <i class="fa fa-lock"></i></button>
-                            {% endif %}
                             <button type="submit" class="btn btn-default btn-xs"
                                     data-toggle="modal"
                                     data-remote="{% url 'modal_form' app='account' form_name='user' id=luser.id %}"

@@ -3,6 +3,9 @@
     {% csrf_token %}
     {% crispy form form.helper %}
 </form>
+<script>
+    $(".chosen-select").chosen({width: '100%'});
+</script>
 
 {% if not is_new %}
     <form role="delete" method="POST" action="{% url 'modal_delete' app='account' form_name='user' id=instance.id %}">

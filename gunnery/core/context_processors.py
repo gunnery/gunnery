@@ -7,11 +7,14 @@ def sidebar(request):
     """
     current_department_id = request.current_department_id if request.user.is_authenticated() else None
     departments = get_objects_for_user(request.user, 'core.view_department')
+    department = departments.filter(id=current_department_id).first()
     return {
         'departments': departments,
-        'application_list_sidebar': Application.objects.filter(
-            department_id=current_department_id).prefetch_related('environments').order_by('name'),
+        'application_list_sidebar': get_objects_for_user(request.user, 'core.view_application').filter(department_id=current_department_id),
+        'allowed_environments': get_objects_for_user(request.user, 'core.view_environment'),
+        'allowed_tasks': get_objects_for_user(request.user, 'task.view_task'),
         'current_department_id': current_department_id,
-        'department': departments.filter(id=current_department_id).first(),
-        'user': request.user
+        'department': department,
+        'user': request.user,
+        'can_manage_department': request.user.has_perm('core.manage_department', department)
     }

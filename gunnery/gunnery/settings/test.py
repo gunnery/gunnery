@@ -25,3 +25,7 @@ DATABASES = {
 CELERY_ALWAYS_EAGER = True
 
 PRIVATE_DIR = '/tmp'
+
+import logging
+south_logger = logging.getLogger('south')
+south_logger.setLevel(logging.INFO)
