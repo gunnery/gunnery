@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 
 from core.modal import BaseModal
 from account.models import DepartmentGroup
-from .forms import account_create_form, UserForm, DepartmentGroupForm
+from .forms import account_create_form, UserForm, DepartmentGroupForm, UserSystemForm
 
 
 _user = get_user_model()
@@ -12,6 +12,10 @@ class Modal(BaseModal):
     definitions = {
         'user': {
             'form': UserForm,
+            'parent': None
+        },
+        'user_system': {
+            'form': UserSystemForm,
             'parent': None
         },
         'group': {
@@ -36,6 +40,9 @@ class Modal(BaseModal):
 
     def on_view_user(self):
         self.data['model_name'] = 'User'
+
+    def on_form_create_user_system(self):
+        self.on_form_create_user()
 
     def on_before_save_user(self):
         instance = self.form.instance
