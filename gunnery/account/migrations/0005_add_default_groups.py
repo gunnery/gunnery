@@ -21,6 +21,17 @@ class Migration(DataMigration):
         for task in orm['task.Task'].objects.all():
             self.on_create_task(task)
 
+        self.assign_users_to_groups()
+
+    def assign_users_to_groups(self):
+        for user in self.orm.CustomUser.objects.all():
+            if user.is_superuser:
+                continue
+            for department in self.orm['core.Department'].objects.all():
+                if self.has_perm(user, 'core.view_department', department):
+                    user.groups.add(self.orm.DepartmentGroup.objects.get(department=department, system_name='user'))
+                    user.save()
+
     def on_create_department(self, instance):
         for system_name, group_name in settings.DEFAULT_DEPARTMENT_GROUPS.items():
             group, created = self.orm.DepartmentGroup.objects.get_or_create(department=instance,
@@ -51,10 +62,7 @@ class Migration(DataMigration):
                 self.assign_perm('%s.%s_%s' % (app, 'change', model), group, instance)
 
     def assign_perm(self, perm, group, instance):
-        app, perm = perm.split('.')
-        action, model = perm.split('_')
-        content_type = self.orm['contenttypes.ContentType'].objects.get(app_label=app, model=model)
-        permission = self.orm['auth.permission'].objects.get(codename='%s_%s'%(action, model))
+        content_type, permission = self.parse_perm(perm)
         group_permission, created = self.orm['guardian.groupobjectpermission'].objects.get_or_create(
                                         permission=permission,
                                         content_type=content_type,
@@ -62,6 +70,22 @@ class Migration(DataMigration):
                                         object_pk=instance.id)
         if created:
             group_permission.save()
+
+    def parse_perm(self, perm):
+        app, perm = perm.split('.')
+        action, model = perm.split('_')
+        content_type = self.orm['contenttypes.ContentType'].objects.get(app_label=app, model=model)
+        permission = self.orm['auth.permission'].objects.get(codename='%s_%s'%(action, model))
+        return content_type, permission
+
+    def has_perm(self, user, perm, obj):
+        content_type, permission = self.parse_perm(perm)
+        results = self.orm['guardian.userobjectpermission'].objects.filter(permission=permission,
+                                                                          content_type=content_type,
+                                                                          user_id=user.id,
+                                                                          object_pk=obj.id).count()
+        return bool(results)
+
 
     def backwards(self, orm):
         "Write your backwards methods here."
