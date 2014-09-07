@@ -8,7 +8,7 @@
 </script>
 
 {% if not is_new %}
-    <form role="delete" method="POST" action="{% url 'modal_delete' app='account' form_name='user_system' id=instance.id %}">
+    <form role="delete" method="POST" action="{% url 'modal_delete' app='account' form_name='usersystem' id=instance.id %}">
         {% csrf_token %}
     </form>
 {% endif %}

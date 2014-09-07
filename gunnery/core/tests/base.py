@@ -41,20 +41,25 @@ class LoggedTestCase(TestCase):
 
 
 class BaseModalTestCase(LoggedTestCase):
-    url_name = None
+    url_name = 'modal_form'
     url_params = {}
     object_factory = None
 
     @classmethod
+    def getSetUpObjectData(cls):
+        return {}
+
+    @classmethod
     def setUpClass(cls):
         super(BaseModalTestCase, cls).setUpClass()
-        cls.object = cls.object_factory()
+        cls.object = cls.object_factory(**cls.getSetUpObjectData())
 
     def url(self, *args, **kwargs):
         return reverse(self.url_name, args=args, kwargs=(dict(self.url_params.items() + kwargs.items())))
 
     def _test_create(self, data):
         response = self.client.post(self.url(), data)
+        self.assertEqual(response.status_code, 200)
         obj = self.get_created_object(data)
         self.assertContains(response, 'true')
         return response, obj
@@ -68,9 +73,13 @@ class BaseModalTestCase(LoggedTestCase):
 
     def _test_edit(self, obj, data):
         response = self.client.post(self.url(id=obj.id), data)
+        print response.content
         self.assertContains(response, 'true')
         obj_updated = self.object_factory.FACTORY_FOR.objects.get(pk=obj.id)
         return response, obj_updated
+
+    def assertForbidden(self, response):
+        self.assertEquals(response.status_code, 403)
 
 
 class BaseModalTests(object):
@@ -85,3 +94,26 @@ class BaseModalTests(object):
     def test_delete(self):
         response = self.client.post(self.url(id=self.object.id))
         self.assertEquals(response.status_code, 200)
+
+
+class BaseForbiddenModalTests(object):
+
+    def test_create_form(self):
+        response = self.client.get(self.url())
+        self.assertForbidden(response)
+
+    def test_edit_form(self):
+        response = self.client.get(self.url(id=self.object.id))
+        self.assertForbidden(response)
+
+    def test_delete(self):
+        response = self.client.post(self.url(id=self.object.id))
+        self.assertForbidden(response)
+
+    def test_create(self):
+        response = self.client.post(self.url(), {})
+        self.assertForbidden(response)
+
+    def test_edit(self):
+        response = self.client.post(self.url(id=self.object.id), {})
+        self.assertForbidden(response)

@@ -89,13 +89,16 @@ class DepartmentGroup(Group):
         self.name = "%s_%s" % (self.department_id, self.local_name)
         super(DepartmentGroup, self).save(*args, **kwargs)
 
+    def assign_department_perms(self, department):
+        assign_perm('core.view_department', self, department)
+
     @staticmethod
     def on_create_department(sender, instance, created, **kwargs):
         if created:
             for system_name, group_name in settings.DEFAULT_DEPARTMENT_GROUPS.items():
                 group = DepartmentGroup(department=instance, local_name=group_name, system_name=system_name)
                 group.save()
-                assign_perm('core.view_department', group, instance)
+                DepartmentGroup.assign_department_perms(group, instance)
                 if system_name == 'admin':
                     assign_perm('core.change_department', group, instance)
 

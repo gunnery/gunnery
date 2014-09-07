@@ -114,6 +114,13 @@ class ServerRole(models.Model):
     def __unicode__(self):
         return self.name
 
+    @staticmethod
+    def on_create_department(sender, instance, created, **kwargs):
+        for server_role in ['app', 'db', 'cache']:
+            ServerRole(name=server_role, department=instance).save()
+
+post_save.connect(ServerRole.on_create_department, sender=Department)
+
 
 class Server(models.Model):
     OPENSSH_PASSWORD = 1

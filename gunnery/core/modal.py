@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.db import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
+from core.models import Department, Application, Environment, Server
 
 from forms import (
     ApplicationForm, core_create_form, DepartmentForm, EnvironmentForm,
@@ -13,22 +14,35 @@ from forms import (
 from .views import ServerRole
 
 
+class ModalPermissionException(Exception):
+    pass
+
+
 def modal_form(request, form_name, id=None, parent_name=None, parent_id=None, app=None):
-    return _get_app_modal(app)(form_name, id, parent_id).render(request)
+    try:
+        return _get_app_modal(app, form_name)(id, parent_id).render(request)
+    except ModalPermissionException:
+        return HttpResponse({'status': False, 'message':'Access forbidden'}, content_type="application/json", status=403)
 
 
 def modal_delete(request, form_name, id, app='core'):
-    return _get_app_modal(app)(form_name, id).delete(request)
+    try:
+        return _get_app_modal(app, form_name)(id).delete(request)
+    except ModalPermissionException:
+        return HttpResponse({'status': False, 'message':'Access forbidden'}, content_type="application/json", status=403)
 
 
-def _get_app_modal(app):
-    if app == None:
-        obj = Modal
-    else:
-        if app in settings.INSTALLED_APPS:
-            obj = __import__(app, fromlist=['modal']).modal.Modal
-        else:
+def _get_app_modal(app, form_name):
+    if not app:
+        app = 'core'
+    if app in settings.INSTALLED_APPS:
+        obj = __import__(app, fromlist=['modal']).modal
+        try:
+            obj = getattr(obj, '%sModal' % form_name.title())
+        except AttributeError:
             raise Http404()
+    else:
+        raise Http404()
     return obj
 
 
@@ -37,10 +51,10 @@ class BaseModal(object):
 
     Defines associated types, their models and forms
     """
-    definitions = {}
-
-    def __init__(self, form_name, id=None, parent_id=None):
-        self.form_name = form_name
+    form = None
+    form_name = ''
+    parent = None
+    def __init__(self, id=None, parent_id=None):
         self.id = id
         self.parent_id = parent_id
         self.data = {'status': True, 'action': 'reload'}
@@ -48,10 +62,6 @@ class BaseModal(object):
         self.instance = None
         self.request = None
         self.is_new = False
-        if form_name in self.definitions:
-            self.definition = self.definitions[form_name]
-        else:
-            raise ValueError('Modal: Unknown form_name')
 
     def create_form(self):
         """ Returns form object """
@@ -60,9 +70,15 @@ class BaseModal(object):
 
     def get_form_args(self):
         args = {}
-        if self.definition['parent']:
-            args[self.definition['parent']] = self.parent_id
+        if self.parent:
+            args[self.parent] = self.parent_id
         return args
+
+    def _permission_check(self):
+        if self.is_new:
+            self.permission_check('create')
+        else:
+            self.permission_check('change')
 
     def render(self, request):
         """ Returns rendered view """
@@ -70,6 +86,7 @@ class BaseModal(object):
         self.create_form()
         form_template = 'partial/' + self.form_name + '_form.html'
         self.is_new = not bool(self.id)
+        self._permission_check()
         if request.method == 'POST':
             template = form_template
             if self.form.is_valid():
@@ -114,14 +131,18 @@ class BaseModal(object):
         self.request = request
         self.create_form()
         self.instance = get_object_or_404(self.form.Meta.model, pk=self.id)
+        self.permission_check('delete')
         self.instance.delete()
         self.trigger_event('delete')
         self.message('Deleted')
         return HttpResponse(json.dumps(self.data), content_type="application/json")
 
+    def permission_check(self, action):
+        return True
+
     def trigger_event(self, event):
         """ Triggers modal event """
-        event = 'on_%s_%s' % (event, self.form_name)
+        event = 'on_%s' % event
         try:
             callback = getattr(self, event)
             callback()
@@ -129,51 +150,86 @@ class BaseModal(object):
             pass
 
 
-class Modal(BaseModal):
-    definitions = {
-        'application': {
-            'form': ApplicationForm,
-            'parent': None, },
-        'environment': {
-            'form': EnvironmentForm,
-            'parent': 'application_id', },
-        'server': {
-            'form': ServerForm,
-            'parent': 'environment_id'},
-        'serverrole': {
-            'form': ServerRoleForm,
-            'parent': None},
-        'department': {
-            'form': DepartmentForm,
-            'parent': None}
-    }
-
+class BaseCoreModal(BaseModal):
     def get_form_creator(self):
         return core_create_form
 
-    def on_before_save_application(self):
+
+class DepartmentModal(BaseCoreModal):
+    form = DepartmentForm
+    form_name = 'department'
+
+    def permission_check(self, action):
+        if not self.request.user.is_superuser:
+            raise ModalPermissionException
+
+
+class ServerroleModal(BaseCoreModal):
+    form = ServerRoleForm
+    form_name = 'serverrole'
+
+    def permission_check(self, action):
+        if not self.request.user.has_perm('core.change_department', Department(id=self.request.current_department_id)):
+            raise ModalPermissionException
+
+    def on_before_save(self):
         instance = self.form.instance
         if not instance.id:
             instance.department_id = self.request.current_department_id
 
-    def on_before_save_serverrole(self):
+
+class ApplicationModal(BaseCoreModal):
+    form = ApplicationForm
+    form_name = 'application'
+
+    def permission_check(self, action):
+        if action == 'create':
+            if not self.request.user.has_perm('core.change_department', Department(id=self.request.current_department_id)):
+                raise ModalPermissionException
+        elif not self.request.user.has_perm('core.change_application', Application(id=self.id)):
+            raise ModalPermissionException
+
+    def on_before_save(self):
         instance = self.form.instance
         if not instance.id:
             instance.department_id = self.request.current_department_id
 
-    def on_create_application(self):
+    def on_create(self):
         self.data['action'] = 'redirect'
         self.data['target'] = self.instance.get_absolute_url()
 
-    def on_delete_application(self):
+    def on_delete(self):
         self.data['action'] = 'redirect'
         self.data['target'] = reverse('index')
 
-    def on_delete_environment(self):
+
+class EnvironmentModal(BaseCoreModal):
+    form = EnvironmentForm
+    form_name = 'environment'
+    parent = 'application_id'
+
+    def permission_check(self, action):
+        if action == 'create':
+            if not self.request.user.has_perm('core.change_application', Application(id=self.parent_id)):
+                raise ModalPermissionException
+        elif not self.request.user.has_perm('core.change_environment', Environment(id=self.id)):
+            raise ModalPermissionException
+
+    def on_delete(self):
         self.data['action'] = 'redirect'
         self.data['target'] = self.instance.application.get_absolute_url()
 
-    def on_view_server(self):
+
+class ServerModal(BaseCoreModal):
+    form = ServerForm
+    form_name = 'server'
+    parent = 'environment_id'
+
+    def permission_check(self, action):
+        if not self.request.user.has_perm('core.change_environment', Environment(id=self.parent_id)):
+            raise ModalPermissionException
+
+    def on_view(self):
         from backend.tasks import read_public_key
         try:
             self.data['pubkey'] = read_public_key.delay(self.form.instance.environment_id).get()
@@ -182,16 +238,12 @@ class Modal(BaseModal):
         if not self.is_new:
             self.form.fields['password'].help_text = "Leave blank if not changing"
 
-    def on_create_server(self):
-        self.on_update_server()
+    def on_create(self):
+        self.on_update()
 
-    def on_update_server(self):
+    def on_update(self):
         from backend.tasks import SaveServerAuthenticationData
         SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
 
-    def on_form_create_server(self):
+    def on_form_create(self):
         self.form.fields['roles'].queryset = ServerRole.objects.filter(department_id=self.request.current_department_id)
-
-    def on_create_department(self):
-        for serverrole in ['app', 'db', 'cache']:
-            ServerRole(name=serverrole, department=self.instance).save()

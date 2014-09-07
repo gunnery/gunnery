@@ -62,9 +62,6 @@ class SettingsManagerTest(SettingsTest):
         self.assertContains(response, 'Create')
 
     def test_department_serverroles(self):
-        response = self.client.get('/settings/department/serverroles/')
-        self.assertContains(response, 'No roles yet.')
-
         server_role = ServerRoleFactory(department=self.department)
         response = self.client.get('/settings/department/serverroles/')
         self.assertContains(response, server_role.name)

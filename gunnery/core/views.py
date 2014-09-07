@@ -186,7 +186,7 @@ def _settings_system_departments(request, data):
 def _settings_system_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
     data['users'] = get_user_model().objects.exclude(id=-1).order_by('name')
-    data['form_name'] = 'user_system'
+    data['form_name'] = 'usersystem'
     return data
 
 

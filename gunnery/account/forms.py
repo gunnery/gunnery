@@ -96,7 +96,7 @@ def account_create_form(name, request, id, args={}):
     form_objects = {
         'group': DepartmentGroupForm,
         'user': UserForm,
-        'user_system': UserSystemForm,
+        'usersystem': UserSystemForm,
         'user_profile': UserProfileForm,
         'user_password': UserPasswordForm
     }
