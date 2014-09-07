@@ -226,7 +226,12 @@ class ServerModal(BaseCoreModal):
     parent = 'environment_id'
 
     def permission_check(self, action):
-        if not self.request.user.has_perm('core.change_environment', Environment(id=self.parent_id)):
+        if self.parent_id:
+            environment = Environment(id=self.parent_id)
+        else:
+            server = get_object_or_404(self.form.Meta.model, pk=self.id)
+            environment = server.environment
+        if not self.request.user.has_perm('core.change_environment', environment):
             raise ModalPermissionException
 
     def on_view(self):
