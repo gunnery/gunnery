@@ -91,6 +91,8 @@ pre {
 .side-nav {
     overflow: hidden;
     background-color: #1e2933;
+    left:0;
+    margin-left:0;
 }
 
 .side-nav ul {
