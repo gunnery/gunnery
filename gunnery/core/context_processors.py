@@ -1,5 +1,4 @@
 from guardian.shortcuts import get_objects_for_user
-from core.models import Application
 
 
 def sidebar(request):

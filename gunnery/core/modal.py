@@ -66,7 +66,7 @@ class BaseModal(object):
     def create_form(self):
         """ Returns form object """
         self.form = self.get_form_creator()(self.form_name, self.request, self.id, self.get_form_args())
-        self.trigger_event('form_create')
+        self.on_form_create()
 
     def get_form_args(self):
         args = {}
@@ -89,25 +89,9 @@ class BaseModal(object):
         self._permission_check()
         if request.method == 'POST':
             template = form_template
-            if self.form.is_valid():
-                try:
-                    self.trigger_event('before_save')
-                    self.instance = self.form.save()
-
-                    if self.is_new:
-                        self.trigger_event('create')
-                        self.message('Created')
-                    else:
-                        self.trigger_event('update')
-                        self.message('Saved')
-                    return HttpResponse(json.dumps(self.data), content_type="application/json")
-                except IntegrityError as e:
-                    from django.forms.util import ErrorList
-
-                    errors = self.form._errors.setdefault("__all__", ErrorList())
-                    errors.append('Integrity error')
-                    errors.append(e)
-
+            result = self.save_form()
+            if result:
+                return result
         else:
             template = 'partial/modal_form.html'
         self.data = {
@@ -118,8 +102,28 @@ class BaseModal(object):
             'model_name': self.form.Meta.model.__name__,
             'request_path': request.path
         }
-        self.trigger_event('view')
+        self.on_view()
         return render(request, template, self.data)
+
+    def save_form(self):
+        if self.form.is_valid():
+            try:
+                self.on_before_save()
+                self.instance = self.form.save()
+
+                if self.is_new:
+                    self.on_create()
+                    self.message('Created')
+                else:
+                    self.on_update()
+                    self.message('Saved')
+                return HttpResponse(json.dumps(self.data), content_type="application/json")
+            except IntegrityError as e:
+                from django.forms.util import ErrorList
+
+                errors = self.form._errors.setdefault("__all__", ErrorList())
+                errors.append('Integrity error')
+                errors.append(e)
 
     def message(self, message):
         """ Add session message
@@ -133,21 +137,30 @@ class BaseModal(object):
         self.instance = get_object_or_404(self.form.Meta.model, pk=self.id)
         self.permission_check('delete')
         self.instance.delete()
-        self.trigger_event('delete')
+        self.on_delete()
         self.message('Deleted')
         return HttpResponse(json.dumps(self.data), content_type="application/json")
 
     def permission_check(self, action):
         return True
 
-    def trigger_event(self, event):
-        """ Triggers modal event """
-        event = 'on_%s' % event
-        try:
-            callback = getattr(self, event)
-            callback()
-        except AttributeError:
-            pass
+    def on_before_save(self):
+        pass
+
+    def on_create(self):
+        pass
+
+    def on_update(self):
+        pass
+
+    def on_delete(self):
+        pass
+
+    def on_form_create(self):
+        pass
+
+    def on_view(self):
+        pass
 
 
 class BaseCoreModal(BaseModal):
