@@ -8,12 +8,12 @@ If your application is divided into multiple servers, you are probably connectin
 
 ### Features
 
-* **Support for wide variety of tools** <br>
+* **Support for a wide variety of tools** <br>
   Thanks to simple design it's possible to integrate with tools like capistrano, ant, phing, fabric, make, or puppet
 * **Designed for distributed systems** <br>
   Handles multi-environment applications with many servers
 * **Usable for deployment, service control, backups** <br>
-  Almost any command executed in shell can be turned into Gunnery task
+  Every command executed in shell can be turned into a Gunnery task
 * **Secure remote execution** <br>
   Certificate based authentication provides secure access to your network
 * **Web-based interface** <br>
