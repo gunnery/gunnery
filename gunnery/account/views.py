@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 import json
+from account.models import DepartmentGroup
 
 from task.models import Execution
 from core.models import Department
@@ -31,18 +32,21 @@ def on_before_save_user(instance):
     else:
         instance.password = get_user_model().objects.get(pk=instance.id).password
 
-@user_passes_test(lambda u: u.is_superuser)
-def modal_permissions(request, user_id):
-    user = get_object_or_404(get_user_model(), pk=user_id)
+def modal_permissions(request, group_id):
+    group = get_object_or_404(DepartmentGroup, pk=group_id)
+    department = Department.objects.get(pk=request.current_department_id)
+    if group.department_id != department.id:
+        return
+    if not request.user.has_perm('core.change_department', department):
+        return
     data = {}
-    data['user'] = user
+    data['group'] = group
     data['form_template'] = 'partial/permissions_form.html'
-    data['model_name'] = '%s permissions' % user.name
+    data['model_name'] = '%s group permissions' % group.local_name
     data['is_new'] = False
     data['no_delete'] = True
     data['request_path'] = request.path
-
-    data['departments'] = Department.objects.all()
+    data['applications'] = department.applications
 
     from core.models import Application, Environment
     from task.models import Task
@@ -54,15 +58,17 @@ def modal_permissions(request, user_id):
         'task': Task,
     }
     if request.method == 'POST':
-        from guardian.models import UserObjectPermission
+        from guardian.models import GroupObjectPermission
         from guardian.shortcuts import assign_perm
 
-        UserObjectPermission.objects.filter(user_id=user.id).delete()
+        GroupObjectPermission.objects.filter(group_id=group.id).delete()
+        assign_perm('core.view_department', group, group.department)
         for name, value in request.POST.items():
             key = name.split('_')
             if len(key) == 3 and value == 'on':
                 action, model, pk = key
-                assign_perm('%s_%s' % (action, model), user, models[model].objects.get(pk=pk))
+                assign_perm('%s_%s' % (action, model), group, models[model].objects.get(pk=pk))
         return HttpResponse(json.dumps({'status': True}), content_type="application/json")
     else:
         return render(request, 'partial/modal_form.html', data)
+

@@ -1,21 +1,34 @@
 {% load core_extras %}
+{% load guardian_tags %}
+{% get_obj_perms user for application as "application_perms" %}
+
 <h3>{% model_icon 'task' %} Tasks
+    {% if 'change_application' in application_perms %}
     <a href="{% url 'task_add_form_page' application_id=application.id %}" type="button" class="btn btn-default btn-xs"><i
-            class="fa fa-plus"></i></a></h3>
+            class="fa fa-plus"></i></a>
+    {% endif %}
+</h3>
 {% if application.tasks.count %}
     <div class="table-responsive">
         <table class="table table-hover tablesorter">
             <tbody>
             {% for task in application.tasks.all %}
+                {% if task in allowed_tasks %}
+                {% get_obj_perms user for task as "task_perms" %}
                 <tr>
                     <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
                     <td class="text-right">
-                        <a href="
-                                {% if environment %}{% url 'task_execute_page' task_id=task.id environment_id=environment.id %}{% else %}{% url 'task_execute_page' task_id=task.id %}{% endif %}"
+                        {% if 'execute_task' in task_perms %}
+                        <a href="{% if environment %}{% url 'task_execute_page' task_id=task.id environment_id=environment.id %}{% else %}{% url 'task_execute_page' task_id=task.id %}{% endif %}"
                            role="button" class="btn btn-default btn-xs"><i class="fa fa-bolt"></i> Execute</a>
+                        {% endif %}
+                        {% if 'change_task' in task_perms %}
                         <a href="{% url 'task_form_page' task_id=task.id %}" type="submit"
-                           class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a></td>
+                           class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
+                        {% endif %}
+                    </td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

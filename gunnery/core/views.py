@@ -7,10 +7,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404, redirect, render
+from guardian.decorators import permission_required
 
 from guardian.shortcuts import get_objects_for_user
 
-from account.decorators import has_permissions
+from account.models import DepartmentGroup
 from backend.tasks import TestConnectionTask
 from event.models import NotificationPreferences
 from .models import Application, Department, Environment, Server, ServerRole
@@ -27,14 +28,14 @@ def index(request):
     return render(request, 'page/index.html', data)
 
 
-@has_permissions('core.Application')
+@permission_required('core.view_application', (Application, 'id', 'application_id'))
 def application_page(request, application_id):
     data = {}
     data['application'] = get_object_or_404(Application, pk=application_id)
     return render(request, 'page/application.html', data)
 
 
-@has_permissions('core.Environment')
+@permission_required('core.view_environment', (Environment, 'id', 'environment_id'))
 def environment_page(request, environment_id):
     data = {}
     data['environment'] = get_object_or_404(Environment, pk=environment_id)
@@ -42,7 +43,7 @@ def environment_page(request, environment_id):
     return render(request, 'page/environment.html', data)
 
 
-@has_permissions('core.Server')
+@permission_required('core.view_environment', (Environment, 'servers__id', 'server_id'))
 def server_test(request, server_id):
     data = {}
     data['server'] = get_object_or_404(Server, pk=server_id)
@@ -81,7 +82,7 @@ def settings_page(request, section='user', subsection='profile'):
     handler = '_settings_%s_%s' % (section, subsection)
     if section == 'system' and request.user.is_superuser is not True:
         return redirect('index')
-    if section == 'department' and not request.user.has_perm('core.edit_department', obj=data['department']):
+    if section == 'department' and not request.user.has_perm('core.change_department', obj=data['department']):
         return redirect('index')
     if handler in globals():
         data = globals()[handler](request, data)
@@ -156,6 +157,14 @@ def _settings_department_users(request, data):
     from guardian.shortcuts import get_users_with_perms
     department = Department.objects.get(pk=request.current_department_id)
     data['users'] = get_users_with_perms(department).order_by('name')
+    data['department_user_list'] = True
+    data['form_name'] = 'user'
+    return data
+
+
+def _settings_department_groups(request, data):
+    data['subsection_template'] = 'partial/group_list.html'
+    data['groups'] = DepartmentGroup.objects.filter(department_id=request.current_department_id)
     return data
 
 
@@ -177,12 +186,20 @@ def _settings_system_departments(request, data):
 def _settings_system_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
     data['users'] = get_user_model().objects.exclude(id=-1).order_by('name')
+    data['form_name'] = 'usersystem'
     return data
 
 
-@has_permissions('core.Department')
 def department_switch(request, id):
     department = get_object_or_404(Department, pk=id)
     if request.user.has_perm('core.view_department', department):
         request.session['current_department_id'] = int(id)
+    else:
+        messages.error(request, 'Access forbidden')
+    return redirect('index')
+
+
+def handle_403(request):
+    print 'aaaaaaaa'
+    messages.error(request, 'Access forbidden')
     return redirect('index')

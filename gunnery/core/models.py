@@ -17,12 +17,11 @@ class Department(models.Model):
         ordering = ['name']
         permissions = (
         ("view_department", "Can view department"),
-        ("edit_department", "Can edit department"),
-        ("execute_department", "Can execute department"),
-        ("manage_department", "Can manage department"), )
+        ("execute_department", "Can execute department"), )
 
     def __unicode__(self):
         return self.name
+
 
 
 class Application(models.Model):
@@ -34,7 +33,6 @@ class Application(models.Model):
         unique_together = ("department", "name")
         permissions = (
         ("view_application", "Can view application"),
-        ("edit_application", "Can edit application"),
         ("execute_application", "Can execute tasks on application"), )
 
     def get_absolute_url(self):
@@ -65,7 +63,6 @@ class Environment(models.Model):
         unique_together = ("application", "name")
         permissions = (
         ("view_environment", "Can view environment"),
-        ("edit_environment", "Can edit environment"),
         ("execute_environment", "Can execute tasks on environment"), )
 
     def get_absolute_url(self):
@@ -116,6 +113,13 @@ class ServerRole(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @staticmethod
+    def on_create_department(sender, instance, created, **kwargs):
+        for server_role in ['app', 'db', 'cache']:
+            ServerRole(name=server_role, department=instance).save()
+
+post_save.connect(ServerRole.on_create_department, sender=Department)
 
 
 class Server(models.Model):

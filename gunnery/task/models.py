@@ -36,7 +36,6 @@ class Task(models.Model):
         unique_together = ("application", "name")
         permissions = (
         ("view_task", "Can view task"),
-        ("edit_task", "Can edit task"),
         ("execute_task", "Can execute task"), )
 
     def get_absolute_url(self):

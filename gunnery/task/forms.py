@@ -77,4 +77,4 @@ def task_create_form(name, request, id, args={}):
     form_objects = {
         'task': TaskForm,
     }
-    return create_form(form_objects, name, request, id, args)
+    return create_form(form_objects, name, request.POST, id, args)

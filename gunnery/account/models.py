@@ -1,9 +1,13 @@
+from django.conf import settings
+from django.db.models.signals import post_save
+from guardian.shortcuts import assign_perm
 from timezone_field import TimeZoneField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
+from task.models import Task
 
 
 class CustomUserManager(BaseUserManager):
@@ -68,3 +72,65 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     def email_user(self, subject, message, from_email=None):
         send_mail(subject, message, from_email, [self.email])
 
+
+from django.contrib.auth.models import Group
+from core.models import Department, Application, Environment
+
+
+class DepartmentGroup(Group):
+    department = models.ForeignKey(Department, related_name="groups")
+    local_name = models.CharField(max_length=124)
+    system_name = models.CharField(max_length=12)
+
+    class Meta:
+        ordering = ['name']
+
+    def save(self, *args, **kwargs):
+        self.name = "%s_%s" % (self.department_id, self.local_name)
+        super(DepartmentGroup, self).save(*args, **kwargs)
+
+    def assign_department_perms(self, department):
+        assign_perm('core.view_department', self, department)
+
+    @staticmethod
+    def on_create_department(sender, instance, created, **kwargs):
+        if created:
+            for system_name, group_name in settings.DEFAULT_DEPARTMENT_GROUPS.items():
+                group = DepartmentGroup(department=instance, local_name=group_name, system_name=system_name)
+                group.save()
+                DepartmentGroup.assign_department_perms(group, instance)
+                if system_name == 'admin':
+                    assign_perm('core.change_department', group, instance)
+
+    @staticmethod
+    def on_create_application(sender, instance, created, **kwargs):
+        if created:
+            DepartmentGroup._assign_default_perms('core', 'application', instance.department, instance)
+
+    @staticmethod
+    def on_create_environment(sender, instance, created, **kwargs):
+        if created:
+            DepartmentGroup._assign_default_perms('core', 'environment', instance.application.department, instance)
+
+    @staticmethod
+    def on_create_task(sender, instance, created, **kwargs):
+        if created:
+            DepartmentGroup._assign_default_perms('task', 'task', instance.application.department, instance)
+
+    @staticmethod
+    def _assign_default_perms(app, model, department, instance):
+        groups = DepartmentGroup.objects.filter(department=department, system_name__in=['user', 'admin'])
+        for group in groups:
+            for action in ['view', 'execute']:
+                assign_perm('%s.%s_%s' % (app, action, model), group, instance)
+            if group.system_name == 'admin':
+                assign_perm('%s.%s_%s' % (app, 'change', model), group, instance)
+
+    def __str__(self):
+        return self.local_name
+
+
+post_save.connect(DepartmentGroup.on_create_department, sender=Department)
+post_save.connect(DepartmentGroup.on_create_application, sender=Application)
+post_save.connect(DepartmentGroup.on_create_environment, sender=Environment)
+post_save.connect(DepartmentGroup.on_create_task, sender=Task)

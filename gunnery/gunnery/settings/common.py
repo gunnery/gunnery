@@ -169,3 +169,4 @@ LOGGING = {
 }
 
 EMAIL_NOTIFICATION = 'notification@gunnery'
+DEFAULT_DEPARTMENT_GROUPS = {'admin': 'Admin', 'user': 'User'}

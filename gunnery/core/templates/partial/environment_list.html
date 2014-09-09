@@ -1,26 +1,36 @@
 {% load core_extras %}
+{% load guardian_tags %}
+{% get_obj_perms user for application as "application_perms" %}
+
 <h3>{% model_icon 'environment' %} Environments
+    {% if 'change_application' in application_perms %}
     <button type="button" class="btn btn-default btn-xs"
             data-toggle="modal"
             data-remote="{% url 'modal_form' form_name='environment' id='' parent_name='application' parent_id=application.id %}"
             data-target="#large-modal">
         <i class="fa fa-plus"></i></button>
+    {% endif %}
 </h3>
 {% if application.environments.count %}
     <div class="table-responsive">
         <table class="table table-hover tablesorter">
             <tbody>
             {% for environment in application.environments.all %}
+                {% if environment in allowed_environments %}
                 <tr>
                     <td><a href="{{ environment.get_absolute_url }}">{{ environment.name }}</a></td>
                     <td class="text-right">
+                        {% get_obj_perms user for environment as "environment_perms" %}
+                        {% if 'change_environment' in environment_perms %}
                         <button type="submit" class="btn btn-default btn-xs"
                                 data-toggle="modal"
                                 data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}"
                                 data-target="#large-modal">
                             <i class="fa fa-edit"></i></button>
+                        {% endif %}
                     </td>
                 </tr>
+                {% endif %}
             {% endfor %}
             </tbody>
         </table>

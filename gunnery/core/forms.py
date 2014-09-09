@@ -86,16 +86,16 @@ class DepartmentForm(ModalForm):
         fields = ['name']
 
 
-def create_form(form_objects, name, request, id, args={}):
+def create_form(form_objects, name, request_data, id, args={}):
     """ Helper function for creating form object """
     if not name in form_objects:
         raise Http404()
     if id:
         instance = form_objects[name].Meta.model.objects.get(pk=id)
-        form = form_objects[name](request.POST or None, instance=instance)
+        form = form_objects[name](request_data or None, instance=instance)
     else:
         instance = form_objects[name].Meta.model(**args)
-        form = form_objects[name](request.POST or None, instance=instance)
+        form = form_objects[name](request_data or None, instance=instance)
     return form
 
 
@@ -108,4 +108,4 @@ def core_create_form(name, request, id, args={}):
         'serverrole': ServerRoleForm,
         'department': DepartmentForm
     }
-    return create_form(form_objects, name, request, id, args)
+    return create_form(form_objects, name, request.POST, id, args)

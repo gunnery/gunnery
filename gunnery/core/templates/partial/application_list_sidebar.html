@@ -8,7 +8,9 @@
                 </a>
                 <ul class="nav-environments">
                     {% for environment in application.environments.all %}
+                        {% if environment in allowed_environments %}
                         <li><a href="{{ environment.get_absolute_url }}">{{ environment.name }}</a></li>
+                        {% endif %}
                     {% endfor %}
                 </ul>
             </li>

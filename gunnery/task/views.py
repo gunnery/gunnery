@@ -1,4 +1,5 @@
 from django.conf import settings
+from guardian.shortcuts import get_objects_for_user
 import json
 from time import strptime
 from datetime import datetime
@@ -11,7 +12,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from account.decorators import has_permissions
+from guardian.decorators import permission_required
 
 from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
 from .models import (
@@ -19,15 +20,14 @@ from .models import (
     ParameterParser, ServerRole, Task)
 
 
-@has_permissions('task.Task')
+@permission_required('task.view_task', (Task, 'id', 'task_id'))
 def task_page(request, task_id=None):
     data = {}
     data['task'] = get_object_or_404(Task, pk=task_id)
     return render(request, 'page/task.html', data)
 
 
-@transaction.atomic
-@has_permissions('task.Task', 'task_id')
+@permission_required('task.execute_task', (Task, 'id', 'task_id'))
 def task_execute_page(request, task_id, environment_id=None):
     data = {}
     task = get_object_or_404(Task, pk=task_id)
@@ -58,27 +58,28 @@ def task_execute_page(request, task_id, environment_id=None):
                 form_errors.append('Task %s is already running on %s environment.' %
                                    (task.name, environment.name))
             else:
-                execution = Execution(task=task, environment=environment, user=request.user)
-                execution.save()
+                with transaction.atomic():
+                    execution = Execution(task=task, environment=environment, user=request.user)
+                    execution.save()
 
-                for name, value in parameters.items():
-                    if name != 'environment':
-                        ExecutionParameter(execution=execution, name=name, value=value).save()
+                    for name, value in parameters.items():
+                        if name != 'environment':
+                            ExecutionParameter(execution=execution, name=name, value=value).save()
 
-                parameter_parser = ParameterParser(execution)
-                for command in execution.commands.all():
-                    command.command = parameter_parser.process(command.command)
-                    command.save()
+                    parameter_parser = ParameterParser(execution)
+                    for command in execution.commands.all():
+                        command.command = parameter_parser.process(command.command)
+                        command.save()
                 execution.start()
                 return redirect(execution)
         else:
             form_errors.append('Environment is required')
     data['form_errors'] = form_errors
+    data['environments'] = get_objects_for_user(request.user, 'core.execute_environment').filter(
+        application=task.application)
     return render(request, 'page/task_execute.html', data)
 
 
-@has_permissions('core.Application', 'application_id')
-@has_permissions('task.Task', 'task_id')
 def task_form_page(request, application_id=None, task_id=None):
     data = {}
     if task_id:
@@ -86,9 +87,15 @@ def task_form_page(request, application_id=None, task_id=None):
         application = task.application
         data['task'] = task
         args = {}
+        if not request.user.has_perm('task.change_task', task):
+            messages.error(request, 'Access denied')
+            return redirect('index')
     elif application_id:
         application = get_object_or_404(Application, pk=application_id)
         args = {'application_id': application_id}
+        if not request.user.has_perm('core.change_application', application):
+            messages.error(request, 'Access denied')
+            return redirect('index')
     form, form_parameters, form_commands = create_forms(request, task_id, args)
 
     if request.method == 'POST':
@@ -181,7 +188,7 @@ def log_page(request, model_name, id):
     return render(request, 'page/log.html', data)
 
 
-@has_permissions('task.Execution')
+@permission_required('task.view_task', (Task, 'executions__id', 'execution_id'))
 def execution_page(request, execution_id):
     data = {}
     execution = get_object_or_404(Execution, pk=execution_id)
@@ -189,7 +196,7 @@ def execution_page(request, execution_id):
     return render(request, 'page/execution.html', data)
 
 
-@has_permissions('task.Task')
+@permission_required('task.change_task', (Task, 'id', 'task_id'))
 def task_delete(request, task_id):
     if request.method != 'POST':
         return Http404
@@ -203,7 +210,7 @@ def task_delete(request, task_id):
     return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-@has_permissions('task.Execution', 'execution_id')
+@permission_required('task.view_task', (Task, 'executions__id', 'execution_id'))
 def live_log(request, execution_id, last_id):
     data = ExecutionLiveLog.objects.filter(execution_id=execution_id, id__gt=last_id).order_by('id').values('id',
                                                                                                             'event',
@@ -219,7 +226,7 @@ def live_log(request, execution_id, last_id):
     return HttpResponse(json.dumps(list(data), cls=DjangoJSONEncoder), content_type="application/json")
 
 
-@has_permissions('task.Execution', 'execution_id')
+@permission_required('task.execute_task', (Task, 'executions__id', 'execution_id'))
 def execution_abort(request, execution_id):
     # if request.method != 'POST':
     #     return Http404

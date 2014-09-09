@@ -16,27 +16,20 @@
             <table class="table table-hover tablesorter">
                 <tbody>
                 {% for luser in users %}
-                    {% if department %}
+                    {% if department_user_list %}
                         {% get_obj_perms luser for department as "department_perms" %}
                     {% endif %}
                     <tr>
                         <td><a href="{{ luser.get_absolute_url }}">{{ luser.get_full_name }}</a>
-                            {% if luser.is_superuser %}<span class="label label-default">admin</span>{% endif %}
-                            {% if department and "edit_department" in department_perms %}
-                                <span class="label label-default">manager</span>
+                            {% if luser.is_superuser %}<span class="label label-default">superuser</span>{% endif %}
+                            {% if department_user_list and "change_department" in department_perms %}
+                                <span class="label label-default">admin</span>
                             {% endif %}
                         </td>
                         <td class="text-right">
-                            {% if user.is_superuser %}
                             <button type="submit" class="btn btn-default btn-xs"
                                     data-toggle="modal"
-                                    data-remote="{% url 'modal_permissions' user_id=luser.id %}"
-                                    data-target="#large-modal">
-                                <i class="fa fa-lock"></i></button>
-                            {% endif %}
-                            <button type="submit" class="btn btn-default btn-xs"
-                                    data-toggle="modal"
-                                    data-remote="{% url 'modal_form' app='account' form_name='user' id=luser.id %}"
+                                    data-remote="{% url 'modal_form' app='account' form_name=form_name id=luser.id %}"
                                     data-target="#large-modal">
                                 <i class="fa fa-edit"></i></button>
                         </td>

@@ -1,10 +1,15 @@
 {% load core_extras %}
+{% load guardian_tags %}
+{% get_obj_perms user for environment as "environment_perms" %}
+
 <h3>{% model_icon 'server' %} Servers
+    {% if 'change_environment' in environment_perms %}
     <button type="button" class="btn btn-default btn-xs"
             data-toggle="modal"
             data-remote="{% url 'modal_form' form_name='server' id='' parent_name='environment' parent_id=environment.id %}"
             data-target="#large-modal">
         <i class="fa fa-plus"></i></button>
+    {% endif %}
 </h3>
 {% if servers %}
     <div class="table-responsive">
@@ -19,17 +24,21 @@
                         {% endfor %}
                     </td>
                     <td class="text-right">
+                        {% if 'execute_environment' in environment_perms %}
                         <button type="submit" class="btn btn-default btn-xs"
                                 data-toggle="modal"
                                 data-remote="{% url 'server_test' server_id=server.id %}"
                                 data-target="#large-modal"
                                 title="Test connection with server">
                             <i class="fa fa-play-circle"></i></button>
+                        {% endif %}
+                        {% if 'change_environment' in environment_perms %}
                         <button type="submit" class="btn btn-default btn-xs"
                                 data-toggle="modal"
                                 data-remote="{% url 'modal_form' form_name='server' id=server.id %}"
                                 data-target="#large-modal">
                             <i class="fa fa-edit"></i></button>
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

@@ -1,0 +1,45 @@
+{% load core_extras %}
+{% load guardian_tags %}
+
+<div class="row">
+    <div class="col col-sm-offset-1 col-sm-9 col-md-offset-3 col-md-6 col-lg-offset-3 col-lg-6 ">
+        <button type="button" class="btn btn-default btn-sm pull-right"
+                data-toggle="modal"
+                data-remote="{% url 'modal_form' app='account' form_name='group' %}"
+                data-target="#large-modal">
+            <i class="fa fa-plus"></i> Create
+        </button>
+        <br/>
+        <br/>
+
+        <div class="table-responsive">
+            <table class="table table-hover tablesorter">
+                <tbody>
+                {% for group in groups %}
+                    <tr>
+                        <td>
+                            {{ group.local_name }}
+                        </td>
+                        <td class="text-right">
+                        {% if not group.system_name == 'admin' %}
+                            <button type="submit" class="btn btn-default btn-xs"
+                                    data-toggle="modal"
+                                    data-remote="{% url 'modal_permissions' group_id=group.id %}"
+                                    data-target="#large-modal">
+                                <i class="fa fa-lock"></i></button>
+                        {% if not group.system_name == 'user' %}
+                            <button type="submit" class="btn btn-default btn-xs"
+                                    data-toggle="modal"
+                                    data-remote="{% url 'modal_form' app='account' form_name='group' id=group.id %}"
+                                    data-target="#large-modal">
+                                <i class="fa fa-edit"></i></button>
+                        {% endif %}
+                        {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

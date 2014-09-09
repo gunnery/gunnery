@@ -1,32 +1,5 @@
 [
     {
-        "model": "core.ServerRole",
-        "pk": 1,
-        "fields": {
-            "name": "app",
-            "department": 1
-        }
-    },
-
-    {
-        "model": "core.ServerRole",
-        "pk": 2,
-        "fields": {
-            "name": "db",
-            "department": 1
-        }
-    },
-
-    {
-        "model": "core.ServerRole",
-        "pk": 3,
-        "fields": {
-            "name": "cache",
-            "department": 1
-        }
-    },
-
-    {
         "model": "core.Department",
         "pk": 1,
         "fields": {
