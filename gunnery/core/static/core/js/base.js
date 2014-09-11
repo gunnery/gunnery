@@ -3,11 +3,13 @@ $('.execution-list-inline .well').click(function (event) {
 });
 
 $(document.body).on('hidden.bs.modal', function () {
-    $('#large-modal').removeData('bs.modal')
+    $('#large-modal').removeData('bs.modal').find('.modal-body').html('');
 });
 
 $(document.body).on('shown.bs.modal', function () {
-    $('#large-modal').find('.form-group input,.form-group select,.form-group textarea').first().focus();
+    setTimeout(function() {
+        $('#large-modal').find('.form-group input,.form-group select,.form-group textarea').first().focus();
+    }, 200);
 });
 
 (function ($) {
