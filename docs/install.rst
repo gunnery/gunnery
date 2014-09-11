@@ -3,6 +3,14 @@ Installation
 
 Instructions on this page will guide you through installation process. You can choose to use puppet tool or setup everything manually.
 
+Dependencies
+~~~~~~~~~~~~
+
+Supported python version is 2.7, below is the list of packages required to run project:
+
+.. include:: ../requirements/common.txt
+   :literal:
+
 Provisioning with Puppet
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -122,8 +130,8 @@ Optionally you can build html documentation with command: ::
     cd /var/gunnery/docs
     make htmlembedded
 
-Install Messaging Queue
------------------------
+Install RabbitMQ
+----------------
 
 Celery requires a messaging queue for its operation, RabbitMQ being the
 recommended option. Refer to the Celery documentation for information

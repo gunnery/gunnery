@@ -36,21 +36,25 @@ First steps
 Follow below steps to execute first command.
 
 1. Create application
-   - Go to Settings > Applications > Create
-   - After creating application you will be redirected to the new page, it will contain 2 empty lists of environments and tasks.
+  * Go to Settings > Applications > Create
+  * After creating application you will be redirected to the new page, it will contain 2 empty lists of environments and tasks.
+
 2. Create environment
-   - Environment is used to group servers. Create first env by clicking + and entering name eg. test.
+  * Environment is used to group servers. Create first env by clicking + and entering name eg. test.
+
 3. Create server
-   - fill all required fields
-   - select app role
-   - copy provided SSH public key to target servers' ~/.ssh/authorized_keys file.
+  * fill all required fields
+  * select app role
+  * copy provided SSH public key to target servers' ~/.ssh/authorized_keys file.
+
 4. Create task
-   - enter name of new command eg. process-list
-   - first command eg. ps
-   - assign role app to this command
-   - save
+  * enter name of new command eg. process-list
+  * first command eg. ps
+  * assign role app to this command
+  * save
+
 5. Execute task
-   - go to application page
-   - click execute button located next to process-list task
-   - click executed
-   - you will see list of processes on target server
+  * go to application page
+  * click execute button located next to process-list task
+  * click executed
+  * you will see list of processes on target server

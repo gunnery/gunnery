@@ -11,7 +11,7 @@ Gunnery is open source project managed using Git and hosted on Github.
 Setup Vagrant environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Project repository contains Vagrantfile configuration and Puppet provisioning manifests.
+Project repository contains Vagrant configuration and Puppet provisioning manifests.
 
 Puppet rules will install and configure, everything you need to start working on gunnery:
 
@@ -72,8 +72,8 @@ To print test coverage report:
     coverage run --source='.' manage.py test --settings=gunnery.settings.test
     coverage report
 
-Create pull requests
-~~~~~~~~~~~~~~~~~~~~
+Create pull request
+~~~~~~~~~~~~~~~~~~~
 
 Please note the following guidelines for contributing:
 

@@ -35,8 +35,6 @@ extensions = [
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
-if IS_EMBEDDED:
-    templates_path.append('_templates_embedded')
 
 # The suffix of source filenames.
 source_suffix = '.rst'
@@ -262,3 +260,6 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+if IS_EMBEDDED:
+    templates_path.append('_templates_embedded')
