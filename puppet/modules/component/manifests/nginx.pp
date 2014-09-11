@@ -24,14 +24,16 @@ class component::nginx {
   }
 
   $vhost_path = "/etc/nginx/sites-available/${domain_name}"
+  $cache_headers_enable = $::environment == 'production'
+  $gzip_enable = $::environment == 'production'
+  $static_only_collected = $::environment == 'production'
   file { 'django available config':
     path => $vhost_path,
     ensure => file,
     content => template("component/nginx.django.conf.erb"),
     require => Package['nginx'],
     notify => Service['nginx']
-  }
-  
+  } ->
   file { 'django enable config':
     path => "/etc/nginx/sites-enabled/${domain_name}",
     ensure => link,

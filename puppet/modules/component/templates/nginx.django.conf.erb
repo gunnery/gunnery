@@ -13,8 +13,26 @@ server {
 
         location /static/ {
                 sendfile off;
-                root <%= @app_path %>/;
-                try_files $uri /core$uri /task$uri /gunnery$uri /404;
+                alias <%= @app_path %>/;
+
+                <% if @static_only_collected %>
+                try_files /<%= @app_name %>$uri /404;
+                <% else %>
+                try_files $uri /core$uri /static$uri /<%= @app_name %>$uri /404;
+                <% end %>
+
+                <% if @gzip_enable %>
+                gzip on;
+                gzip_min_length 1100;
+                gzip_buffers 4 32k;
+                gzip_types text/plain application/x-javascript text/xml text/css;
+                gzip_vary on;
+                <% end %>
+
+                <% if @cache_headers_enable %>
+                expires 30d;
+                add_header Cache-Control "public";
+                <% end %>
         }
 
         error_page 502 /502.html;
