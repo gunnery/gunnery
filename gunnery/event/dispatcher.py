@@ -69,6 +69,7 @@ class EventHandler(object):
 
     def process(self, event):
         self.event = event
+        print len(self.subscribe_to) == 0 or self.event.type in self.subscribe_to
         if len(self.subscribe_to) == 0 or self.event.type in self.subscribe_to:
             self._process(event)
 
@@ -117,6 +118,10 @@ class UserNotificationHandler(EventHandler):
         application_content_type = ContentType.objects.get_for_model(Application)
         from backend.tasks import SendEmailTask
         for user in users:
+            if not user.has_perm('core.view_environment', event.execution.environment):
+                continue
+            if not user.has_perm('task.view_task', event.execution.task):
+                continue
             notification_preference = user.notifications.filter(content_type=application_content_type.id,
                                                                 object_id=event.execution.environment.application_id,
                                                                 event_type=event.type).first()

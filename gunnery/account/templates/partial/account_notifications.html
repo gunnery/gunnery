@@ -23,12 +23,7 @@
                             <th class="text-center">Email</th>
                         </tr>
                     </thead>
-                    {% for department in departments %}
-                        <tr>
-                            <td>{{ department.name }}</td>
-                            <td></td>
-                        </tr>
-                        {% for application in department.applications.all %}
+                        {% for application in applications %}
                             <tr>
                                 <td class="application">{{ application.name }}</td>
                                 <td class="text-center">
@@ -37,7 +32,6 @@
                                 </td>
                             </tr>
                         {% endfor %}
-                    {% endfor %}
                 </table>
             </div>
 

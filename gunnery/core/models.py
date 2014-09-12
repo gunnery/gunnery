@@ -43,15 +43,6 @@ class Application(models.Model):
 
         return Execution.get_inline_by_application(self.id)
 
-    @staticmethod
-    def create_notifications(sender, instance, created, **kwargs):
-        """ Set new notifications for all users from same department
-        """
-        if created:
-            from event.models import NotificationPreferences
-            NotificationPreferences.initialize_for_all_users(instance.department_id, 'ExecutionFinish', instance)
-post_save.connect(Application.create_notifications, sender=Application)
-
 
 class Environment(models.Model):
     name = models.CharField(blank=False, max_length=128, validators=[gunnery_name()])

@@ -122,20 +122,19 @@ def _settings_account_password(request, data):
 
 def _settings_account_notifications(request, data):
     data['subsection_template'] = 'partial/account_notifications.html'
+    data['applications'] = get_objects_for_user(request.user, 'core.view_application')
     content_type = ContentType.objects.get_for_model(Application)
     if request.method == 'POST':
-        departments = get_objects_for_user(request.user, 'core.view_department')
-        for department in departments:
-            for application in department.applications.all():
-                key = 'notification[%s]' % application.id
-                notification, created = NotificationPreferences.objects.get_or_create(
-                    user=request.user,
-                    event_type='ExecutionFinish',
-                    content_type=content_type,
-                    object_id=application.id)
-                if notification.is_active != (key in request.POST):
-                    notification.is_active = key in request.POST
-                    notification.save()
+        for application in data['applications']:
+            key = 'notification[%s]' % application.id
+            notification, created = NotificationPreferences.objects.get_or_create(
+                user=request.user,
+                event_type='ExecutionFinish',
+                content_type=content_type,
+                object_id=application.id)
+            if notification.is_active != (key in request.POST):
+                notification.is_active = key in request.POST
+                notification.save()
         messages.success(request, 'Saved')
     data['notifications'] = NotificationPreferences.objects.filter(
         user=request.user,
