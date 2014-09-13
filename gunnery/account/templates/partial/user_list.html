@@ -16,15 +16,12 @@
             <table class="table table-hover tablesorter">
                 <tbody>
                 {% for luser in users %}
-                    {% if department_user_list %}
-                        {% get_obj_perms luser for department as "department_perms" %}
-                    {% endif %}
                     <tr>
                         <td><a href="{{ luser.get_absolute_url }}">{{ luser.get_full_name }}</a>
                             {% if luser.is_superuser %}<span class="label label-default">superuser</span>{% endif %}
-                            {% if department_user_list and "change_department" in department_perms %}
-                                <span class="label label-default">admin</span>
-                            {% endif %}
+                            {% for group in luser.groups.all %}
+                                <span class="label label-default">{% if not department_user_list %}{{ group.departmentgroup.department }} - {% endif %}{{ group.departmentgroup.local_name }}</span>
+                            {% endfor %}
                         </td>
                         <td class="text-right">
                             <button type="submit" class="btn btn-default btn-xs"

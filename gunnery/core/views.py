@@ -155,7 +155,7 @@ def _settings_department_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
     from guardian.shortcuts import get_users_with_perms
     department = Department.objects.get(pk=request.current_department_id)
-    data['users'] = get_users_with_perms(department).order_by('name')
+    data['users'] = get_users_with_perms(department).prefetch_related('groups__departmentgroup').order_by('name')
     data['department_user_list'] = True
     data['form_name'] = 'user'
     return data
@@ -184,7 +184,7 @@ def _settings_system_departments(request, data):
 @user_passes_test(lambda u: u.is_superuser)
 def _settings_system_users(request, data):
     data['subsection_template'] = 'partial/user_list.html'
-    data['users'] = get_user_model().objects.exclude(id=-1).order_by('name')
+    data['users'] = get_user_model().objects.exclude(id=-1).prefetch_related('groups__departmentgroup__department').order_by('name')
     data['form_name'] = 'usersystem'
     return data
 
