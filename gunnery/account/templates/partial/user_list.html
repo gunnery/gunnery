@@ -18,7 +18,7 @@
                 {% for luser in users %}
                     <tr>
                         <td><a href="{{ luser.get_absolute_url }}">{{ luser.get_full_name }}</a>
-                            {% if luser.is_superuser %}<span class="label label-default">superuser</span>{% endif %}
+                            {% if luser.is_superuser %}<span class="label label-default label-primary">superuser</span>{% endif %}
                             {% for group in luser.groups.all %}
                                 <span class="label label-default">{% if not department_user_list %}{{ group.departmentgroup.department }} - {% endif %}{{ group.departmentgroup.local_name }}</span>
                             {% endfor %}
