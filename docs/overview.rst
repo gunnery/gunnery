@@ -26,3 +26,6 @@ Features
     User notifications
         Team members will be notified when tasks are executed
 
+    Permission system
+        Create custom user groups and limit their access to specific environments or tasks
+

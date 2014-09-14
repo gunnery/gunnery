@@ -6,6 +6,7 @@
 
 - Extend permission system by adding user groups
 - Code refactoring of modal windows
+- Improved test coverage to 69%
 
 #### Upgrading
 

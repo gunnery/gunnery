@@ -20,6 +20,8 @@ If your application is divided into multiple servers, you are probably connectin
   Clear, responsive interface pleases eye and enables usage on mobile devices
 * **User notifications** <br>
   Team members will be notified when tasks are executed
+* **Permission system** <br>
+  Create custom user groups and limit their access to specific environments or tasks
 
 ### Screenshots
 
