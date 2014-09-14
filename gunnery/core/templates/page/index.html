@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load task_extras %}
 {% load staticfiles %}
 
 {% block page_scripts %}
@@ -12,7 +13,8 @@
                 {% model_icon 'application' %}
                 <a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
             </h3>
-            {% include "partial/execution_list_inline.html" with notitle=True list=application.executions_inline %}
+
+            {% last_activity_bar related_to=application no_title=True %}
 
             <div class="row">
             {% for environment in application.environments.all %}

@@ -1,9 +1,9 @@
 {% load core_extras %}
 {% load humanize %}
 
-{% if not notitle and list|length > 0 %}
+{% if not no_title and list|length > 0 %}
     <h3>Activity
-        <small class="pull-right"><a href="{% url 'log' model_name=model_name id=id %}"><span class="text-muted">View full history</span></a>
+        <small class="pull-right"><a href="{% url 'log' model_name=model_name id=related_to.id %}"><span class="text-muted">View full history</span></a>
         </small>
     </h3>
 {% else %}

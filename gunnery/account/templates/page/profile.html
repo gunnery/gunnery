@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load task_extras %}
 
 {% block content %}
     <h1>{% model_icon 'user' %} {{ user_profile.get_full_name }}</h1>
@@ -9,6 +10,6 @@
         <li class="active">{% model_icon 'user' %} {{ user_profile.get_full_name }}</li>
     </ol>
 
-    {% include "partial/execution_list_inline.html" with list=user_executions model_name='user' id=user_profile.id %}
+    {% last_activity_bar related_to=user %}
 
 {% endblock %}

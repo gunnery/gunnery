@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load core_extras %}
+{% load task_extras %}
 {% load guardian_tags %}
 
 {% block content %}
@@ -28,7 +29,7 @@
         <li class="active">{% model_icon 'environment' %} {{ environment.name }}</li>
     </ol>
 
-    {% include "partial/execution_list_inline.html" with list=environment.executions_inline model_name='environment' id=environment.id %}
+    {% last_activity_bar related_to=environment %}
 
     <div class="row">
         <div class="col-md-6">
