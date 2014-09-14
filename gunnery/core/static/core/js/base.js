@@ -56,6 +56,11 @@ $(document.body).on('shown.bs.modal', function () {
     $('body').on('click', '.modal .delete', modalDeleteHandler);
 })(jQuery);
 
+function updateSideBarHeight() {
+    document.querySelector('style').textContent +=
+        "@media screen and (min-width:769px) { .side-nav { height: "+$(document).height()+"px; }}";
+}
+
 (function ($) {
     $('#department-select').change(function () {
         window.location = window.location.origin + '/department/switch/' + this.value;
@@ -64,6 +69,7 @@ $(document.body).on('shown.bs.modal', function () {
     $('#settings-opener').click(function(e){
         e.preventDefault();
         $('#settings-submenu').toggleClass('hide');
+        updateSideBarHeight();
     })
 
     $('.sessionMessageWrap div').addClass('show').each(function(i, e){
@@ -75,6 +81,3 @@ $(document.body).on('shown.bs.modal', function () {
         $(this).removeClass('show');
     });
 })(jQuery);
-
-document.querySelector('style').textContent +=
-    "@media screen and (min-width:769px) { .side-nav { height: "+$(document).height()+"px; }}";
