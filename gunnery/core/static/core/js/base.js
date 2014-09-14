@@ -62,6 +62,7 @@ $(document.body).on('shown.bs.modal', function () {
     });
 
     $('#settings-opener').click(function(e){
+        e.preventDefault();
         $('#settings-submenu').toggleClass('hide');
     })
 
@@ -74,3 +75,6 @@ $(document.body).on('shown.bs.modal', function () {
         $(this).removeClass('show');
     });
 })(jQuery);
+
+document.querySelector('style').textContent +=
+    "@media screen and (min-width:769px) { .side-nav { height: "+$(document).height()+"px; }}";

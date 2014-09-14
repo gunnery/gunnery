@@ -29,7 +29,7 @@ pre {
 
 .navbar-collapse {
     padding: 0;
-    margin-top: 50px;
+    max-height: none;
 }
 
 .navbar-brand {
@@ -90,7 +90,6 @@ pre {
 }
 
 .side-nav {
-    overflow: hidden;
     background-color: #1e2933;
     left:0;
     margin-left:0;

@@ -102,13 +102,12 @@ table.tablesorter thead tr th:hover {
 	margin-left: -225px;
 	left: 225px;
 	width: 225px;
-	position: fixed;
+	position: absolute;
 	top: 50px;
 	height: 100%;
 	border-radius: 0;
 	border: none;
 	background-color: #222222;
-	overflow-y: auto;
   }
 
   /* Bootstrap Default Overrides - Customized Dropdowns for the Side Nav */
