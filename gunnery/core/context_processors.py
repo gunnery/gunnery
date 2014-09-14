@@ -9,7 +9,8 @@ def sidebar(request):
     department = departments.filter(id=current_department_id).first()
     return {
         'departments': departments,
-        'application_list_sidebar': get_objects_for_user(request.user, 'core.view_application').filter(department_id=current_department_id),
+        'application_list_sidebar': get_objects_for_user(request.user, 'core.view_application').
+            prefetch_related('environments').filter(department_id=current_department_id),
         'allowed_environments': get_objects_for_user(request.user, 'core.view_environment'),
         'allowed_tasks': get_objects_for_user(request.user, 'task.view_task'),
         'current_department_id': current_department_id,

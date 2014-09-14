@@ -21,7 +21,6 @@ from task.models import Execution
 @login_required
 def index(request):
     data = {}
-    data['application_list'] = Application.objects.filter(department_id=request.current_department_id).prefetch_related('environments')
     executions = Execution.objects.filter(task__application__department_id=request.current_department_id)
     if not executions.count():
         return redirect(reverse('first_steps_page'))
