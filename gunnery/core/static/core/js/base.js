@@ -60,6 +60,7 @@ function updateSideBarHeight() {
     document.querySelector('style').textContent +=
         "@media screen and (min-width:769px) { .side-nav { height: "+$(document).height()+"px; }}";
 }
+updateSideBarHeight();
 
 (function ($) {
     $('#department-select').change(function () {
