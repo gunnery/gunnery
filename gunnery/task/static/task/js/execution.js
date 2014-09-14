@@ -1,4 +1,4 @@
-(function ($) {
+var ExecutionModule = (function($){
     var handlers = {
         command_output: function (data) {
             var el = $('.server[data-command-server-id="' + data.command_server_id + '"] pre');
@@ -74,4 +74,6 @@
             headers: {"X-CSRFToken": csrftoken}
         });
     });
+
+    return {};
 })(jQuery);

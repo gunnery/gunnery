@@ -1,4 +1,4 @@
-(function ($) {
+var TaskFormModule = (function($){
     function taskAjaxHandler(form) {
         return function (data, status, response) {
             var contentType = response.getResponseHeader('Content-Type');
@@ -22,9 +22,6 @@
             $.post(form.attr('action'), form.serialize(), taskAjaxHandler(form));
         }
     }
-
-    $('form .delete').click(taskDeleteHandler);
-
 
     $.fn.subformMultiple = function () {
         function onRowChange(el) {
@@ -90,4 +87,11 @@
         });
     };
     $('.subform-multiple').subformMultiple();
+
+    $('form .delete').click(taskDeleteHandler);
+    $('[data-toggle="element"]').click(function (event) {
+        $($(this).data('target')).toggleClass('hide');
+    });
+
+    return {};
 })(jQuery);
