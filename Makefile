@@ -1,7 +1,7 @@
 PYTHONBIN=python
 APP=gunnery
 
-.PHONY: build syncdb migrate collectstatic docs tests
+.PHONY: build syncdb migrate collectstatic docs tests coverage
 
 build: syncdb migrate collectstatic docs
 
@@ -19,3 +19,6 @@ docs:
 
 tests:
 	(cd $(APP) && ${PYTHONBIN} manage.py test --settings=gunnery.settings.test)
+
+coverage:
+	(cd $(APP) && coverage run --source='.' manage.py test --settings=gunnery.settings.test; coverage report)
