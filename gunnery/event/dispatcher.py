@@ -1,5 +1,5 @@
+import json
 from itertools import chain
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
 from django.template import TemplateDoesNotExist
@@ -9,125 +9,81 @@ from event.models import EventLog
 from django.template.loader import render_to_string
 
 
-class Event(object):
-    """ Event object
-
-    Example usage:
-
-      e = Event(1, parameter=2)
-      e.department_id => 1
-      e.parameter => 2
-      e.type => Event
-    """
-    context = {}
-
-    def __init__(self, department_id, **kwargs):
-        self.department_id = department_id
-        for key, value in kwargs.items():
-            self.__setattr__(key, value)
-
-    def __setattr__(self, key, value):
-        self.context[key] = value
-
-    def __getattr__(self, item):
-        return self.context[item] if item in self.context else None
-
-    @property
-    def type(self):
-        return self.__class__.__name__
-
-
-class EventDispatcher(object):
-    handlers = []
-
-    @classmethod
-    def add_handler(cls, handler):
-        """ Register handler
-        """
-        cls.handlers.append(handler)
-
-    @classmethod
-    def trigger(cls, event):
-        """ Trigger event on all registered handlers
-        """
-        for handler in cls.handlers:
-            handler.process(event)
-
-
 class EventHandler(object):
-    """ Process events within scope
-
-    To handle only selected EventTypes use subscribe_to field, example:
-      subscribe_to = ('ExecutionFinish',)
-
-    Inheriting class should override _process(self, event) method.
-    """
-    subscribe_to = list()
-
     def __init__(self):
-        self.event = None
+        self.data = {}
 
-    def process(self, event):
-        self.event = event
-        print len(self.subscribe_to) == 0 or self.event.type in self.subscribe_to
-        if len(self.subscribe_to) == 0 or self.event.type in self.subscribe_to:
-            self._process(event)
+    @classmethod
+    def process(cls, sender=None, department_id=None, user=None, instance=None, **kwargs):
+        print cls, sender
+        handler = cls()
+        handler.data = {
+            'department_id': department_id,
+            'user': user,
+            'instance': instance,
+            'signal_type': sender
+        }
+        handler.data.update(kwargs)
+        return handler._process()
 
-    def _process(self, event):
+    def _process(self):
         pass
 
     def _render(self, filename):
         try:
-            return render_to_string('event/%s/%s' % (self.event.type, filename), self.event.context)
+            return render_to_string('event/%s/%s' % (self.data['signal_type'], filename), self.data)
         except TemplateDoesNotExist:
-            raise Exception('Template %s not found for event %s' % (filename, self.event.type))
-
-    def get_subject(self):
-        """ Render event subject
-        """
-        return self._render('subject.txt')
-
-    def get_full(self):
-        """ Render event full text
-        """
-        return self._render('full.html')
-
-    def get_full_plain(self):
-        """ Render event fill plain text
-        """
-        return self._render('full.txt')
+            raise Exception('Template %s not found for event %s' % (filename, self.data['signal_type']))
 
 
 class LogHandler(EventHandler):
     """ Saves all events in database EventLog model
     """
-    def _process(self, event):
-        EventLog(department_id=event.department_id, type=event.type, message=self.get_subject()).save()
-EventDispatcher.add_handler(LogHandler())
+    def _process(self):
+        print 'LogHandler._process'
+        EventLog(department_id=self.data['department_id'], type=self.data['signal_type'], message=self.to_json()).save()
+
+    def to_json(self):
+        data = {
+            'object_model': '%s.%s' % (self.data['instance']._meta.app_label, self.data['instance']._meta.model_name),
+            'object_id': self.data['instance'].id,
+            'user_id': self.data['user'].id if self.data['user'] else None
+        }
+        if 'additional_data' in self.data:
+            data.update(self.data['additional_data'])
+        return json.dumps(data)
 
 
 class UserNotificationHandler(EventHandler):
     """ Sends notification emails
     """
-    subscribe_to = ('ExecutionFinish',)
-
-    def _process(self, event):
-        users = get_users_with_perms(Department(id=event.department_id)).prefetch_related('notifications')
+    def _process(self):
+        print 'UserNotificationHandler._process'
+        instance = self.data['instance']
+        department_id = self.data['department_id']
+        users = get_users_with_perms(Department(id=department_id)).prefetch_related('notifications')
         admins = get_user_model().objects.filter(is_superuser=True)
         users = set(chain(users, admins))
         application_content_type = ContentType.objects.get_for_model(Application)
         from backend.tasks import SendEmailTask
         for user in users:
-            if not user.has_perm('core.view_environment', event.execution.environment):
+            if not user.has_perm('core.view_environment', instance.environment):
                 continue
-            if not user.has_perm('task.view_task', event.execution.task):
+            if not user.has_perm('task.view_task', instance.task):
                 continue
             notification_preference = user.notifications.filter(content_type=application_content_type.id,
-                                                                object_id=event.execution.environment.application_id,
-                                                                event_type=event.type).first()
+                                                                object_id=instance.environment.application_id,
+                                                                event_type=type).first()
             if notification_preference and notification_preference.is_active:
-                SendEmailTask().delay(subject=self.get_subject(),
-                                      message=self.get_full_plain(),
-                                      message_html=self.get_full(),
+                SendEmailTask().delay(subject=self._render('email_subject.txt'),
+                                      message=self._render('email_body.txt'),
+                                      message_html=self._render('email_body.html'),
                                       recipient=user.email)
-EventDispatcher.add_handler(UserNotificationHandler())
+import django.dispatch
+log_handler = LogHandler
+user_notification_handler = UserNotificationHandler
+gunnery_event = django.dispatch.Signal()
+gunnery_event.connect(log_handler.process, 'ModelChange')
+gunnery_event.connect(log_handler.process, 'ExecutionStart')
+gunnery_event.connect(log_handler.process, 'ExecutionFinish')
+gunnery_event.connect(user_notification_handler.process, 'ExecutionFinish')

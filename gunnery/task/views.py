@@ -13,6 +13,7 @@ from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from guardian.decorators import permission_required
+from event.dispatcher import gunnery_event
 
 from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
 from .models import (
@@ -71,6 +72,10 @@ def task_execute_page(request, task_id, environment_id=None):
                         command.command = parameter_parser.process(command.command)
                         command.save()
                 execution.start()
+                gunnery_event.send(sender='ExecutionStart',
+                                   department_id=environment.application.department.id,
+                                   user=request.user,
+                                   instance=execution)
                 return redirect(execution)
         else:
             form_errors.append('Environment is required')
@@ -114,6 +119,11 @@ def task_form_page(request, application_id=None, task_id=None):
             form, form_parameters, form_commands = create_forms(request, task_id, args)
             request.method = 'POST'
             messages.success(request, 'Saved')
+
+            gunnery_event.send('ModelChange',
+                               department_id=task.application.department.id,
+                               user=request.user,
+                               instance=task)
 
     data['application'] = application
     data['is_new'] = task_id == None

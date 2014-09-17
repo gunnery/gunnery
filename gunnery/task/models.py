@@ -8,8 +8,6 @@ from django.utils.timezone import now
 
 from core.models import (
     Application, Environment, gunnery_name, Server, ServerRole)
-from event.dispatcher import EventDispatcher
-from task.events import ExecutionStart
 
 
 def _duration(time):
@@ -122,7 +120,6 @@ class Execution(models.Model, StateMixin):
         from backend.tasks import ExecutionTask
 
         ExecutionTask().delay(execution_id=self.id)
-        EventDispatcher.trigger(ExecutionStart(self.environment.application.department.id, execution=self))
 
     def _create_execution_commands(self, command):
         parsed_command = command.command

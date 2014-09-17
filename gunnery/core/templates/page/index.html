@@ -3,43 +3,9 @@
 {% load task_extras %}
 {% load staticfiles %}
 
-{% block page_scripts %}
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-{% endblock %}
 {% block content %}
-    {% for application in application_list_sidebar %}
-        <div class="dashboard-application">
-            <h3>
-                {% model_icon 'application' %}
-                <a href="{{ application.get_absolute_url }}">{{ application.name }}</a>
-            </h3>
+    {% for activity in activities %}
 
-            {% last_activity_bar related_to=application no_title=True %}
-
-            <div class="row">
-            {% for environment in application.environments.all %}
-                {% if environment in allowed_environments %}
-                <div class="col-md-3 col-sm-6">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">{% model_icon 'environment' %} <a href="{{ environment.get_absolute_url }}">{{environment.name}}</a></div>
-                        <ul class="list-group">
-                            {% for task in environment.stats_count %}
-                                {% if task in allowed_tasks %}
-                                <li class="list-group-item">
-                                    <span class="badge" title="execution count">x{{task.count}}</span>
-                                    <span class="badge" title="average time">{{task.avg|floatformat}}s</span>
-                                    <a href="{{task.get_absolute_url}}">{{task.name}}</a>
-                                    <a href="{% url 'task_execute_page' task_id=task.id environment_id=environment.id %}" class="text-muted"><i class="fa fa-bolt"></i></a>
-                                </li>
-                                {% endif %}
-                            {% endfor %}
-                        </ul>
-                    </div>
-                </div>
-                {% endif %}
-            {% endfor %}
-            </div>
-        </div>
+        {{ activity.id }}
     {% endfor %}
-
 {% endblock %}
