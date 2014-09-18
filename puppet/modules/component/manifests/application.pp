@@ -8,7 +8,7 @@ class component::application {
   $environment = $::environment
 
   include python::dev
-  package {['bpython', "git-core"]:
+  package {['bpython', "git-core", "vim"]:
     ensure => 'latest'}
 
   file { [
