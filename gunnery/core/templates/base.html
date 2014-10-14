@@ -38,6 +38,7 @@
                 {% endfor %}
             </select>
         {% endif %}
+        <div class="clearfix"></div>
         {% include 'partial/application_list_sidebar.html' %}
         <ul class="nav-user">
             <li><a href="{% url 'settings_page' section='account' %}"><i class="fa fa-user"></i> {{ user.get_full_name }}</a></li>

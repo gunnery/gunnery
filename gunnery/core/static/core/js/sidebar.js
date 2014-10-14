@@ -14,7 +14,7 @@ var SidebarModule = (function($){
         updateSideBarHeight();
     })
 
-    updateSideBarHeight();
+    $(updateSideBarHeight);
 
     return {};
 })(jQuery);
