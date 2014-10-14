@@ -2,11 +2,12 @@
 
 ## 0.2
 
-*not-released-yet*
+*2014-09-17*
 
 - Extend permission system by adding user groups
 - Code refactoring of modal windows
 - Improved test coverage to 69%
+- Bugfixes: sidebar, modal windows, user lists
 
 #### Upgrading
 
