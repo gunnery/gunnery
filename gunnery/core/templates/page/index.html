@@ -1,11 +1,5 @@
 {% extends "base.html" %}
-{% load core_extras %}
-{% load task_extras %}
-{% load staticfiles %}
 
 {% block content %}
-    {% for activity in activities %}
-
-        {{ activity.id }}
-    {% endfor %}
+    {% include 'partial/activities.html' %}
 {% endblock %}

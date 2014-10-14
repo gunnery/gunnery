@@ -36,11 +36,13 @@ def model_icon(model):
 
 
 @register.simple_tag
-def execution_status(status, caption=True):
+def execution_status(status, caption=True, label=True):
+    mapping = status_mapping[status]
+    html = '<i class="fa fa-%s"></i>' % mapping[1]
     if caption:
-        html = '<span class="label label-%s"><i class="fa fa-%s"></i> %s</span>' % tuple(status_mapping[status])
-    else:
-        html = '<span class="label label-%s"><i class="fa fa-%s"></i></span>' % tuple(status_mapping[status][0:2])
+        html += ' ' + mapping[2]
+    if label:
+        html = '<span class="label label-%s">%s</span>' % (mapping[0], html)
     return html
 
 

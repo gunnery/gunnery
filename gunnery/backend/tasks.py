@@ -9,7 +9,7 @@ from django.conf import settings
 from celery import chain, chord
 from celery.exceptions import SoftTimeLimitExceeded
 from paramiko import AuthenticationException, BadAuthenticationType
-from event.dispatcher import gunnery_event
+from event.dispatcher import gunnery_event, ExecutionFinishEvent
 
 from gunnery.celery import app
 from core.models import Environment, Server, ServerAuthentication
@@ -114,9 +114,10 @@ class ExecutionTaskFinish(app.Task):
         """ Trigger event, and save live log
         """
         department_id = execution.environment.application.department.id
-        gunnery_event.send(sender='ExecutionFinish',
+        gunnery_event.send(ExecutionFinishEvent,
                            department_id=department_id,
-                           instance=execution)
+                           instance=execution,
+                           status=execution.status)
         ExecutionLiveLog.add(execution_id, 'execution_completed',
                              status=execution.status,
                              time_end=execution.time_end,

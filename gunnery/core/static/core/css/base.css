@@ -307,16 +307,6 @@ button > i.fa:after {
     padding-bottom: 0;
 }
 
-div.dashboard-application + div {
-    border-top: 3px solid #eee;
-    padding-top: 18px;
-}
-
-.dashboard-application .list-group-item {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
-
 #login_form h1 {
     margin: 50px 0 50px;
 }
@@ -327,4 +317,13 @@ div.dashboard-application + div {
 
 #notifications .application {
     padding-left: 20px;
+}
+
+
+#activities td {
+    border-bottom: 1px solid #f1f1f1;
+}
+
+#activities td + td {
+    padding-left: 30px;
 }

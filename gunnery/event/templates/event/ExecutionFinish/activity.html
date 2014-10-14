@@ -1,1 +1,6 @@
-execution finished
+{% load core_extras %}
+{% execution_status activity.data.status caption=False label=False %}
+{% if activity.data.status == execution.SUCCESS %}Successful{% elif activity.data.status == execution.ABORTED %}Aborted{% else %}Failed{% endif %}
+<a href="{{ activity.data.execution_url }}">execution</a> of task
+<i>{{ activity.data.task_name }}</i> on
+<i>{{ activity.data.environment_name }}</i>.

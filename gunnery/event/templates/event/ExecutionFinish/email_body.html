@@ -2,18 +2,18 @@
     {% include "event/ExecutionFinish/email_subject.txt" %}
 </h3>
 
-<p>Started by {{ execution.user.get_full_name }} at {{ execution.time_start }}.</p>
+<p>Started by {{ instance.user.get_full_name }} at {{ instance.time_start }}.</p>
 
-{% if execution.parameters.count > 1 %}
+{% if instance.parameters.count > 1 %}
     <p>Parameters</p>
     <ul class="parameters">
-        {% for parameter in execution.parameters.all %}
+        {% for parameter in instance.parameters.all %}
             <li>{{ parameter.name }} = {{ parameter.value }}</li>
         {% endfor %}
     </ul>
 {% endif %}
 
-{% for command in execution.commands.all %}
+{% for command in instance.commands.all %}
         <div>
             Execute: <code>{{ command.command }}</code> on servers tagged with:
             {% for role in command.roles.all %}
@@ -38,5 +38,5 @@
 
 <br>
 <div>
-    Execution finished at {{ execution.time_end }} after {{ execution.time }} s
+    Execution finished at {{ instance.time_end }} after {{ instance.time }} s
 </div>

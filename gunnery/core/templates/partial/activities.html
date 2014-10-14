@@ -1,0 +1,24 @@
+{% load core_extras %}
+{% load task_extras %}
+{% load staticfiles %}
+{% load humanize %}
+<p>&nbsp;</p>
+<table id="activities" cellpadding="5">
+{% for event in events %}
+    <tr>
+        <td>
+            {% with "event/"|add:event.type|add:"/activity.html" as template %}
+                {% include template with activity=event %}
+            {% endwith %}
+        </td>
+        <td class="text-muted">
+            <a class="text-muted" href="{{ event.data.application_url }}">{{ event.data.application_name }}</a>
+        </td>
+        <td class="text-muted" title="{{ event.time }}"><small>{{ event.time|naturaltime }}</small></td>
+    </tr>
+{% empty %}
+    <tr>
+        <td>No recent activity...</td>
+    </tr>
+{% endfor %}
+</table>

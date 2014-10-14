@@ -22,7 +22,7 @@ def profile_page(request, user_id):
     data = {}
     user = get_object_or_404(get_user_model(), pk=user_id)
     data['user_profile'] = user
-    data['user_executions'] = Execution.get_inline_by_user(user.id)
+    data['events'] = user.actions.all().prefetch_related('author').order_by('-time')[0:50]
     return render(request, 'page/profile.html', data)
 
 

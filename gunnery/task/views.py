@@ -13,7 +13,7 @@ from django.db import transaction
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from guardian.decorators import permission_required
-from event.dispatcher import gunnery_event
+from event.dispatcher import gunnery_event, ModelChangeEvent, ExecutionStartEvent, ModelCreateEvent
 
 from .forms import task_create_form, TaskCommandFormset, TaskParameterFormset
 from .models import (
@@ -53,9 +53,9 @@ def task_execute_page(request, task_id, environment_id=None):
             if task.application.id != environment.application.id:
                 raise ValueError('task.application.id did not match with environment.application.id')
 
-            duplicateExecution = Execution.objects.filter(task=task, environment=environment,
+            duplicate_execution = Execution.objects.filter(task=task, environment=environment,
                                                           status__in=[Execution.PENDING, Execution.RUNNING])
-            if duplicateExecution.count():
+            if duplicate_execution.count():
                 form_errors.append('Task %s is already running on %s environment.' %
                                    (task.name, environment.name))
             else:
@@ -72,7 +72,7 @@ def task_execute_page(request, task_id, environment_id=None):
                         command.command = parameter_parser.process(command.command)
                         command.save()
                 execution.start()
-                gunnery_event.send(sender='ExecutionStart',
+                gunnery_event.send(ExecutionStartEvent,
                                    department_id=environment.application.department.id,
                                    user=request.user,
                                    instance=execution)
@@ -86,7 +86,8 @@ def task_execute_page(request, task_id, environment_id=None):
 
 
 def task_form_page(request, application_id=None, task_id=None):
-    data = {}
+    data = args = {}
+    application = None
     if task_id:
         task = get_object_or_404(Task, pk=task_id)
         application = task.application
@@ -113,20 +114,23 @@ def task_form_page(request, application_id=None, task_id=None):
             data['task'] = task
             task_save_formset(form_parameters, task)
             task_save_formset(form_commands, task)
-            if task_id == None:
-                return redirect(task.get_absolute_url())
             request.method = 'GET'
             form, form_parameters, form_commands = create_forms(request, task_id, args)
             request.method = 'POST'
             messages.success(request, 'Saved')
-
-            gunnery_event.send('ModelChange',
-                               department_id=task.application.department.id,
-                               user=request.user,
-                               instance=task)
+            if task_id:
+                gunnery_event.send(ModelChangeEvent,
+                                   department_id=task.application.department.id,
+                                   user=request.user,
+                                   instance=task)
+            else:
+                gunnery_event.send(ModelCreateEvent,
+                                   department_id=task.application.department.id,
+                                   user=request.user,
+                                   instance=task)
 
     data['application'] = application
-    data['is_new'] = task_id == None
+    data['is_new'] = not bool(task_id)
     data['request'] = request
     data['form'] = form
     data['form_parameters'] = form_parameters

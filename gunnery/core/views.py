@@ -13,7 +13,7 @@ from guardian.shortcuts import get_objects_for_user
 
 from account.models import DepartmentGroup
 from backend.tasks import TestConnectionTask
-from event.models import NotificationPreferences, EventLog
+from event.models import NotificationPreferences, Activity
 from .models import Application, Department, Environment, Server, ServerRole
 from task.models import Execution
 
@@ -24,7 +24,8 @@ def index(request):
     executions = Execution.objects.filter(task__application__department_id=request.current_department_id).count()
     if not executions:
         return redirect(reverse('first_steps_page'))
-    data['activities'] = EventLog.objects.filter(department_id=request.current_department_id)
+    data['events'] = request.user.events.all().prefetch_related('author').order_by('-time')[0:50]
+    data['execution'] = Execution
     return render(request, 'page/index.html', data)
 
 

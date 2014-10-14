@@ -1,15 +1,15 @@
-{% include "event/ExecutionFinish/subject.txt" %}
+{% include "event/ExecutionFinish/email_subject.txt" %}
 
-Started by {{ execution.user.get_full_name }} at {{ execution.time_start }}.
-{% if execution.parameters.count > 1 %}
+Started by {{ instance.user.get_full_name }} at {{ instance.time_start }}.
+{% if instance.parameters.count > 1 %}
 
 Parameters:
-{% for parameter in execution.parameters.all %}
+{% for parameter in instance.parameters.all %}
 * {{ parameter.name }} = {{ parameter.value }}
 {% endfor %}
 {% endif %}
 
-{% for command in execution.commands.all %}
+{% for command in instance.commands.all %}
 Execute: {{ command.command }} on servers tagged with: {% for role in command.roles.all %}{{ role.name }}{% endfor %}
 
 {% for server in command.servers.all %}{{ server.server.name }} ({{ server.server.host }})
@@ -20,4 +20,4 @@ Execute: {{ command.command }} on servers tagged with: {% for role in command.ro
 {% endfor %}
 {% endfor %}
 
-Execution finished at {{ execution.time_end }} after {{ execution.time }} s
+Execution finished at {{ instance.time_end }} after {{ instance.time }} s

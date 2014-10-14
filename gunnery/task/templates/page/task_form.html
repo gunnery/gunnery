@@ -130,9 +130,11 @@
 
         <div class="form-group">
             <div class="col-xs-offset-1 col-xs-3">
+            {% if not is_new %}
                 <button type="button" class="btn btn-default delete" tabindex="-1">
                     <i class="fa fa-times"></i> Delete
                 </button>
+            {% endif %}
             </div>
             <div class="col-xs-6">
                 <button type="submit" class="btn btn-primary">

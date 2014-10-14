@@ -1,1 +1,4 @@
-execution started
+<i class="fa fa-bolt fa-fw"></i>
+{{ activity.author.get_full_name }} started <a href="{{ activity.data.execution_url }}">execution</a> of task
+<i>{{ activity.data.task_name }}</i> on
+<i>{{ activity.data.environment_name }}</i>.

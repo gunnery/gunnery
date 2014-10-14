@@ -1,3 +1,4 @@
+from json_field import JSONField
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.generic import GenericForeignKey
@@ -33,8 +34,9 @@ class NotificationPreferences(models.Model):
 post_save.connect(NotificationPreferences.on_save_application, sender=Application)
 
 
-class EventLog(models.Model):
-    department = models.ForeignKey(Department, related_name="event_log", db_index=True)
+class Activity(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="actions", blank=True, null=True)
+    users = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="events")
     type = models.CharField(max_length=128, blank=False)
-    message = models.TextField()
+    data = JSONField()
     time = models.DateTimeField(auto_now=True)

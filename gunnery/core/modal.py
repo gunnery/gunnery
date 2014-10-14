@@ -7,6 +7,7 @@ from django.db import IntegrityError
 from django.http import Http404, HttpResponse
 from django.shortcuts import get_object_or_404, render
 from core.models import Department, Application, Environment, Server
+from event.dispatcher import gunnery_event, ModelChangeEvent, ModelCreateEvent
 
 from forms import (
     ApplicationForm, core_create_form, DepartmentForm, EnvironmentForm,
@@ -257,11 +258,23 @@ class ServerModal(BaseCoreModal):
             self.form.fields['password'].help_text = "Leave blank if not changing"
 
     def on_create(self):
-        self.on_update()
+        from backend.tasks import SaveServerAuthenticationData
+        SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
+
+        gunnery_event.send(ModelCreateEvent,
+                           department_id=self.instance.environment.application.department.id,
+                           user=self.request.user,
+                           instance=self.instance)
 
     def on_update(self):
         from backend.tasks import SaveServerAuthenticationData
         SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
 
+        gunnery_event.send(ModelChangeEvent,
+                           department_id=self.instance.environment.application.department.id,
+                           user=self.request.user,
+                           instance=self.instance)
+
     def on_form_create(self):
         self.form.fields['roles'].queryset = ServerRole.objects.filter(department_id=self.request.current_department_id)
+
