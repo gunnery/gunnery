@@ -43,6 +43,8 @@ def execution_status(status, caption=True, label=True):
         html += ' ' + mapping[2]
     if label:
         html = '<span class="label label-%s">%s</span>' % (mapping[0], html)
+    else:
+        html = '<span class="text-%s">%s</span>' % (mapping[0], html)
     return html
 
 
