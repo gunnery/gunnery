@@ -128,15 +128,15 @@ class SidebarTest(LoggedTestCase):
     def test_application_list(self):
         application_valid = ApplicationFactory(department=self.department)
         application_invalid = ApplicationFactory(department=self.department)
-        environment_valid = EnvironmentFactory(application=application_valid)
-        environment_invalid = EnvironmentFactory(application=application_valid)
+        task_valid = TaskFactory(application=application_valid)
+        task_invalid = TaskFactory(application=application_valid)
         self.remove_perm_from_user_group('core.view_application', application_invalid)
-        self.remove_perm_from_user_group('core.view_environment', environment_invalid)
+        self.remove_perm_from_user_group('core.view_task', task_invalid)
         response = self.client.get('/help/')
         self.assertContains(response, application_valid.name)
         self.assertNotContains(response, application_invalid.name)
-        self.assertContains(response, environment_valid.name)
-        self.assertNotContains(response, environment_invalid.name)
+        self.assertContains(response, task_valid.name)
+        self.assertNotContains(response, task_invalid.name)
 
     def test_settings(self):
         response = self.client.get('/help/')
