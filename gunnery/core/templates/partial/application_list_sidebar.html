@@ -7,9 +7,9 @@
                     {% model_icon 'application' %} {{ application.name }}
                 </a>
                 <ul class="nav-environments">
-                    {% for environment in application.environments.all %}
-                        {% if environment in allowed_environments %}
-                        <li><a href="{{ environment.get_absolute_url }}">{{ environment.name }}</a></li>
+                    {% for task in application.tasks.all %}
+                        {% if task in allowed_tasks %}
+                        <li><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></li>
                         {% endif %}
                     {% endfor %}
                 </ul>
