@@ -87,11 +87,19 @@ class ActivityHandler(EventHandler):
                 'object_name': self.instance.name,
                 'object_url': self.instance.environment.get_absolute_url()
             })
-        elif isinstance(self.instance, Application) or isinstance(self.instance, Environment):
+        elif isinstance(self.instance, Application):
             users = get_users_with_perms(self.instance, with_superusers=True)
             self.additional_data.update({
                 'application_name': self.instance.name,
                 'application_url': self.instance.get_absolute_url(),
+                'object_name': self.instance.name,
+                'object_url': self.instance.get_absolute_url()
+            })
+        elif isinstance(self.instance, Environment):
+            users = get_users_with_perms(self.instance, with_superusers=True)
+            self.additional_data.update({
+                'application_name': self.instance.application.name,
+                'application_url': self.instance.application.get_absolute_url(),
                 'object_name': self.instance.name,
                 'object_url': self.instance.get_absolute_url()
             })
