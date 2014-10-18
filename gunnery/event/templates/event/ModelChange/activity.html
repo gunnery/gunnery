@@ -1,3 +1,3 @@
 <i class="fa fa-edit fa-fw"></i>
-{{ activity.author.get_full_name }} changed
+{{ activity.author.get_full_name }} changed {{ activity.get_object_model_name }}
 <a href="{{ activity.data.object_url }}">{{ activity.data.object_name }}</a>.

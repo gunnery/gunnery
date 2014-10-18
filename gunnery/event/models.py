@@ -40,3 +40,8 @@ class Activity(models.Model):
     type = models.CharField(max_length=128, blank=False)
     data = JSONField()
     time = models.DateTimeField(auto_now=True)
+
+    def get_object_model_name(self):
+        if "object_model" in self.data:
+            model = self.data["object_model"]
+            return model[model.find('.')+1:]
