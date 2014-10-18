@@ -125,6 +125,7 @@ def task_form_page(request, application_id=None, task_id=None):
                 gunnery_event.send(ModelCreateEvent,
                                    user=request.user,
                                    instance=task)
+            return redirect(task)
 
     data['application'] = application
     data['is_new'] = not bool(task_id)
