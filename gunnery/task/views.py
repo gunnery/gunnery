@@ -73,7 +73,6 @@ def task_execute_page(request, task_id, environment_id=None):
                         command.save()
                 execution.start()
                 gunnery_event.send(ExecutionStartEvent,
-                                   department_id=environment.application.department.id,
                                    user=request.user,
                                    instance=execution)
                 return redirect(execution)
@@ -120,12 +119,10 @@ def task_form_page(request, application_id=None, task_id=None):
             messages.success(request, 'Saved')
             if task_id:
                 gunnery_event.send(ModelChangeEvent,
-                                   department_id=task.application.department.id,
                                    user=request.user,
                                    instance=task)
             else:
                 gunnery_event.send(ModelCreateEvent,
-                                   department_id=task.application.department.id,
                                    user=request.user,
                                    instance=task)
 

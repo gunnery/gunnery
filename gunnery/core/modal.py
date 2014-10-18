@@ -63,6 +63,7 @@ class BaseModal(object):
         self.instance = None
         self.request = None
         self.is_new = False
+        self.send_events = True
 
     def create_form(self):
         """ Returns form object """
@@ -114,9 +115,11 @@ class BaseModal(object):
 
                 if self.is_new:
                     self.on_create()
+                    self.send_create_event()
                     self.message('Created')
                 else:
                     self.on_update()
+                    self.send_change_event()
                     self.message('Saved')
                 return HttpResponse(json.dumps(self.data), content_type="application/json")
             except IntegrityError as e:
@@ -141,6 +144,14 @@ class BaseModal(object):
         self.on_delete()
         self.message('Deleted')
         return HttpResponse(json.dumps(self.data), content_type="application/json")
+
+    def send_create_event(self):
+        if self.send_events:
+            gunnery_event.send(ModelCreateEvent, user=self.request.user, instance=self.instance)
+
+    def send_change_event(self):
+        if self.send_events:
+            gunnery_event.send(ModelChangeEvent, user=self.request.user, instance=self.instance)
 
     def permission_check(self, action):
         return True
@@ -261,19 +272,8 @@ class ServerModal(BaseCoreModal):
         from backend.tasks import SaveServerAuthenticationData
         SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
 
-        gunnery_event.send(ModelCreateEvent,
-                           department_id=self.instance.environment.application.department.id,
-                           user=self.request.user,
-                           instance=self.instance)
-
     def on_update(self):
-        from backend.tasks import SaveServerAuthenticationData
-        SaveServerAuthenticationData().delay(self.instance.id, password=self.form.cleaned_data['password']).get()
-
-        gunnery_event.send(ModelChangeEvent,
-                           department_id=self.instance.environment.application.department.id,
-                           user=self.request.user,
-                           instance=self.instance)
+        self.on_create()
 
     def on_form_create(self):
         self.form.fields['roles'].queryset = ServerRole.objects.filter(department_id=self.request.current_department_id)

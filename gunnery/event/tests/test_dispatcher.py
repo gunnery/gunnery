@@ -10,31 +10,34 @@ from django.core import mail
 
 
 class TestUserNotificationHandler(TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.department = DepartmentFactory()
-        cls.user = UserFactory()
-        cls.user.groups.add(cls.department.groups.get(system_name='user'))
-        cls.user.save()
-        cls.application = ApplicationFactory(department=cls.department)
-        cls.environment = EnvironmentFactory(application=cls.application)
-        cls.task = TaskFactory(application=cls.application)
+    def setUp(self):
+        self.department = DepartmentFactory()
+        self.user = UserFactory()
+        self.user.groups.add(self.department.groups.get(system_name='user'))
+        self.user.save()
+        self.application = ApplicationFactory(department=self.department)
+        self.environment = EnvironmentFactory(application=self.application)
+        self.task = TaskFactory(application=self.application)
 
     def test_process(self):
         execution = ExecutionFactory(environment=self.environment, task=self.task, user=self.user)
-        UserNotificationHandler().process(ExecutionFinishEvent, department_id=self.department.id, instance=execution)
+        UserNotificationHandler().process(ExecutionFinishEvent, instance=execution)
         self.assertEqual(len(mail.outbox), 1)
 
     def test_process_with_user_who_cant_view_environment(self):
         remove_perm('core.view_environment', self.user.groups.first(), self.environment)
+        remove_perm('core.change_environment', self.user.groups.first(), self.environment)
+        remove_perm('core.execute_environment', self.user.groups.first(), self.environment)
         execution = ExecutionFactory(environment=self.environment, task=self.task, user=self.user)
-        UserNotificationHandler().process(ExecutionFinishEvent, department_id=self.department.id, instance=execution)
+        UserNotificationHandler().process(ExecutionFinishEvent, instance=execution)
         self.assertEqual(len(mail.outbox), 0)
 
     def test_process_with_user_who_cant_view_task(self):
         remove_perm('task.view_task', self.user.groups.first(), self.task)
+        remove_perm('task.change_task', self.user.groups.first(), self.task)
+        remove_perm('task.execute_task', self.user.groups.first(), self.task)
         execution = ExecutionFactory(environment=self.environment, task=self.task, user=self.user)
-        UserNotificationHandler().process(ExecutionFinishEvent, department_id=self.department.id, instance=execution)
+        UserNotificationHandler().process(ExecutionFinishEvent, instance=execution)
         self.assertEqual(len(mail.outbox), 0)
 
 
@@ -51,7 +54,7 @@ class TestActivityHandler(TestCase):
 
     def test_process_execution(self):
         execution = ExecutionFactory(environment=self.environment, task=self.task, user=self.user)
-        ActivityHandler().process(ExecutionStartEvent, department_id=self.department.id, user=self.user, instance=execution)
+        ActivityHandler().process(ExecutionStartEvent, user=self.user, instance=execution)
         activity = Activity.objects.order_by('-time').first()
         result = {u'application_url': self.application.get_absolute_url(),
                   u'application_name': self.application.name,
@@ -64,7 +67,7 @@ class TestActivityHandler(TestCase):
 
     def test_process_execution_finish(self):
         execution = ExecutionFactory(environment=self.environment, task=self.task, user=self.user)
-        ActivityHandler().process(ExecutionFinishEvent, department_id=self.department.id, user=self.user,
+        ActivityHandler().process(ExecutionFinishEvent, user=self.user,
                                   instance=execution, status=execution.status)
         activity = Activity.objects.order_by('-time').first()
         result = {u'application_url': self.application.get_absolute_url(),
@@ -78,7 +81,7 @@ class TestActivityHandler(TestCase):
         self.assertEqual(result, activity.data)
 
     def test_process_task(self):
-        ActivityHandler().process(ModelChangeEvent, department_id=self.department.id, user=self.user, instance=self.task)
+        ActivityHandler().process(ModelChangeEvent, user=self.user, instance=self.task)
         activity = Activity.objects.order_by('-time').first()
         result = {u'application_url': unicode(self.application.get_absolute_url()),
                   u'application_name': unicode(self.application.name),

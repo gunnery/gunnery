@@ -5,7 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.dispatch import Signal
 from django.template import TemplateDoesNotExist
 from guardian.shortcuts import get_users_with_perms
-from core.models import Department, Application, Server
+from core.models import Application, Server, Environment
 from event.models import Activity
 from django.template.loader import render_to_string
 from task.models import Execution, Task
@@ -29,10 +29,9 @@ class ExecutionFinishEvent(object):
 
 class EventHandler(object):
     @classmethod
-    def process(cls, sender=None, department_id=None, user=None, instance=None, signal=None, **kwargs):
+    def process(cls, sender=None, user=None, instance=None, signal=None, **kwargs):
         handler = cls()
         handler.sender = sender
-        handler.department_id = department_id
         handler.user = user
         handler.instance = instance
         handler.event_type = sender.__name__.replace('Event', '')
@@ -41,7 +40,6 @@ class EventHandler(object):
 
     def __init__(self):
         self.sender = None
-        self.department_id = None
         self.user = None
         self.instance = None
         self.event_type = None
@@ -52,7 +50,6 @@ class EventHandler(object):
 
     def _render(self, filename):
         try:
-            print 'event/%s/%s' % (self.event_type, filename)
             return render_to_string('event/%s/%s' % (self.event_type, filename), self.__dict__)
         except TemplateDoesNotExist:
             raise Exception('Template %s not found for event %s' % (filename, self.event_type))
@@ -90,11 +87,20 @@ class ActivityHandler(EventHandler):
                 'object_name': self.instance.name,
                 'object_url': self.instance.environment.get_absolute_url()
             })
+        elif isinstance(self.instance, Application) or isinstance(self.instance, Environment):
+            users = get_users_with_perms(self.instance, with_superusers=True)
+            self.additional_data.update({
+                'application_name': self.instance.name,
+                'application_url': self.instance.get_absolute_url(),
+                'object_name': self.instance.name,
+                'object_url': self.instance.get_absolute_url()
+            })
 
-        activity = Activity(author=self.user, type=self.event_type, data=self.to_json())
-        activity.save()
-        activity.users = users
-        activity.save()
+        if users:
+            activity = Activity(author=self.user, type=self.event_type, data=self.to_json())
+            activity.save()
+            activity.users = users
+            activity.save()
 
     def to_json(self):
         data = {
@@ -111,18 +117,20 @@ class UserNotificationHandler(EventHandler):
     """
     def _process(self):
         instance = self.instance
-        department_id = self.department_id
         signal_type = self.event_type
-        users = get_users_with_perms(Department(id=department_id)).prefetch_related('notifications')
-        admins = get_user_model().objects.filter(is_superuser=True)
-        users = set(chain(users, admins))
         application_content_type = ContentType.objects.get_for_model(Application)
+
+        # get users who have access to given environment and task
+        users = get_users_with_perms(instance.environment).prefetch_related('notifications')
+        users_task = get_users_with_perms(instance.task).prefetch_related('notifications')
+        users = set(users).intersection(users_task)
+
+        # add admins to user list
+        admins = get_user_model().objects.filter(is_superuser=True).prefetch_related('notifications')
+        users = set(chain(users, admins))
+
         from backend.tasks import SendEmailTask
         for user in users:
-            if not user.has_perm('core.view_environment', instance.environment):
-                continue
-            if not user.has_perm('task.view_task', instance.task):
-                continue
             notification_preference = user.notifications.filter(content_type=application_content_type.id,
                                                                 object_id=instance.environment.application_id,
                                                                 event_type=signal_type).first()

@@ -113,11 +113,7 @@ class ExecutionTaskFinish(app.Task):
     def finalize(self, execution, execution_id):
         """ Trigger event, and save live log
         """
-        department_id = execution.environment.application.department.id
-        gunnery_event.send(ExecutionFinishEvent,
-                           department_id=department_id,
-                           instance=execution,
-                           status=execution.status)
+        gunnery_event.send(ExecutionFinishEvent, instance=execution, status=execution.status)
         ExecutionLiveLog.add(execution_id, 'execution_completed',
                              status=execution.status,
                              time_end=execution.time_end,
