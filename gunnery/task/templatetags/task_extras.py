@@ -25,7 +25,7 @@ def last_activity_bar(context, related_to=None, no_title=False):
                      environment__in=context['allowed_environments'],
                      task__in=context['allowed_tasks'])
         class_name = 'User'
-    data['list'] = query.order_by('-time_created')[:4]
+    data['list'] = query.prefetch_related('user','environment','task').order_by('-time_created')[:4]
     data['model_name'] = class_name.lower()
     data['related_to'] = related_to
     data['no_title'] = no_title
