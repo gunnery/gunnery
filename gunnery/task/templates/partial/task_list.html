@@ -14,15 +14,14 @@
             <tbody>
             {% for task in application.tasks.all %}
                 {% if task in allowed_tasks %}
-                {% get_obj_perms user for task as "task_perms" %}
                 <tr>
                     <td><a href="{{ task.get_absolute_url }}">{{ task.name }}</a></td>
                     <td class="text-right">
-                        {% if 'execute_task' in task_perms %}
+                        {% if task in allowed_change_tasks %}
                         <a href="{% if environment %}{% url 'task_execute_page' task_id=task.id environment_id=environment.id %}{% else %}{% url 'task_execute_page' task_id=task.id %}{% endif %}"
                            role="button" class="btn btn-default btn-xs"><i class="fa fa-bolt"></i> Execute</a>
                         {% endif %}
-                        {% if 'change_task' in task_perms %}
+                        {% if task in allowed_execute_tasks %}
                         <a href="{% url 'task_form_page' task_id=task.id %}" type="submit"
                            class="btn btn-default btn-xs"><i class="fa fa-edit"></i></a>
                         {% endif %}

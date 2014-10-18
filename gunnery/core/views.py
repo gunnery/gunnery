@@ -33,6 +33,9 @@ def index(request):
 def application_page(request, application_id):
     data = {}
     data['application'] = get_object_or_404(Application, pk=application_id)
+    data['allowed_change_environments'] = get_objects_for_user(request.user, 'core.change_environment')
+    data['allowed_change_tasks'] = get_objects_for_user(request.user, 'task.change_task')
+    data['allowed_execute_tasks'] = get_objects_for_user(request.user, 'task.execute_task')
     return render(request, 'page/application.html', data)
 
 
@@ -41,6 +44,8 @@ def environment_page(request, environment_id):
     data = {}
     data['environment'] = get_object_or_404(Environment, pk=environment_id)
     data['servers'] = list(Server.objects.filter(environment_id=environment_id).prefetch_related('roles'))
+    data['allowed_change_tasks'] = get_objects_for_user(request.user, 'task.change_task')
+    data['allowed_execute_tasks'] = get_objects_for_user(request.user, 'task.execute_task')
     return render(request, 'page/environment.html', data)
 
 

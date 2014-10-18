@@ -20,8 +20,7 @@
                 <tr>
                     <td><a href="{{ environment.get_absolute_url }}">{{ environment.name }}</a></td>
                     <td class="text-right">
-                        {% get_obj_perms user for environment as "environment_perms" %}
-                        {% if 'change_environment' in environment_perms %}
+                        {% if environment in allowed_change_environments %}
                         <button type="submit" class="btn btn-default btn-xs"
                                 data-toggle="modal"
                                 data-remote="{% url 'modal_form' form_name='environment' id=environment.id %}"
