@@ -10,7 +10,7 @@ def sidebar(request):
     return {
         'departments': departments,
         'application_list_sidebar': get_objects_for_user(request.user, 'core.view_application').
-            prefetch_related('environments').filter(department_id=current_department_id),
+            prefetch_related('tasks').filter(department_id=current_department_id),
         'allowed_environments': get_objects_for_user(request.user, 'core.view_environment'),
         'allowed_tasks': get_objects_for_user(request.user, 'task.view_task'),
         'current_department_id': current_department_id,
