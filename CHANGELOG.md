@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3
+
+- Changed dashboard into activity log
+
 ## 0.2
 
 *2014-09-17*
