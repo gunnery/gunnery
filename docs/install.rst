@@ -177,10 +177,10 @@ Next, setup gunnery-specific configuration:
 
 ::
 
-    sudo mkdir -p /etc/uwsgi/apps-enabled # Create directory for gunnery uWSGI config
+    sudo mkdir -p /etc/uwsgi/sites-enabled # Create directory for gunnery uWSGI config
     # Copy provided example config to newly created folder
-    sudo cp /var/gunnery/puppet/modules/component/templates/uwsgi.ini.erb /etc/uwsgi/apps-enabled/gunnery.ini
-    sudo vim /etc/uwsgi/apps-enabled/gunnery.ini
+    sudo cp /var/gunnery/puppet/modules/component/templates/uwsgi.ini.erb /etc/uwsgi/sites-enabled/gunnery.ini
+    sudo vim /etc/uwsgi/sites-enabled/gunnery.ini
 
 -  replace ``<%= @app_name %>`` with ``gunnery``
 -  replace ``<%= @app_path %>`` with ``/var/gunnery/gunnery``
