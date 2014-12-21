@@ -7,6 +7,11 @@ class component::application {
   $virtualenv_path = hiera('application::virtualenv_path')
   $environment = $::environment
 
+  $database_user = hiera('postgresql::user')
+  $database_name = hiera('postgresql::name')
+  $database_host = hiera('postgresql::host')
+  $database_password = hiera('postgresql::password')
+
   include python::dev
   package {['bpython', "git-core", "vim"]:
     ensure => 'latest'}

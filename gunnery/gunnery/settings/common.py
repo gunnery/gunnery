@@ -71,10 +71,10 @@ WSGI_APPLICATION = 'gunnery.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'gunnery',
-        'USER': 'gunnery',
-        'PASSWORD': 'gunnery',
-        'HOST': '127.0.0.1',
+        'NAME': os.environ['DATABASE_DEFAULT_NAME'],
+        'USER': os.environ['DATABASE_DEFAULT_USER'],
+        'PASSWORD': os.environ['DATABASE_DEFAULT_PASSWORD'],
+        'HOST': os.environ['DATABASE_DEFAULT_HOST'],
     }
 }
 

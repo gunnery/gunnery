@@ -11,6 +11,11 @@ class component::celery {
   $secret_key = hiera('application::secret_key')
   $environment = $::environment
 
+  $database_user = hiera('postgresql::user')
+  $database_name = hiera('postgresql::name')
+  $database_host = hiera('postgresql::host')
+  $database_password = hiera('postgresql::password')
+
   package {'celery':
     provider => pip,
     ensure => present,

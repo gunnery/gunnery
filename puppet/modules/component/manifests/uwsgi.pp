@@ -8,7 +8,12 @@ class component::uwsgi {
   $virtualenv_path = hiera('application::virtualenv_path')
   $secret_key = hiera('application::secret_key')
   $environment = $::environment
-  
+
+  $database_user = hiera('postgresql::user')
+  $database_name = hiera('postgresql::name')
+  $database_host = hiera('postgresql::host')
+  $database_password = hiera('postgresql::password')
+
   service { 'uwsgi':
     ensure => running,
     enable => true,

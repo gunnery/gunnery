@@ -2,6 +2,10 @@ source <%= @virtualenv_path %>/bin/activate
 
 export DJANGO_SETTINGS_MODULE="<%= @app_name %>.settings.<%= @environment %>"
 export SECRET_KEY="<%= @secret_key %>"
+export DATABASE_DEFAULT_HOST="<%= @database_host %>"
+export DATABASE_DEFAULT_NAME="<%= @database_name %>"
+export DATABASE_DEFAULT_USER="<%= @database_user %>"
+export DATABASE_DEFAULT_PASSWORD="<%= @database_password %>"
 
 export app="<%= @app_path %>"
 export log="<%= @log_path %>"

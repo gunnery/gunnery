@@ -14,6 +14,8 @@ application::run_path : "%{hiera('application::root_path')}/run"
 application::virtualenv_path : "%{hiera('application::root_path')}/virtualenv/%{::environment}"
 
 postgresql::user : gunnery
+postgresql::name : gunnery
+postgresql::host : 127.0.0.1
 
 celery::workers : 1
 celery::concurrency : 8

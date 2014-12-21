@@ -13,4 +13,8 @@ chdir = <%= @app_path %>
 module = <%= @app_name %>.uwsgiapp:application
 virtualenv = <%= @virtualenv_path %>
 env = DJANGO_SETTINGS_MODULE=<%= @app_name %>.settings.<%= @environment %>
-env = SECRET_KEY="<%= @secret_key %>"
+env = SECRET_KEY=<%= @secret_key %>
+env = DATABASE_DEFAULT_HOST=<%= @database_host %>
+env = DATABASE_DEFAULT_NAME=<%= @database_name %>
+env = DATABASE_DEFAULT_USER=<%= @database_user %>
+env = DATABASE_DEFAULT_PASSWORD=<%= @database_password %>
