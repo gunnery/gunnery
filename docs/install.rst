@@ -17,7 +17,7 @@ Provisioning with Puppet
 Gunnery repository contains puppet manifests, which can help setting up infrastructure required to run application.
 Puppet manifests are supported for systems:
 
-- Ubuntu 13.10 (raring)
+- Ubuntu 14.04 (trusty)
 
 Below are listed commands which will setup full-stack Gunnery instance on a bare bones server::
 
