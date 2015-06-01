@@ -328,3 +328,31 @@ div.dashboard-application + div {
 #notifications .application {
     padding-left: 20px;
 }
+
+
+@media (min-width: 768px) {
+    body {
+        display: table;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .side-nav {
+        float: none;
+        position: relative;
+        display: table-cell;
+        height: 100%;
+        vertical-align: top;
+    }
+
+    #wrapper {
+        display: table-cell;
+        padding: 0;
+        width: auto;
+        vertical-align: top;
+    }
+
+    #page-wrapper {
+        padding-top: 0;
+    }
+}
