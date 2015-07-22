@@ -6,7 +6,7 @@ This article will guide you through basic usage of Gunnery.
 Basic concepts
 ~~~~~~~~~~~~~~
 
-To better understands how to Gunnery works lets introduce basic concepts.
+To better understands how Gunnery works lets introduce basic concepts.
 
 .. image:: _static/models.png
 
