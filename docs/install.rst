@@ -26,7 +26,7 @@ Below are listed commands which will setup full-stack Gunnery instance on a bare
     cd /var/gunnery/puppet
     cp manifests/hieradata/local.template.yaml manifests/hieradata/local.yaml
     vim manifests/hieradata/local.yaml # set secrets
-    chown 700 manifests/hieradata/local.yaml
+    chmod 700 manifests/hieradata/local.yaml
     bash ./install.sh # ensure puppet 3 is installed
     FACTER_environment=production puppet apply manifests/base.pp --hiera_config manifests/hiera.yaml --modulepath=modules --manifestdir=manifests
     cd /var/gunnery
