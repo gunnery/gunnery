@@ -6,8 +6,4 @@ install:
 script:
   - (cd gunnery; python manage.py test --settings=gunnery.settings.test -v2)
 env:
-  - SECRET_KEY=test
-  - DATABASE_DEFAULT_NAME=test
-  - DATABASE_DEFAULT_USER=test
-  - DATABASE_DEFAULT_PASSWORD=test
-  - DATABASE_DEFAULT_HOST=test
+  - SECRET_KEY=test DATABASE_DEFAULT_NAME=test DATABASE_DEFAULT_USER=test DATABASE_DEFAULT_PASSWORD=test DATABASE_DEFAULT_HOST=test
