@@ -17,7 +17,7 @@ Provisioning with Puppet
 Gunnery repository contains puppet manifests, which can help setting up infrastructure required to run application.
 Puppet manifests are supported for systems:
 
-- Ubuntu 13.10 (raring)
+- Ubuntu 14.04 (trusty)
 
 Below are listed commands which will setup full-stack Gunnery instance on a bare bones server::
 
@@ -177,10 +177,10 @@ Next, setup gunnery-specific configuration:
 
 ::
 
-    sudo mkdir -p /etc/uwsgi/apps-enabled # Create directory for gunnery uWSGI config
+    sudo mkdir -p /etc/uwsgi/sites-enabled # Create directory for gunnery uWSGI config
     # Copy provided example config to newly created folder
-    sudo cp /var/gunnery/puppet/modules/component/templates/uwsgi.ini.erb /etc/uwsgi/apps-enabled/gunnery.ini
-    sudo vim /etc/uwsgi/apps-enabled/gunnery.ini
+    sudo cp /var/gunnery/puppet/modules/component/templates/uwsgi.ini.erb /etc/uwsgi/sites-enabled/gunnery.ini
+    sudo vim /etc/uwsgi/sites-enabled/gunnery.ini
 
 -  replace ``<%= @app_name %>`` with ``gunnery``
 -  replace ``<%= @app_path %>`` with ``/var/gunnery/gunnery``
