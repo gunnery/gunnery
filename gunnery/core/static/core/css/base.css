@@ -307,6 +307,16 @@ button > i.fa:after {
     padding-bottom: 0;
 }
 
+div.dashboard-application + div {
+    border-top: 3px solid #eee;
+    padding-top: 18px;
+}
+
+.dashboard-application .list-group-item {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
 #login_form h1 {
     margin: 50px 0 50px;
 }
@@ -326,4 +336,32 @@ button > i.fa:after {
 
 #activities td + td {
     padding-left: 30px;
+}
+
+
+@media (min-width: 768px) {
+    body {
+        display: table;
+        width: 100%;
+        height: 100vh;
+    }
+
+    .side-nav {
+        float: none;
+        position: relative;
+        display: table-cell;
+        height: 100%;
+        vertical-align: top;
+    }
+
+    #wrapper {
+        display: table-cell;
+        padding: 0;
+        width: auto;
+        vertical-align: top;
+    }
+
+    #page-wrapper {
+        padding-top: 0;
+    }
 }
