@@ -26,6 +26,7 @@ def index(request):
         return redirect(reverse('first_steps_page'))
     data['events'] = request.user.events.all().prefetch_related('author').order_by('-time')[0:50]
     data['execution'] = Execution
+    data['display_app'] = Application.objects.filter(department=request.current_department_id).count() > 1
     return render(request, 'page/index.html', data)
 
 
