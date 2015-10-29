@@ -22,7 +22,7 @@ Puppet manifests are supported for systems:
 Below are listed commands which will setup full-stack Gunnery instance on a bare bones server::
 
     su
-    git clone --recurse-submodules https://github.com/Eyjafjallajokull/gunnery.git /var/gunnery
+    git clone --recurse-submodules https://github.com/gunnery/gunnery.git /var/gunnery
     cd /var/gunnery/puppet
     cp manifests/hieradata/local.template.yaml manifests/hieradata/local.yaml
     vim manifests/hieradata/local.yaml # set secrets
