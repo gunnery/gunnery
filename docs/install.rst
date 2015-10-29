@@ -91,7 +91,7 @@ recommended path is ``/var/gunnery``:
 
 ::
 
-    sudo git clone --recurse-submodules git@github.com:Eyjafjallajokull/gunnery.git /var/gunnery
+    sudo git clone --recurse-submodules git@github.com:gunnery/gunnery.git /var/gunnery
     sudo cd /var/gunnery
 
 Under the ``requirements`` folder you will find lists of packages
@@ -212,4 +212,4 @@ to your needs.
 Support
 ~~~~~~~
 
-If you run into trouble and can’t figure out how to solve it yourself, you can get help via `Github issue tracker <https://github.com/Eyjafjallajokull/gunnery/issues/new>`__.
+If you run into trouble and can’t figure out how to solve it yourself, you can get help via `Github issue tracker <https://github.com/gunnery/gunnery/issues/new>`__.
