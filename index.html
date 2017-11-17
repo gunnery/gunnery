@@ -1,1 +1,473 @@
-<meta http-equiv="refresh" content="0; url=http://gunnery.io/" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="gunnery, webistrano, webistrano alternative, remote execution" />
+    <meta name="description" content="Gunnery is multipurpose task execution tool for distributed systems with an easy to use interface. Modern webistrano alternative." />
+
+    <title>Gunnery - Remote execution frontend</title>
+
+    
+    <link rel="stylesheet" href="static/CACHE/css/aef441deeab0.css" type="text/css" />
+
+    <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href='http://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
+
+    <link rel="shortcut icon" href="static/img/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="static/img/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="http://gunnery.io/icon.ico" />
+
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-284590-12', 'gunnery.io');
+      ga('send', 'pageview');
+    </script>
+</head>
+
+<body id="page-top" class="index">
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header page-scroll">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand page-scroll" href="index.html#page-top">Gunnery</a>
+            </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav navbar-right">
+                    <li class="hidden">
+                        <a href="index.html#page-top"></a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="index.html#howItWorks">How it works?</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="index.html#features">Features</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="index.html#screenshots">Screenshots</a>
+                    </li>
+                    <li>
+                        <a class="page-scroll" href="index.html#download">Download</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="intro-text">
+                <div class="intro-lead-in"></div>
+                <div class="intro-heading">Remote&nbsp; execution&nbsp; frontend</div>
+                <a href="index.html#howItWorks" class="page-scroll btn btn-xl">Tell Me More</a>
+            </div>
+        </div>
+    </header>
+    <section id="howItWorks">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">How it works?</h2>
+                    <h3 class="section-subheading text-muted"></h3>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4 first">
+                    <div class="row">
+                        <div class="col-sm-2" style="padding-top:22px">
+                            <h3 class="circle-number">1</h3>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="diagrams">
+                                <div style="padding-top:35px">
+                                    <i class="fa fa-desktop fa-4x"></i> &nbsp;
+                                    <i class="fa fa-tablet fa-4x text-secondary"></i> &nbsp;
+                                    <i class="fa fa-mobile fa-4x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        Execute task
+                        "<span class="task" data-choices="deploy|build|clear-cache|backup">deploy</span>" on
+                        "<span class="environment" data-choices="test|alpha|production|development">test</span>"&nbsp;environment
+                    </p>
+                </div>
+                <h3 class="visible-xs-block"><i class="fa fa-chevron-down fa-2x"></i><br>&nbsp;</h3>
+                <div class="col-sm-4 second">
+                    <div class="row">
+                        <div class="col-sm-2" style="padding-top:22px">
+                            <h3 class="circle-number">2</h3>
+                        </div>
+                        <div class="col-sm-10">
+                            <div class="diagrams">
+                                <div style="padding-top:15px">
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i><br>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw text-secondary"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw text-secondary"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw text-secondary"></i><br>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i>
+                                    <i class="fa fa-hdd-o fa-2x fa-fw"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        Commands are executed on selected&nbsp;servers
+                    </p>
+                </div>
+                <h3 class="visible-xs-block"><i class="fa fa-chevron-down fa-2x"></i><br>&nbsp;</h3>
+                <div class="col-sm-4 third">
+                    <div class="row">
+                        <div class="col-sm-2" style="padding-top:22px">
+                            <h3 class="circle-number">3</h3>
+                        </div>
+                        <div class="col-sm-10">
+                        <div class="diagrams">
+                            <pre class="text-left">
+Gunnery is multipurpose task execution tool for distributed systems with an
+easy to use web interface
+Support for a wide variety of tools
+Thanks to simple design it's possible to integrate with tools like capistrano,
+ant, phing, fabric, make, or puppet
+Designed for distributed systems
+Handles multi-environment applications with many servers
+Usable for every task
+Almost any command executed in shell can be turned into a Gunnery task
+Secure remote execution
+</pre>
+                        </div>
+                    </div>
+                    <p>
+                        Realtime results are displayed in&nbsp;browser
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Features</h2>
+                    <h3 class="section-subheading text-muted"></h3>
+                </div>
+            </div>
+            <div class="row text-center">
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-cubes fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Support for a wide variety of tools</h4>
+                    <p class="text-muted">Thanks to simple design it's possible to integrate with tools like capistrano, ant, phing, fabric, make, or puppet</p>
+                </div>
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-cloud fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Designed for distributed systems</h4>
+                    <p class="text-muted">Handles multi-environment applications with many servers</p>
+                </div>
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-arrows fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Usable for every task</h4>
+                    <p class="text-muted">Every command executed in shell can be turned into a Gunnery task</p>
+                </div>
+            </div>
+            <h1>&nbsp;</h1>
+            <div class="row text-center">
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Secure remote execution</h4>
+                    <p class="text-muted">Certificate based authentication provides secure access to your network</p>
+                </div>
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-mobile fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">Web-based interface</h4>
+                    <p class="text-muted">Clear, responsive interface pleases eye and enables usage on mobile devices</p>
+                </div>
+                <div class="col-sm-4">
+                    <span class="fa-stack fa-4x">
+                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
+                        <i class="fa fa-envelope fa-stack-1x fa-inverse"></i>
+                    </span>
+                    <h4 class="service-heading">User notifications</h4>
+                    <p class="text-muted">Team members will be notified when tasks are executed</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Grid Section -->
+    <section id="screenshots">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Screenshots</h2>
+                    <h3 class="section-subheading text-muted">Click to see full size image</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="index.html#portfolioModal1" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img data-src="static/img/screens/dashboard-thumb.png" class="img-responsive img-lazy" alt="" height="208" width="360">
+                    </a>
+                    <div class="portfolio-caption">
+                        <p class="text-muted">Dashboard</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="index.html#portfolioModal2" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img data-src="static/img/screens/environment-thumb.png" class="img-responsive img-lazy" alt="" height="208" width="360">
+                    </a>
+                    <div class="portfolio-caption">
+                        <p class="text-muted">Environment page</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="index.html#portfolioModal3" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img data-src="static/img/screens/execution-thumb.png" class="img-responsive img-lazy" alt="" height="208" width="360">
+                    </a>
+                    <div class="portfolio-caption">
+                        <p class="text-muted">Task execution</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="index.html#portfolioModal4" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img data-src="static/img/screens/history-thumb.png" class="img-responsive img-lazy" alt="" height="208" width="360">
+                    </a>
+                    <div class="portfolio-caption">
+                        <p class="text-muted">Execution history</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                    <a href="index.html#portfolioModal5" class="portfolio-link" data-toggle="modal">
+                        <div class="portfolio-hover">
+                            <div class="portfolio-hover-content">
+                                <i class="fa fa-plus fa-3x"></i>
+                            </div>
+                        </div>
+                        <img data-src="static/img/screens/mobile-thumb.png" class="img-responsive img-lazy" alt="" height="208" width="360">
+                    </a>
+                    <div class="portfolio-caption">
+                        <p class="text-muted">Mobile view</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-sm-6 portfolio-item">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="download" class="bg-light-gray">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Download</h2>
+                    <h3 class="section-subheading text-muted"></h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <ul class="check-list">
+                        <li><i class="fa fa-check"></i>&nbsp; Open source license</li>
+                        <li><i class="fa fa-check"></i>&nbsp; Hosted on Github</li>
+                        <li><i class="fa fa-check"></i>&nbsp; Documentation available</li>
+                        <li><i class="fa fa-check"></i>&nbsp; Community support</li>
+                    </ul>
+                    <div class="btns-large text-center">
+                        <a class="btn btn-default btn-lg ga-event btn-primary" href="http://gunnery.readthedocs.org/en/latest/" data-ga-event="click" data-ga-params="button;click;View Docs">
+                            <i class="fa fa-file-text"></i> View Docs</a>
+                        <a class="btn btn-default btn-lg ga-event" href="https://github.com/gunnery/gunnery/releases" data-ga-event="click" data-ga-params="button;click;Download">
+                            <i class="fa fa-download"></i> Download</a>
+                        <a class="btn btn-default btn-lg ga-event" href="https://github.com/gunnery/gunnery" data-ga-event="click" data-ga-params="button;click;Github Clone">
+                            <i class="fa fa-github"></i> Clone</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <span class="copyright">Copyright &copy; Gunnery 2016</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Portfolio Modals -->
+    <!-- Use the modals below to showcase details about your portfolio projects! -->
+
+    <!-- Portfolio Modal 1 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <img class="img-responsive img-very-lazy" data-src="static/img/screens/dashboard.png" alt="">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 2 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <img class="img-responsive img-very-lazy" data-src="static/img/screens/environment.png" alt="">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 3 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <img class="img-responsive img-very-lazy" data-src="static/img/screens/execution.png" alt="">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 4 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <img class="img-responsive img-very-lazy" data-src="static/img/screens/history.png" alt="">
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portfolio Modal 5 -->
+    <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-content">
+            <div class="close-modal" data-dismiss="modal">
+                <div class="lr">
+                    <div class="rl">
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="modal-body">
+                            <img class="img-very-lazy" data-src="static/img/screens/mobile-app.png" alt="">
+                            &nbsp;
+                            <img class="img-very-lazy" data-src="static/img/screens/mobile-env.png" alt="">
+                            <br>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="static/CACHE/js/ac31a518ea37.js"></script>
+</body>
+
+</html>
