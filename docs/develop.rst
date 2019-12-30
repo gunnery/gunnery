@@ -59,7 +59,7 @@ Gunnery uses nose test runner:
 
     python manage.py test --settings=gunnery.settings.test
 
-Running a specyfic test:
+Running a specific test:
 
 ::
 
