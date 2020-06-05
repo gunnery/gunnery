@@ -1,4 +1,4 @@
-Django==1.6.7
+Django==1.11.29
 South==0.8.4
 amqp==1.4.5
 anyjson==0.3.3
