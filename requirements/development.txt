@@ -1,6 +1,6 @@
 -r common.txt
 
-django-debug-toolbar==1.2.1
+django-debug-toolbar==1.11.1
 coverage==3.7.1
 nose==1.3.3
 django-nose==1.2
