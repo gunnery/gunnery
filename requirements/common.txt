@@ -13,7 +13,7 @@ django-pgcrypto==1.1.1
 ecdsa==0.11
 factory-boy==2.3.1
 kombu==3.0.19
-paramiko==1.14.0
+paramiko==2.10.1
 psycopg2==2.5.3
 pycrypto==2.6.1
 pytz==2014.4
